@@ -26,22 +26,22 @@ public sealed class FeedForwardNet : INet
         return result;
     }
 
-    public float[,] ComputeGradient(float[] input)
+    public (float[,], float[]) ComputeGradient(float[] input)
     {
         float[,] gradientResult = layers[0].ComputeWeightGradient(input);
-        float[] result = layers[0].Run(input);
+        float[] runResult = layers[0].Run(input);
 
         for (int i = 1; i < layers.Length; i++)
         {
             // WeightGradient + InputGradient*gradientResult
             gradientResult = Matrix.Add(
-                layers[i].ComputeWeightGradient(result),
-                Matrix.Product(layers[i].ComputeInputGradient(result), gradientResult)
+                layers[i].ComputeWeightGradient(runResult),
+                Matrix.Product(layers[i].ComputeInputGradient(runResult), gradientResult)
             );
-            result = layers[i].Run(result);
+            runResult = layers[i].Run(runResult);
         }
 
-        return gradientResult;
+        return (gradientResult, runResult);
     }
 
     public float[] GetWeights()

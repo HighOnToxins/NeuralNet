@@ -76,4 +76,33 @@ internal static class Matrix
 
         return C;
     }
+
+    public static float[] Add(float[] A, float[] B)
+    {
+        if(A.Length != B.Length)
+        {
+            throw new ArgumentException("Expected vectors with equal lengths!");
+        }
+
+        float[] C = new float[A.Length];
+
+        for(int i = 0; i < C.Length; i++)
+        {
+            C[i] = A[i] + B[i];
+        }
+
+        return C;
+    }
+
+    public static float Length(float[] vector)
+    {
+        float lengthSquared = 0;
+
+        for(int i = 0; i < vector.Length; i++)
+        {
+            lengthSquared += vector[i] * vector[i];
+        }
+
+        return (float) Math.Sqrt(lengthSquared);
+    }
 }

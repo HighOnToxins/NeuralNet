@@ -8,8 +8,6 @@ internal interface ITrainer
 
     public void Train(int iterations = 1);
 
-    public float Validation();
-
     public float Loss();
 
 }
