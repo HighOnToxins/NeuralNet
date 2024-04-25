@@ -1,11 +1,9 @@
 ﻿
 namespace NeuralNet;
 
-public interface INet
+public interface INet: ILayer
 {
 
-    public float[] Run(float[] input);
-
-
+    public float[,] ComputeGradient(float[] input);
 
 }
