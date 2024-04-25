@@ -1,7 +1,6 @@
-﻿
-namespace NeuralNet;
+﻿namespace NeuralNet.Feedforward;
 
-public interface IFeedForwardLayer: ILayer
+public interface IFeedForwardLayer : ILayer
 {
 
     public float[,] ComputeWeightGradient(float[] input);

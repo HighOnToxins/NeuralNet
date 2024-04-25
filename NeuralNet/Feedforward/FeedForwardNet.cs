@@ -1,7 +1,6 @@
-﻿
-namespace NeuralNet;
+﻿namespace NeuralNet.Feedforward;
 
-public sealed class FeedForwardNet: INet
+public sealed class FeedForwardNet : INet
 {
     private readonly IFeedForwardLayer[] layers;
 
@@ -9,7 +8,7 @@ public sealed class FeedForwardNet: INet
     {
         this.layers = layers;
 
-        if(layers is null || layers.Length == 0)
+        if (layers is null || layers.Length == 0)
         {
             throw new ArgumentException("Feedforward network expected at least one layer, but got none!");
         }
@@ -19,7 +18,7 @@ public sealed class FeedForwardNet: INet
     {
         float[] result = layers[0].Run(input);
 
-        for(int i = 1; i < layers.Length; i++)
+        for (int i = 1; i < layers.Length; i++)
         {
             result = layers[i].Run(result);
         }
@@ -32,11 +31,11 @@ public sealed class FeedForwardNet: INet
         float[,] gradientResult = layers[0].ComputeWeightGradient(input);
         float[] result = layers[0].Run(input);
 
-        for(int i = 1; i < layers.Length; i++)
+        for (int i = 1; i < layers.Length; i++)
         {
             // WeightGradient + InputGradient*gradientResult
             gradientResult = Matrix.Add(
-                layers[i].ComputeWeightGradient(result), 
+                layers[i].ComputeWeightGradient(result),
                 Matrix.Product(layers[i].ComputeInputGradient(result), gradientResult)
             );
             result = layers[i].Run(result);
@@ -49,7 +48,7 @@ public sealed class FeedForwardNet: INet
     {
         List<float> weights = new();
 
-        for(int i = 0; i < layers.Length; i++) 
+        for (int i = 0; i < layers.Length; i++)
         {
             weights.AddRange(layers[i].GetWeights());
         }
@@ -60,13 +59,13 @@ public sealed class FeedForwardNet: INet
     public void SetWeights(float[] newWeights)
     {
         int startWeightRange;
-        int endWeightRange = -1; 
+        int endWeightRange = -1;
 
-        for(int i = 0; i < layers.Length; i++)
+        for (int i = 0; i < layers.Length; i++)
         {
             startWeightRange = endWeightRange + 1;
             endWeightRange += layers[i].GetWeightLength();
-            layers[i].SetWeights(newWeights[startWeightRange .. endWeightRange ]);
+            layers[i].SetWeights(newWeights[startWeightRange..endWeightRange]);
         }
     }
 
@@ -75,16 +74,16 @@ public sealed class FeedForwardNet: INet
         int startWeightRange;
         int endWeightRange = -1;
 
-        for(int i = 0; i < layers.Length; i++)
+        for (int i = 0; i < layers.Length; i++)
         {
             startWeightRange = endWeightRange + 1;
             endWeightRange += layers[i].GetWeightLength();
-            layers[i].AddWeights(newWeights[startWeightRange.. endWeightRange]);
+            layers[i].AddWeights(newWeights[startWeightRange..endWeightRange]);
         }
     }
 
     public int GetWeightLength()
     {
-        return layers.Select(layer =>  layer.GetWeightLength()).Sum();
+        return layers.Select(layer => layer.GetWeightLength()).Sum();
     }
 }
