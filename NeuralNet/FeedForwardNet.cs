@@ -66,7 +66,7 @@ public sealed class FeedForwardNet: INet
         {
             startWeightRange = endWeightRange + 1;
             endWeightRange += layers[i].GetWeightLength();
-            layers[i].SetWeights(newWeights[startWeightRange ..^endWeightRange ]);
+            layers[i].SetWeights(newWeights[startWeightRange .. endWeightRange ]);
         }
     }
 
@@ -79,7 +79,7 @@ public sealed class FeedForwardNet: INet
         {
             startWeightRange = endWeightRange + 1;
             endWeightRange += layers[i].GetWeightLength();
-            layers[i].AddWeights(newWeights[startWeightRange..^endWeightRange]);
+            layers[i].AddWeights(newWeights[startWeightRange.. endWeightRange]);
         }
     }
 
