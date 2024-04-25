@@ -1,5 +1,4 @@
-﻿
-namespace NeuralNet.Feedforward;
+﻿namespace NeuralNet.Feedforward;
 
 public enum TrainingOption
 {
@@ -7,7 +6,7 @@ public enum TrainingOption
     Minimize = -1
 }
 
-public sealed class FeedForwardTrainer: ITrainer
+public sealed class FeedForwardTrainer: IFeedForwardTrainer
 {
 
     private readonly float[][] trainingData;
@@ -15,17 +14,12 @@ public sealed class FeedForwardTrainer: ITrainer
 
     private readonly IFeedForwardLoss lossFunction;
 
-    private readonly Random random;
-
     public FeedForwardTrainer(float[][] trainingData, float[][] trainingTarget, IFeedForwardLoss lossFunction)
     {
         this.trainingData = trainingData;
         this.trainingTarget = trainingTarget;
         this.lossFunction = lossFunction;
-        random = new();
     }
-
-    public INet Net { get; private init; }
 
     public float Train(FeedForwardNet net, float learningRate, TrainingOption option = TrainingOption.Minimize)
     {
@@ -37,7 +31,7 @@ public sealed class FeedForwardTrainer: ITrainer
 
             totalGradient = Matrix.Add(
                 totalGradient,
-                Matrix.Product(gradient, lossFunction.ComputeGradient(trainingTarget[i], run))
+                Matrix.ProductFirstTransposed(gradient, lossFunction.ComputeGradient(trainingTarget[i], run))
             );
         }
 
