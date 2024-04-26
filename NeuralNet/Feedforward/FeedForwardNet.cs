@@ -1,8 +1,12 @@
 ﻿namespace NeuralNet.Feedforward;
 
-public sealed class FeedForwardNet : INet
+public sealed class FeedForwardNet: INet
 {
     private readonly IFeedForwardLayer[] layers;
+
+    public int InputSize { get; private init; }
+
+    public int OutputSize { get; private init; }
 
     public FeedForwardNet(params IFeedForwardLayer[] layers)
     {
@@ -12,6 +16,17 @@ public sealed class FeedForwardNet : INet
         {
             throw new ArgumentException("Feedforward network expected at least one layer, but got none!");
         }
+
+        for(int i = 0; i < layers.Length - 1; i++)
+        {
+            if(layers[i].OutputSize != layers[i + 1].InputSize)
+            {
+                throw new ArgumentException("Feedforward network expected that the input/output sizes of the layers matched!");
+            }
+        }
+
+        InputSize = layers[0].InputSize;
+        OutputSize = layers[^1].OutputSize;
     }
 
     public float[] Run(float[] input)
@@ -33,6 +48,8 @@ public sealed class FeedForwardNet : INet
 
         for (int i = 1; i < layers.Length; i++)
         {
+            // TODO: Remember to add rescaling
+
             // WeightGradient + InputGradient*gradientResult
             gradientResult = Matrix.Add(
                 layers[i].ComputeWeightGradient(runResult),

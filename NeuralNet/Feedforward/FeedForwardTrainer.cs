@@ -63,6 +63,7 @@ public sealed class FeedForwardTrainer: IFeedForwardTrainer
     {
         throw new NotImplementedException();
     }
+
     public float Accuracy(FeedForwardNet net, TrainingOption option = TrainingOption.Minimize)
     {
         throw new NotImplementedException();
