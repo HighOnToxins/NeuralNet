@@ -10,7 +10,7 @@ public sealed class AffineLayer: IFeedForwardLayer
 
     public AffineLayer(int inputSize, int outputSize, IActivation? activation = null)
     {
-        this.activation = activation is not null ? activation : new Identity(); 
+        this.activation = activation ?? new Identity(); 
 
         InputSize = inputSize;
         OutputSize = outputSize;
@@ -46,41 +46,43 @@ public sealed class AffineLayer: IFeedForwardLayer
 
     public int OutputSize { get; private init; }
 
-    public float[] Run(float[] input)
+    private float[] Transformation(float[] input)
     {
-        return activation.Run(Matrix.Add(bias, Matrix.Product(matrix, input)));
+        return Matrix.Add(bias, Matrix.Product(matrix, input));
     }
 
-    public float[,] ComputeWeightGradient(float[] input)
+    public float[] Run(float[] input)
     {
-        float[,] gradient = new float[OutputSize, GetWeightLength()];
+        return activation.Run(Transformation(input));
+    }
+
+    public (float[,], float[, ], float[]) Gradient(float[] input)
+    {
+        float[,] weightTransformationGradient = new float[OutputSize, GetWeightLength()];
 
         // x_k
         for(int i = 0; i < OutputSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                gradient[i, i*InputSize + j] = input[j];
+                weightTransformationGradient[i, i*InputSize + j] = input[j];
             }
         }
 
         // 1
         for(int i = 0; i < OutputSize; i++)
         {
-            gradient[i, OutputSize * InputSize + i] = 1;
+            weightTransformationGradient[i, OutputSize * InputSize + i] = 1;
         }
 
-        return Matrix.Product(
-            activation.ComputeGradient(Matrix.Add(bias, Matrix.Product(matrix, input))), //TODO: figure out how to reuse this computation done by the trainer
-            gradient);
-    }
+        float[] transformation = Transformation(input);
+        float[,] activationGradient = activation.ComputeGradient(transformation);
 
-    public float[,] ComputeInputGradient(float[] input)
-    {
-        return Matrix.Product(
-            activation.ComputeGradient(Matrix.Add(bias, Matrix.Product(matrix, input))), //TODO: figure out how to reuse this computation done by the trainer
-                                                                                         // Alternatively, consider  removing the activation functions from the affine layer
-            matrix);
+        float[] result = activation.Run(transformation);
+        float[,] weightGradient = Matrix.Product(activationGradient, weightTransformationGradient);
+        float[,] inputGradient = Matrix.Product(activationGradient, matrix);
+
+        return (weightGradient, inputGradient, result);
     }
 
     public int GetWeightLength()

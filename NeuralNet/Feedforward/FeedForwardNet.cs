@@ -62,20 +62,18 @@ public sealed class FeedForwardNet: INet
 
     public (float[,], float[]) ComputeGradient(float[] input)
     {
-        float[,] gradientResult = layers[0].ComputeWeightGradient(input);
-        float[] runResult = layers[0].Run(input);
+        (float[,] gradientResult, _, float[] result) = layers[0].Gradient(input);
 
         for (int i = 1; i < layers.Length; i++)
         {
-            float[,] leftPart = layers[i].ComputeWeightGradient(runResult);
-            float[,] rightPart = Matrix.Product(layers[i].ComputeInputGradient(runResult), gradientResult);
+            (float[,] weightGradient, float[,] inputGradient, result) = layers[1].Gradient(result);
+            float[,] rightPart = Matrix.Product(inputGradient, gradientResult);
 
             // WeightGradient + InputGradient*gradientResult
-            gradientResult = Matrix.ConcatWidth(leftPart, rightPart); 
-            runResult = layers[i].Run(runResult);
+            gradientResult = Matrix.ConcatWidth(weightGradient, rightPart); 
         }
 
-        return (gradientResult, runResult);
+        return (gradientResult, result);
     }
 
     public float[] GetWeights()

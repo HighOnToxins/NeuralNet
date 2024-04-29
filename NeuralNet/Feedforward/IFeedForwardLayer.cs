@@ -2,8 +2,6 @@
 
 public interface IFeedForwardLayer : ILayer
 {
-    public float[,] ComputeWeightGradient(float[] input);
-
-    public float[,] ComputeInputGradient(float[] input);
+    public (float[,], float[,], float[]) Gradient(float[] input);
 
 }

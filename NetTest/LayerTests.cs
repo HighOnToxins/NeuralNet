@@ -58,7 +58,7 @@ internal class LayerTests
             {  0,  0,  0,  0, 10, 11, 0, 0, 1},
         };
 
-        float[,] result = layer.ComputeWeightGradient(input);
+        (float[,] result, _, _) = layer.Gradient(input);
 
         MatrixTests.AssertEquivalentMatrices(result, expected);
     }
@@ -81,7 +81,7 @@ internal class LayerTests
             { 5, 6 },
         };
 
-        float[,] result = layer.ComputeInputGradient(input);
+        (_, float[,] result, _) = layer.Gradient(input);
 
         MatrixTests.AssertEquivalentMatrices(result, expected);
     }

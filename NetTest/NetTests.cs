@@ -1,7 +1,6 @@
 ﻿
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
-using static NetTest.LayerTests;
 
 namespace NetTest;
 
@@ -85,7 +84,7 @@ internal class NetTests
         float[] input = { 14, 15 };
 
         (float[,] gradient, _) = net.ComputeGradient(input);
-        float[,] gradient2 = layer.ComputeWeightGradient(input);
+        (float[,] gradient2, _, _) = layer.Gradient(input);
 
         MatrixTests.AssertEquivalentMatrices(gradient, gradient2);
     }
