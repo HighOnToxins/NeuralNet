@@ -9,7 +9,7 @@ internal class NetTests
 {
 
     [Test]
-    public void FeedforwardInitTest()
+    public void TestFeedforwardInit()
     {
         float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         float[] weights2 = { 10, 11, 12, 13 };
@@ -23,6 +23,11 @@ internal class NetTests
 
         Assert.That(net.InputSize, Is.EqualTo(2));
         Assert.That(net.OutputSize, Is.EqualTo(1));
+
+        float[] expectedWeights = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+
+        Assert.That(net.GetWeights(), Is.EquivalentTo(expectedWeights));
+
     }
 
     [Test]
