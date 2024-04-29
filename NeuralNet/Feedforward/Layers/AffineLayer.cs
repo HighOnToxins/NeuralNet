@@ -51,6 +51,28 @@ public sealed class AffineLayer: IFeedForwardLayer
         return Matrix.Add(bias, Matrix.Product(matrix, input));
     }
 
+    private float[,] TransformationWeightGradient(float[] input)
+    {
+        float[,] result = new float[OutputSize, GetWeightLength()];
+
+        // x_k
+        for(int i = 0; i < OutputSize; i++)
+        {
+            for(int j = 0; j < InputSize; j++)
+            {
+                result[i, i * InputSize + j] = input[j];
+            }
+        }
+
+        // 1
+        for(int i = 0; i < OutputSize; i++)
+        {
+            result[i, OutputSize * InputSize + i] = 1;
+        }
+
+        return result;
+    }
+
     public float[] Run(float[] input)
     {
         return activation.Run(Transformation(input));
@@ -58,29 +80,12 @@ public sealed class AffineLayer: IFeedForwardLayer
 
     public (float[,], float[, ], float[]) Gradient(float[] input)
     {
-        float[,] weightTransformationGradient = new float[OutputSize, GetWeightLength()];
-
-        // x_k
-        for(int i = 0; i < OutputSize; i++)
-        {
-            for(int j = 0; j < InputSize; j++)
-            {
-                weightTransformationGradient[i, i*InputSize + j] = input[j];
-            }
-        }
-
-        // 1
-        for(int i = 0; i < OutputSize; i++)
-        {
-            weightTransformationGradient[i, OutputSize * InputSize + i] = 1;
-        }
-
         float[] transformation = Transformation(input);
         float[,] activationGradient = activation.ComputeGradient(transformation);
 
-        float[] result = activation.Run(transformation);
-        float[,] weightGradient = Matrix.Product(activationGradient, weightTransformationGradient);
+        float[,] weightGradient = Matrix.Product(activationGradient, TransformationWeightGradient(input));
         float[,] inputGradient = Matrix.Product(activationGradient, matrix);
+        float[] result = activation.Run(transformation);
 
         return (weightGradient, inputGradient, result);
     }
