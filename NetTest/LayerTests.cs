@@ -1,5 +1,5 @@
 ﻿
-using NeuralNet.Feedforward;
+using NeuralNet;
 using NeuralNet.Feedforward.Layers;
 
 namespace NetTest;
