@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNet", "NeuralNet\Neur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Program", "Program\Program.csproj", "{0214174E-18F6-4475-859E-C40F6142EAFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{C949A6D1-A9AE-44F8-8C06-065DC8E86A5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetTest", "NetTest\NetTest.csproj", "{821A594C-81FD-4810-937B-55C1ECA79564}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{0214174E-18F6-4475-859E-C40F6142EAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0214174E-18F6-4475-859E-C40F6142EAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0214174E-18F6-4475-859E-C40F6142EAFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C949A6D1-A9AE-44F8-8C06-065DC8E86A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C949A6D1-A9AE-44F8-8C06-065DC8E86A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C949A6D1-A9AE-44F8-8C06-065DC8E86A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C949A6D1-A9AE-44F8-8C06-065DC8E86A5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{821A594C-81FD-4810-937B-55C1ECA79564}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{821A594C-81FD-4810-937B-55C1ECA79564}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{821A594C-81FD-4810-937B-55C1ECA79564}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{821A594C-81FD-4810-937B-55C1ECA79564}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
