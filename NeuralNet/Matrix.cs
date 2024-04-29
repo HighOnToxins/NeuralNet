@@ -1,7 +1,7 @@
 ﻿
 namespace NeuralNet;
 
-internal static class Matrix
+public static class Matrix
 {
     public static float[] ProductFirstTransposed(float[,] A, float[] B)
     {
