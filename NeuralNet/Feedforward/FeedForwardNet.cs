@@ -1,4 +1,7 @@
-﻿namespace NeuralNet.Feedforward;
+﻿using NeuralNet.Feedforward.Layers;
+using System.Formats.Asn1;
+
+namespace NeuralNet.Feedforward;
 
 public sealed class FeedForwardNet: INet
 {
@@ -100,5 +103,27 @@ public sealed class FeedForwardNet: INet
     public int GetWeightLength()
     {
         return layers.Select(layer => layer.GetWeightLength()).Sum();
+    }
+
+    public void Save(string path)
+    {
+        BinaryWriter writer = new(File.Create(path));
+
+        float[] weights = GetWeights();
+        for(int i = 0; i < layers.Length; i++)
+        {
+            writer.Write(weights[i]);
+        }
+    }
+
+    public void Load(string path)
+    {
+        BinaryReader reader = new(File.OpenRead(path));
+
+        float[] weights = new float[GetWeightLength()];
+        for(int i = 0; i < weights.Length; i++)
+        {
+            weights[i] = reader.ReadSingle();
+        }
     }
 }
