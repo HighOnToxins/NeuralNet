@@ -20,8 +20,8 @@ internal class FileTests
     {
         FeedForwardNet net = new(
             10,
-            new AffineLayer(new ReLU(), 2, 10),
-            new AffineLayer(new ReLU(), 10, 2)
+            new AffineLayer(2, 10),
+            new AffineLayer(10, 2)
         );
 
         net.Save(path + "saveTest1");

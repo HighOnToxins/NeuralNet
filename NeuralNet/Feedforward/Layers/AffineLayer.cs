@@ -8,9 +8,9 @@ public sealed class AffineLayer: IFeedForwardLayer
 
     private readonly IActivation activation;
 
-    public AffineLayer(IActivation activation, int inputSize, int outputSize)
+    public AffineLayer(int inputSize, int outputSize, IActivation? activation = null)
     {
-        this.activation = activation; 
+        this.activation = activation is not null ? activation : new Identity(); 
 
         InputSize = inputSize;
         OutputSize = outputSize;
@@ -19,12 +19,12 @@ public sealed class AffineLayer: IFeedForwardLayer
         bias = new float[outputSize];
     }
 
-    public AffineLayer(IActivation activation, int inputSize, int outputSize, float[] weights): this(activation, inputSize, outputSize)
+    public AffineLayer(int inputSize, int outputSize, float[] weights, IActivation? activation = null) : this(inputSize, outputSize, activation)
     {
         SetWeights(weights);
     }
 
-    public AffineLayer(IActivation activation, int inputSize, int outputSize, float randomRange) : this(activation, inputSize, outputSize)
+    public AffineLayer(int inputSize, int outputSize, float randomRange, IActivation? activation = null) : this(inputSize, outputSize, activation)
     {
         Random random = new();
 

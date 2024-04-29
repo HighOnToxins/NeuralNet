@@ -6,31 +6,12 @@ namespace NetTest;
 
 internal class LayerTests
 {
-    public class IdentityFunction: IActivation
-    {
-        public float[,] ComputeGradient(float[] input)
-        {
-            float[,] result = new float[input.Length,input.Length];
-
-            for(int i = 0; i < input.Length; i++)
-            {
-                result[i, i] = 1;
-            }
-
-            return result;
-        }
-
-        public float[] Run(float[] input)
-        {
-            return input;
-        }
-    }
 
     [Test]
     public void TestAffineLayerWeights()
     {
         float[] weights = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        AffineLayer layer = new(null, 2, 3, weights);
+        AffineLayer layer = new(2, 3, weights);
 
         Assert.That(layer.GetWeightLength(), Is.EqualTo(9));
 
@@ -42,7 +23,7 @@ internal class LayerTests
     public void TestAffineLayerRun()
     {
         float[] weights = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        AffineLayer layer = new(new IdentityFunction(), 2, 3, weights);
+        AffineLayer layer = new(2, 3, weights);
 
         float[] input = new float[] 
         { 
@@ -63,7 +44,7 @@ internal class LayerTests
     public void TestAffineLayerWeightGradient()
     {
         float[] weights = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        AffineLayer layer = new(new IdentityFunction(), 2, 3, weights);
+        AffineLayer layer = new(2, 3, weights);
 
         float[] input = new float[]
         {
@@ -86,7 +67,7 @@ internal class LayerTests
     public void TestAffineLayerInputGradient()
     {
         float[] weights = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        AffineLayer layer = new(new IdentityFunction(), 2, 3, weights);
+        AffineLayer layer = new(2, 3, weights);
 
         float[] input = new float[]
         {

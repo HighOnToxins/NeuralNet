@@ -15,8 +15,8 @@ internal class NetTests
         float[] weights2 = { 10, 11, 12, 13 };
 
         FeedForwardNet net = new(
-            new AffineLayer(new IdentityFunction(), 2, 3, weights1),
-            new AffineLayer(new IdentityFunction(), 3, 1, weights2)
+            new AffineLayer(2, 3, weights1),
+            new AffineLayer(3, 1, weights2)
         );
 
         Assert.That(net.GetWeightLength(), Is.EqualTo(13));
@@ -37,8 +37,8 @@ internal class NetTests
         float[] weights2 = { 10, 11, 12, 13 };
 
         FeedForwardNet net = new(
-            new AffineLayer(new IdentityFunction(), 2, 3, weights1),
-            new AffineLayer(new IdentityFunction(), 3, 1, weights2)
+            new AffineLayer(2, 3, weights1),
+            new AffineLayer(3, 1, weights2)
         );
 
         float[] input = { 14, 15 };
@@ -56,8 +56,8 @@ internal class NetTests
         float[] weights2 = { 10, 11, 12, 13 };
 
         FeedForwardNet net = new(
-            new AffineLayer(new IdentityFunction(), 2, 3, weights1),
-            new AffineLayer(new IdentityFunction(), 3, 1, weights2)
+            new AffineLayer(2, 3, weights1),
+            new AffineLayer(3, 1, weights2)
         );
 
         float[] input = { 14, 15 };
@@ -79,7 +79,7 @@ internal class NetTests
     {
         float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
-        AffineLayer layer = new(new IdentityFunction(), 2, 3, weights1);
+        AffineLayer layer = new(2, 3, weights1);
         FeedForwardNet net = new(layer);
 
         float[] input = { 14, 15 };
