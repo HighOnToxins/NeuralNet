@@ -58,14 +58,4 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
 
         return totalLoss;
     }
-
-    public float Validation(FeedForwardNet net, TrainingOption option = TrainingOption.Minimize)
-    {
-        throw new NotImplementedException();
-    }
-
-    public float Accuracy(FeedForwardNet net, TrainingOption option = TrainingOption.Minimize)
-    {
-        throw new NotImplementedException();
-    }
 }
