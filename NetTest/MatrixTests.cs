@@ -96,4 +96,30 @@ public class MatrixTests
 
         AssertEquivalentMatrices(matrixC, expected);
     }
+
+    [Test]
+    public void TestTransposeProduct()
+    {
+        float[,] matrixA =
+        {
+            { 1,3},
+            { 2,4},
+        };
+
+        float[,] matrixB =
+        {
+            { 5,6},
+            { 7,8},
+        };
+
+        float[,] expected =
+        {
+            { 19, 22 },
+            { 43, 50 }
+        };
+
+        float[,] matrixC = Matrix.ProductFirstTransposed(matrixA, matrixB);
+
+        AssertEquivalentMatrices(matrixC, expected);
+    }
 }

@@ -72,4 +72,21 @@ internal class NetTests
         Assert.That(result, Is.EquivalentTo(expectedResult));
         MatrixTests.AssertEquivalentMatrices(gradient, expectedGradient);
     }
+
+
+    [Test]
+    public void TestFeedforwardGradient2()
+    {
+        float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+        AffineLayer layer = new(new IdentityFunction(), 2, 3, weights1);
+        FeedForwardNet net = new(layer);
+
+        float[] input = { 14, 15 };
+
+        (float[,] gradient, _) = net.ComputeGradient(input);
+        float[,] gradient2 = layer.ComputeWeightGradient(input);
+
+        MatrixTests.AssertEquivalentMatrices(gradient, gradient2);
+    }
 }
