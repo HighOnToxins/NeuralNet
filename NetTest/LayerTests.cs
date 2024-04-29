@@ -6,7 +6,7 @@ namespace NetTest;
 
 internal class LayerTests
 {
-    private class IdentityFunction: IActivation
+    public class IdentityFunction: IActivation
     {
         public float[,] ComputeGradient(float[] input)
         {
@@ -79,7 +79,7 @@ internal class LayerTests
 
         float[,] result = layer.ComputeWeightGradient(input);
 
-        MatrixTests.AssertMatricesAsEqual(result, expected);
+        MatrixTests.AssertEquivalentMatrices(result, expected);
     }
 
     [Test]
@@ -102,7 +102,7 @@ internal class LayerTests
 
         float[,] result = layer.ComputeInputGradient(input);
 
-        MatrixTests.AssertMatricesAsEqual(result, expected);
+        MatrixTests.AssertEquivalentMatrices(result, expected);
     }
 
 }

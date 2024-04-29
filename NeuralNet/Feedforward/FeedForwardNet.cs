@@ -48,13 +48,11 @@ public sealed class FeedForwardNet: INet
 
         for (int i = 1; i < layers.Length; i++)
         {
-            // TODO: Remember to add rescaling
+            float[,] leftPart = layers[i].ComputeWeightGradient(runResult);
+            float[,] rightPart = Matrix.Product(layers[i].ComputeInputGradient(runResult), gradientResult);
 
             // WeightGradient + InputGradient*gradientResult
-            gradientResult = Matrix.Add(
-                layers[i].ComputeWeightGradient(runResult),
-                Matrix.Product(layers[i].ComputeInputGradient(runResult), gradientResult)
-            );
+            gradientResult = Matrix.ConcatWidth(leftPart, rightPart); 
             runResult = layers[i].Run(runResult);
         }
 

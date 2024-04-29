@@ -4,7 +4,7 @@ namespace NetTest;
 
 public class MatrixTests
 {
-    internal static void AssertMatricesAsEqual(float[,] matrix, float[,] expected)
+    internal static void AssertEquivalentMatrices(float[,] matrix, float[,] expected)
     {
         Assert.That(matrix.GetLength(0), Is.EqualTo(expected.GetLength(0)));
         Assert.That(matrix.GetLength(1), Is.EqualTo(expected.GetLength(1)));
@@ -41,7 +41,7 @@ public class MatrixTests
 
         float[,] matrixC = Matrix.Product(matrixA, matrixB);
 
-        AssertMatricesAsEqual(matrixC, expected);
+        AssertEquivalentMatrices(matrixC, expected);
     }
 
     [Test]
@@ -68,7 +68,7 @@ public class MatrixTests
 
         float[,] matrixC = Matrix.Product(matrixA, matrixB);
 
-        AssertMatricesAsEqual(matrixC, expected);
+        AssertEquivalentMatrices(matrixC, expected);
     }
 
     [Test]
@@ -94,6 +94,6 @@ public class MatrixTests
 
         float[,] matrixC = Matrix.Add(matrixA, matrixB);
 
-        AssertMatricesAsEqual(matrixC, expected);
+        AssertEquivalentMatrices(matrixC, expected);
     }
 }
