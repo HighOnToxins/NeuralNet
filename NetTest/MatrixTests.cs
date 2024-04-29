@@ -45,6 +45,33 @@ public class Tests
     }
 
     [Test]
+    public void TestMatricesProduct2()
+    {
+        float[,] matrixA =
+        {
+            { 1, 2, 9},
+            { 3, 4, 10},
+        };
+
+        float[,] matrixB =
+        {
+            { 5, 6},
+            { 7, 8},
+            { 11, 12},
+        };
+
+        float[,] expected =
+        {
+            { 118, 130 },
+            { 153, 170 }
+        };
+
+        float[,] matrixC = Matrix.Product(matrixA, matrixB);
+
+        AssertMatricesAsEqual(matrixC, expected);
+    }
+
+    [Test]
     public void TestMatrixAdd()
     {
         float[,] matrixA =
