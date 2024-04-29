@@ -27,7 +27,7 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
 
         for(int i = 0; i < trainingData.Length; i++)
         {
-            (float[,] gradient, float[] run) = net.ComputeGradient(trainingData[i]);
+            (float[,] gradient, float[] run) = net.Gradient(trainingData[i]);
 
             totalGradient = Matrix.Add(
                 totalGradient,

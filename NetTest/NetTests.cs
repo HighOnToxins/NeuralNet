@@ -66,7 +66,7 @@ internal class NetTests
             {  0, 140, 150, 154, 165, 168, 180, 10, 11, 12, 0, 0, 0 }
         };
 
-        (float[,] gradient, float[] result) = net.ComputeGradient(input);
+        (float[,] gradient, float[] result) = net.Gradient(input);
 
         Assert.That(result, Is.EquivalentTo(expectedResult));
         MatrixTests.AssertEquivalentMatrices(gradient, expectedGradient);
@@ -83,7 +83,7 @@ internal class NetTests
 
         float[] input = { 14, 15 };
 
-        (float[,] gradient, _) = net.ComputeGradient(input);
+        (float[,] gradient, _) = net.Gradient(input);
         (float[,] gradient2, _, _) = layer.Gradient(input);
 
         MatrixTests.AssertEquivalentMatrices(gradient, gradient2);

@@ -60,7 +60,7 @@ public sealed class FeedForwardNet: INet
         return result;
     }
 
-    public (float[,], float[]) ComputeGradient(float[] input)
+    public (float[,], float[]) Gradient(float[] input)
     {
         (float[,] gradientResult, _, float[] result) = layers[0].Gradient(input);
 
