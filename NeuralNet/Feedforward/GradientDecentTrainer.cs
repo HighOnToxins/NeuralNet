@@ -6,7 +6,7 @@ public enum TrainingOption
     Minimize = -1
 }
 
-public sealed class FeedForwardTrainer: IFeedForwardTrainer
+public sealed class GradientDecentTrainer: IFeedForwardTrainer
 {
 
     private readonly float[][] trainingData;
@@ -14,7 +14,7 @@ public sealed class FeedForwardTrainer: IFeedForwardTrainer
 
     private readonly IFeedForwardLoss lossFunction;
 
-    public FeedForwardTrainer(float[][] trainingData, float[][] trainingTarget, IFeedForwardLoss lossFunction)
+    public GradientDecentTrainer(float[][] trainingData, float[][] trainingTarget, IFeedForwardLoss lossFunction)
     {
         this.trainingData = trainingData;
         this.trainingTarget = trainingTarget;
