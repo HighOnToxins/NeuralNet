@@ -61,32 +61,27 @@ public sealed class AffineLayer: IFeedForwardLayer
         {
             for(int j = 0; j < InputSize; j++)
             {
-                gradient[i + j * OutputSize, j] = input[i];
+                gradient[i, i*InputSize + j] = input[j];
             }
         }
 
         // 1
         for(int i = 0; i < OutputSize; i++)
         {
-            gradient[OutputSize * InputSize + i, i] = 1;
+            gradient[i, OutputSize * InputSize + i] = 1;
         }
 
-        return Matrix.Product(activation.ComputeGradient(input), gradient);
+        return Matrix.Product(
+            activation.ComputeGradient(Matrix.Add(bias, Matrix.Product(matrix, input))), //TODO: figure out how to reuse this computation done by the trainer
+            gradient);
     }
 
     public float[,] ComputeInputGradient(float[] input)
     {
-        float[,] gradient = new float[OutputSize, InputSize];
-
-        for(int i = 0; i < gradient.GetLength(0); i++)
-        {
-            for(int j = 0; j < gradient.GetLength(1); j++)
-            {
-                gradient[i,j] = matrix[i,j];
-            }
-        }
-
-        return Matrix.Product(activation.ComputeGradient(input), gradient);
+        return Matrix.Product(
+            activation.ComputeGradient(Matrix.Add(bias, Matrix.Product(matrix, input))), //TODO: figure out how to reuse this computation done by the trainer
+                                                                                         // Alternatively, consider  removing the activation functions from the affine layer
+            matrix);
     }
 
     public int GetWeightLength()

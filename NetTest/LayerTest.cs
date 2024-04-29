@@ -14,10 +14,7 @@ internal class LayerTest
 
             for(int i = 0; i < input.Length; i++)
             {
-                for(int j = 0; j < input.Length; j++)
-                {
-                    result[i,j] = 1;
-                }
+                result[i, i] = 1;
             }
 
             return result;
@@ -60,6 +57,52 @@ internal class LayerTest
         float[] result = layer.Run(input);
 
         Assert.That(result, Is.EquivalentTo(expected));
+    }
+
+    [Test]
+    public void TestAffineLayerWeightGradient()
+    {
+        float[] weights = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        AffineLayer layer = new(new IdentityFunction(), 2, 3, weights);
+
+        float[] input = new float[]
+        {
+            10, 11
+        };
+
+        float[,] expected = new float[,]
+        {
+            { 10, 11,  0,  0,  0,  0, 1, 0, 0},
+            {  0,  0, 10, 11,  0,  0, 0, 1, 0},
+            {  0,  0,  0,  0, 10, 11, 0, 0, 1},
+        };
+
+        float[,] result = layer.ComputeWeightGradient(input);
+
+        MatrixTests.AssertMatricesAsEqual(result, expected);
+    }
+
+    [Test]
+    public void TestAffineLayerInputGradient()
+    {
+        float[] weights = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        AffineLayer layer = new(new IdentityFunction(), 2, 3, weights);
+
+        float[] input = new float[]
+        {
+            10, 11
+        };
+
+        float[,] expected = new float[,]
+        {
+            { 1, 2 },
+            { 3, 4 },
+            { 5, 6 },
+        };
+
+        float[,] result = layer.ComputeInputGradient(input);
+
+        MatrixTests.AssertMatricesAsEqual(result, expected);
     }
 
 }

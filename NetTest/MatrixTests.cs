@@ -2,7 +2,7 @@ using NeuralNet;
 
 namespace NetTest;
 
-public class Tests
+public class MatrixTests
 {
     internal static void AssertMatricesAsEqual(float[,] matrix, float[,] expected)
     {
