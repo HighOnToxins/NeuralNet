@@ -4,7 +4,7 @@ using NeuralNet.Feedforward.Layers;
 
 namespace NetTest;
 
-internal class LayerTest
+internal class LayerTests
 {
     private class IdentityFunction: IActivation
     {
