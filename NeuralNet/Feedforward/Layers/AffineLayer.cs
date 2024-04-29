@@ -16,7 +16,7 @@ public sealed class AffineLayer: IFeedForwardLayer
         InputSize = inputSize;
         OutputSize = outputSize;
 
-        matrix = new float[inputSize, outputSize];
+        matrix = new float[outputSize, inputSize];
         bias = new float[outputSize];
     }
 
@@ -29,9 +29,9 @@ public sealed class AffineLayer: IFeedForwardLayer
     {
         Random random = new();
 
-        for(int i = 0; i < InputSize; i++)
+        for(int i = 0; i < OutputSize; i++)
         {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
                 matrix[i, j] = (float)random.NextDouble() * randomRange;
             }
@@ -102,7 +102,7 @@ public sealed class AffineLayer: IFeedForwardLayer
         {
             for(int j = 0; j < InputSize; j++)
             {
-                result[i + j*OutputSize] = matrix[i,j];
+                result[i*InputSize + j] = matrix[i,j];
             }
         }
 
@@ -116,11 +116,11 @@ public sealed class AffineLayer: IFeedForwardLayer
 
     public void SetWeights(float[] newWeights)
     {
-        for(int i = 0; i < InputSize; i++)
+        for(int i = 0; i < OutputSize; i++)
         {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
-                matrix[i, j] = newWeights[i * OutputSize + j];
+                matrix[i, j] = newWeights[i * InputSize + j];
             }
         }
 
@@ -132,9 +132,9 @@ public sealed class AffineLayer: IFeedForwardLayer
 
     public void AddWeights(float[] newWeights)
     {
-        for(int i = 0; i < InputSize; i++)
+        for(int i = 0; i < OutputSize; i++)
         {
-            for(int j = 0; j < OutputSize; j++)
+            for(int j = 0; j < InputSize; j++)
             {
                 matrix[i, j] += newWeights[i * OutputSize + j];
             }
