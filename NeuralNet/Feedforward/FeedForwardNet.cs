@@ -32,6 +32,22 @@ public sealed class FeedForwardNet: INet
         OutputSize = layers[^1].OutputSize;
     }
 
+    public FeedForwardNet(float randomRange, params IFeedForwardLayer[] layers): this(layers)
+    {
+        Random random = new();
+        float[] weights = new float[GetWeightLength()];
+        for(int i = 0; i < weights.Length; i++)
+        {
+            weights[i] = (float) random.NextDouble()*randomRange;
+        }
+        SetWeights(weights);
+    }
+
+    public FeedForwardNet(float[] weights, params IFeedForwardLayer[] layers) : this(layers)
+    {
+        SetWeights(weights);
+    }
+
     public float[] Run(float[] input)
     {
         float[] result = layers[0].Run(input);
@@ -76,27 +92,27 @@ public sealed class FeedForwardNet: INet
 
     public void SetWeights(float[] newWeights)
     {
-        int startWeightRange;
-        int endWeightRange = -1;
+        int start;
+        int end = 0;
 
         for (int i = 0; i < layers.Length; i++)
         {
-            startWeightRange = endWeightRange + 1;
-            endWeightRange += layers[i].GetWeightLength();
-            layers[i].SetWeights(newWeights[startWeightRange..endWeightRange]);
+            start = end;
+            end += layers[i].GetWeightLength();
+            layers[i].SetWeights(newWeights[start..end]);
         }
     }
 
     public void AddWeights(float[] newWeights)
     {
-        int startWeightRange;
-        int endWeightRange = -1;
+        int start;
+        int end = 0;
 
         for (int i = 0; i < layers.Length; i++)
         {
-            startWeightRange = endWeightRange + 1;
-            endWeightRange += layers[i].GetWeightLength();
-            layers[i].AddWeights(newWeights[startWeightRange..endWeightRange]);
+            start = end;
+            end += layers[i].GetWeightLength();
+            layers[i].AddWeights(newWeights[start..end]);
         }
     }
 
@@ -107,23 +123,29 @@ public sealed class FeedForwardNet: INet
 
     public void Save(string path)
     {
-        BinaryWriter writer = new(File.Create(path));
+        BinaryWriter writer = new(File.Create(path + ".bin"));
 
         float[] weights = GetWeights();
-        for(int i = 0; i < layers.Length; i++)
+        for(int i = 0; i < weights.Length; i++)
         {
             writer.Write(weights[i]);
         }
+
+        writer.Close();
     }
 
     public void Load(string path)
     {
-        BinaryReader reader = new(File.OpenRead(path));
+        BinaryReader reader = new(File.OpenRead(path + ".bin"));
 
         float[] weights = new float[GetWeightLength()];
         for(int i = 0; i < weights.Length; i++)
         {
             weights[i] = reader.ReadSingle();
         }
+
+        SetWeights(weights);
+
+        reader.Close();
     }
 }
