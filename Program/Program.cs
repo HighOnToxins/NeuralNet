@@ -22,17 +22,17 @@ internal class Program
             float totalDifference = 0;
             for(int i = 0; i < output1.Length; i++)
             {
-                totalDifference = Math.Abs(output1[i] - output2[i]);
+                totalDifference = Math.Abs(output2[i] - output1[i]);
             }
             return totalDifference;
         }
 
         public float[] Gradient(float[] output1, float[] output2)
         {
-            float[] gradient = new float[10];
+            float[] gradient = new float[output1.Length];
             for(int i = 0; i < output1.Length; i++)
             {
-                gradient[i] = Math.Sign(output1[i] - output2[i]);
+                gradient[i] = Math.Sign(output2[i] - output1[i]);
             }
             return gradient;
         }

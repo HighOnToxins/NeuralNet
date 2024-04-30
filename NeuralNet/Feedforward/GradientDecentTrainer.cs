@@ -2,8 +2,8 @@
 
 public enum TrainingOption
 {
-    Maximize = -1,
-    Minimize = 1
+    Maximize = 1,
+    Minimize = -1
 }
 
 public sealed class GradientDecentTrainer: IFeedForwardTrainer
