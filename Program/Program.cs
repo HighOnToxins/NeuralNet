@@ -5,9 +5,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-namespace Program;
+namespace Training;
 
-internal class Start
+internal class Program
 {
     private const string mnistDirectory = "../../../MNISTfiles/";
     private const string netDirectory = "../../../net/";

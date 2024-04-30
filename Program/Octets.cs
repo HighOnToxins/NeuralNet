@@ -1,5 +1,5 @@
 ﻿
-namespace Program;
+namespace Training;
 
 internal static class Octets
 {

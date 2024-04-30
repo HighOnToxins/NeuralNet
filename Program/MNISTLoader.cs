@@ -1,9 +1,9 @@
 ﻿
 using System.Reflection.PortableExecutable;
 
-namespace Program;
+namespace Training;
 
-internal static class MNISTLoader
+public static class MNISTLoader
 {
     public enum LoadType { testingData, trainingData }
     public const string webPath = "http://yann.lecun.com/exdb/mnist/";

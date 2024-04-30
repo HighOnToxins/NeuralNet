@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NeuralNet\NeuralNet.csproj" />
+    <ProjectReference Include="..\Program\Training.csproj" />
+  </ItemGroup>
+
 </Project>
