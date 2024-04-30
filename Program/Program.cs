@@ -1,9 +1,8 @@
 ﻿
+using NeuralNet;
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
 using System.Diagnostics;
-using System.Drawing;
-using System.Runtime.InteropServices;
 
 namespace Training;
 
@@ -105,14 +104,19 @@ internal class Program
 
         Console.WriteLine("Started training!");
 
-        //using momentum
+        RunMomentumTraining(trainer, net, 1000);
+    }
+
+    //using momentum
+    public static void RunMomentumTraining(GradientDecentTrainer trainer, FeedForwardNet net, int iterations)
+    {
         float speed = 10;
         float decay = .95f;
 
         Stopwatch timer = new();
         timer.Start();
         Console.WriteLine(String.Format("\n{0,18}   {1,18}   {2,18}   {3,18}", "Loss", "Speed", "Acceleration", "Saved Net"));
-        for(int i = 0; i < 1000; i++)
+        for(int i = 0; i < iterations; i++)
         {
             float acceleration = trainer.Train(net, speed) / 100000f;
             speed += acceleration;
@@ -134,4 +138,5 @@ internal class Program
         timer.Stop();
         Console.WriteLine("training ended!");
     }
+
 }
