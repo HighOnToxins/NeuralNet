@@ -160,7 +160,7 @@ public static class Matrix
 
     public static float[,] ConcatWidth(float[,] leftPart, float[,] rightPart)
     {
-        float[,] result = new float[leftPart.GetLength(0)+rightPart.GetLength(0), leftPart.GetLength(1)+rightPart.GetLength(1)];
+        float[,] result = new float[leftPart.GetLength(0), leftPart.GetLength(1)+rightPart.GetLength(1)];
 
         for(int i = 0; i < leftPart.GetLength(0); i++)
         {
@@ -174,7 +174,7 @@ public static class Matrix
         {
             for(int j = 0; j < rightPart.GetLength(1); j++)
             {
-                result[i+leftPart.GetLength(0),j+rightPart.GetLength(0)] = rightPart[i, j];
+                result[i,j+rightPart.GetLength(0)] = rightPart[i, j];
             }
         }
 
