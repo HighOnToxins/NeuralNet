@@ -2,8 +2,8 @@
 
 public enum TrainingOption
 {
-    Maximize = 1,
-    Minimize = -1
+    Maximize = -1,
+    Minimize = 1
 }
 
 public sealed class GradientDecentTrainer: IFeedForwardTrainer
@@ -35,11 +35,12 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
             );
         }
 
+        //setting the learning rate as the new length of the gradient
         float gradientLength = Matrix.Length(totalGradient);
-
+        float gradientScalar = (int)option * learningRate / gradientLength;
         for(int i = 0; i < totalGradient.Length; i++)
         {
-            totalGradient[i] *= (int)option * learningRate / gradientLength;
+            totalGradient[i] *= gradientScalar; 
         }
 
         net.AddWeights(totalGradient);
