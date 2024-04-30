@@ -111,7 +111,7 @@ internal class Start
 
         Stopwatch timer = new();
         timer.Start();
-        Console.WriteLine(String.Format("\n{0,18}   {1,18}   {2,18}   {3,18}", "Training Loss", "Current Speed", "Acceleration", "Saved Net"));
+        Console.WriteLine(String.Format("\n{0,18}   {1,18}   {2,18}   {3,18}", "Loss", "Speed", "Acceleration", "Saved Net"));
         for(int i = 0; i < 1000; i++)
         {
             float acceleration = trainer.Train(net, speed) / 100000f;
