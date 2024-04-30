@@ -15,4 +15,8 @@
     <Folder Include="MNISTfiles\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NeuralNet\NeuralNet.csproj" />
+  </ItemGroup>
+
 </Project>

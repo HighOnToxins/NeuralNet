@@ -9,29 +9,29 @@ public enum TrainingOption
 public sealed class GradientDecentTrainer: IFeedForwardTrainer
 {
 
-    private readonly float[][] trainingData;
-    private readonly float[][] trainingTarget;
+    private readonly float[][] inputs;
+    private readonly float[][] targets;
 
-    private readonly IFeedForwardLoss lossFunction;
+    private readonly IFeedForwardLoss loss;
 
-    public GradientDecentTrainer(float[][] trainingData, float[][] trainingTarget, IFeedForwardLoss lossFunction)
+    public GradientDecentTrainer(float[][] inputs, float[][] targets, IFeedForwardLoss loss)
     {
-        this.trainingData = trainingData;
-        this.trainingTarget = trainingTarget;
-        this.lossFunction = lossFunction;
+        this.inputs = inputs;
+        this.targets = targets;
+        this.loss = loss;
     }
 
     public float Train(FeedForwardNet net, float learningRate, TrainingOption option = TrainingOption.Minimize)
     {
         float[] totalGradient = new float[net.GetWeightLength()];
 
-        for(int i = 0; i < trainingData.Length; i++)
+        for(int i = 0; i < inputs.Length; i++)
         {
-            (float[,] gradient, float[] run) = net.Gradient(trainingData[i]);
+            (float[,] gradient, float[] run) = net.Gradient(inputs[i]);
 
             totalGradient = Matrix.Add(
                 totalGradient,
-                Matrix.ProductFirstTransposed(gradient, lossFunction.ComputeGradient(trainingTarget[i], run))
+                Matrix.ProductFirstTransposed(gradient, loss.Gradient(targets[i], run))
             );
         }
 
@@ -47,13 +47,13 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
         return gradientLength;
     }
 
-    public float Loss(FeedForwardNet net, TrainingOption option = TrainingOption.Minimize)
+    public float Loss(FeedForwardNet net)
     {
         float totalLoss = 0;
 
-        for(int i = 0; i < trainingData.Length; i++)
+        for(int i = 0; i < inputs.Length; i++)
         {
-            totalLoss += lossFunction.Compute(trainingTarget[i], net.Run(trainingData[i]));
+            totalLoss += loss.Compute(targets[i], net.Run(inputs[i]));
         }
 
         return totalLoss;

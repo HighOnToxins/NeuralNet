@@ -34,17 +34,33 @@ public sealed class FeedForwardNet: INet
 
     public FeedForwardNet(float randomRange, params IFeedForwardLayer[] layers): this(layers)
     {
-        Random random = new();
-        float[] weights = new float[GetWeightLength()];
-        for(int i = 0; i < weights.Length; i++)
-        {
-            weights[i] = (float) random.NextDouble()*randomRange;
-        }
-        SetWeights(weights);
+        Randomize(randomRange);
     }
 
     public FeedForwardNet(float[] weights, params IFeedForwardLayer[] layers) : this(layers)
     {
+        SetWeights(weights);
+    }
+
+    public void Randomize(float randomRange)
+    {
+        Random random = new();
+        float[] weights = new float[GetWeightLength()];
+        for(int i = 0; i < weights.Length; i++)
+        {
+            weights[i] = (float)random.NextDouble() * randomRange;
+        }
+        SetWeights(weights);
+    }
+
+    public void Randomize(Func<float, float> distribution)
+    {
+        Random random = new();
+        float[] weights = new float[GetWeightLength()];
+        for(int i = 0; i < weights.Length; i++)
+        {
+            weights[i] = distribution.Invoke((float)random.NextDouble());
+        }
         SetWeights(weights);
     }
 

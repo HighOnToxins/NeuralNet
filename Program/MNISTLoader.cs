@@ -16,7 +16,7 @@ internal static class MNISTLoader
     public const string testLabelName = "t10k-images";
     public const string testDataName = "t10k-labels";
 
-    public static int[] LoadLabels(string directory, LoadType type)
+    public static byte[] LoadLabels(string directory, LoadType type)
     {
         using BinaryReader reader = new(File.OpenRead(directory + (type == LoadType.testingData ? testLabelName : trainLabelName) + "." + labelType));
         
@@ -24,7 +24,7 @@ internal static class MNISTLoader
         if(magicNumber != 2049) throw new ArgumentException("Could not read file, magic number was wrong!");
 
         int itemCount = reader.ReadInt32().FromBigEndian();
-        int[] labels = new int[itemCount];
+        byte[] labels = new byte[itemCount];
         for(int i = 0; i < itemCount; i++)
         {
             labels[i] = reader.ReadByte();
@@ -33,7 +33,7 @@ internal static class MNISTLoader
         return labels;
     }
 
-    public static int[][] LoadImages(string directory, LoadType type)
+    public static byte[][,] LoadImages(string directory, LoadType type)
     {
         using BinaryReader reader = new(File.OpenRead(directory + (type == LoadType.testingData ? testDataName : trainDataName) + "." + imageType));
         
@@ -44,14 +44,17 @@ internal static class MNISTLoader
         int rowCount = reader.ReadInt32().FromBigEndian();
         int colCount = reader.ReadInt32().FromBigEndian();
 
-        int[][] images = new int[itemCount][];
+        byte[][,] images = new byte[itemCount][,];
         for(int i = 0; i < itemCount; i++)
         {
-            images[i] = new int[rowCount * colCount];
+            images[i] = new byte[colCount, rowCount];
 
-            for(int j = 0; j < images[i].Length; j++)
+            for(int x = 0; x < images[i].GetLength(0); x++)
             {
-                images[i][j] = reader.ReadByte();
+                for(int y = 0; y < images[i].GetLength(0); y++)
+                {
+                    images[i][x, y] = reader.ReadByte();
+                }
             }
         }
 
