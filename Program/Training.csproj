@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <Folder Include="MNISTfiles\" />
+    <Folder Include="net\" />
   </ItemGroup>
 
   <ItemGroup>

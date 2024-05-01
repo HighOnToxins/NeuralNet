@@ -81,7 +81,7 @@ public sealed class AffineLayer: IFeedForwardLayer
     public (float[,], float[, ], float[]) Gradient(float[] input)
     {
         float[] transformation = Transformation(input);
-        float[,] activationGradient = activation.ComputeGradient(transformation);
+        float[,] activationGradient = activation.ComputeGradient(transformation); //TODO: change activation from a matrix to a vector scalar
 
         float[,] weightGradient = Matrix.Product(activationGradient, TransformationWeightGradient(input));
         float[,] inputGradient = Matrix.Product(activationGradient, matrix);

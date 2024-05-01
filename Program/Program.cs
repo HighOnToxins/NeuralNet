@@ -2,7 +2,6 @@
 using NeuralNet;
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
-using System.Diagnostics;
 
 namespace Training;
 
@@ -12,7 +11,7 @@ internal class Program
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDenseNet";
 
-    private const int dataUse = 1000;
+    private const int dataUse = -1;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -21,7 +20,7 @@ internal class Program
             float totalDifference = 0;
             for(int i = 0; i < output1.Length; i++)
             {
-                totalDifference = Math.Abs(output2[i] - output1[i]);
+                totalDifference += Math.Abs(output2[i] - output1[i]);
             }
             return totalDifference;
         }
@@ -39,14 +38,14 @@ internal class Program
 
     private static float[][] AssignImageData(byte[][,] images)
     {
-        float[][] values = new float[dataUse][];
+        float[][] values = new float[dataUse >= 0 ? dataUse : images.Length][];
 
         for(int i = 0; i <  values.Length; i++)
         {
             values[i] = new float[images[i].GetLength(0)*images[i].GetLength(1)];
             for(int j = 0; j < values[i].Length; j++)
             {
-                values[i][j] = images[i][j % images[i].GetLength(0), j / images[i].GetLength(0)];
+                values[i][j] = images[i][j % images[i].GetLength(0), j / images[i].GetLength(0)] / 255f;
             }
         }
 
@@ -55,7 +54,7 @@ internal class Program
 
     private static float[][] AssignLabelData(byte[] labels)
     {
-        float[][] values = new float[dataUse][];
+        float[][] values = new float[dataUse >= 0 ? dataUse : labels.Length][];
 
         for(int i = 0; i < values.Length; i++)
         {
@@ -87,13 +86,13 @@ internal class Program
 
         //TODO:Consider downscaling images
         FeedForwardNet net = new(
-            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU())
+            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f))
         );
 
         if(!File.Exists(netPath + ".bin"))
         {
             Directory.CreateDirectory(netDirectory);
-            net.Randomize(x => 800f * (float) Math.Pow(x - .5f, 3));
+            net.Randomize(x => 500f * (float) Math.Pow(x - .5f, 7));
             Console.WriteLine("Created New Network!");
         }
         else
@@ -102,42 +101,51 @@ internal class Program
             Console.WriteLine("Loaded Network!");
         }
 
-        Console.WriteLine("Started training!");
-
-        RunMomentumTraining(trainer, net, 1000);
+        RunMomentumTraining(trainer, net, 100, 1f / dataUse, .25f);
     }
 
     //using momentum
-    public static void RunMomentumTraining(GradientDecentTrainer trainer, FeedForwardNet net, int iterations)
+    public static void RunMomentumTraining(GradientDecentTrainer trainer, FeedForwardNet net, int iterations, float learningRate, float decay)
     {
-        float speed = 10;
-        float decay = .95f;
+        float[] velocity = new float[net.GetWeightLength()];
 
-        Stopwatch timer = new();
-        timer.Start();
-        Console.WriteLine(String.Format("\n{0,18}   {1,18}   {2,18}   {3,18}", "Loss", "Speed", "Acceleration", "Saved Net"));
+        Console.WriteLine();
+        Console.WriteLine($"number of iterations: {iterations} ");
+        Console.WriteLine($"learning rate: {learningRate}");
+        Console.WriteLine($"decay: {decay}");
+        Console.WriteLine();
+
+        Console.WriteLine("Started training!");
+        Console.WriteLine(string.Format("\n{0,20}\t{1,20}\t{2,20}\t{3,20}", "Iteration", "Loss", "Speed", "Acceleration"));
+
+        FeedForwardNet best = net.Clone();
+        float bestLoss = trainer.Loss(best);
+
         for(int i = 0; i < iterations; i++)
         {
-            float acceleration = trainer.Train(net, speed) / 100000f;
-            speed += acceleration;
-            speed *= decay;
+            //train
+            float[] acceleration = trainer.Train(net);
+            for(int j = 0; j < velocity.Length; j++) 
+                velocity[j] = velocity[j] * decay + acceleration[j]*learningRate;
+            net.AddWeights(velocity);
 
-            bool saved = false;
-            float loss = -1;
-            if(timer.ElapsedMilliseconds >= 10000) //10 seconds before saving
+            //save best
+            float loss = trainer.Loss(net);
+            if(loss > bestLoss)
             {
-                net.Save(netPath);
-                timer.Restart();
-                saved = true;
-                loss = trainer.Loss(net);
+                bestLoss = loss;
+                best = net.Clone();
+                best.Save(netPath);
             }
 
-            Console.Write(String.Format("{0,18}   {1,18}   {2,18}   {3,18}\n", (saved ? loss : ""), speed, acceleration, (saved ? "saved!" : "")));
+            //log
+            Console.WriteLine(string.Format("{0,20}\t{1,20}\t{2,20}\t{3,20}",
+                i, loss, Matrix.Length(velocity), Matrix.Length(acceleration)));
+
         }
 
         net.Save(netPath);
         Console.WriteLine("saved net!");
-        timer.Stop();
         Console.WriteLine("training ended!");
     }
 

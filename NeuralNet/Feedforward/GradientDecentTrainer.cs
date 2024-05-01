@@ -21,7 +21,7 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
         this.loss = loss;
     }
 
-    public float Train(FeedForwardNet net, float learningRate, TrainingOption option = TrainingOption.Minimize)
+    public float[] Train(FeedForwardNet net, TrainingOption option = TrainingOption.Minimize)
     {
         float[] totalGradient = new float[net.GetWeightLength()];
 
@@ -35,17 +35,12 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
             );
         }
 
-        //setting the learning rate as the new length of the gradient
-        float gradientLength = Matrix.Length(totalGradient);
-        float gradientScalar = (int)option * learningRate / gradientLength;
         for(int i = 0; i < totalGradient.Length; i++)
         {
-            totalGradient[i] *= gradientScalar; 
+            totalGradient[i] *= (float)option;
         }
 
-        net.AddWeights(totalGradient);
-
-        return gradientLength;
+        return totalGradient;
     }
 
     public float Loss(FeedForwardNet net)
