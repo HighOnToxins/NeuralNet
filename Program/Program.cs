@@ -123,14 +123,16 @@ internal class Program
             speed *= decay;
 
             bool saved = false;
+            float loss = -1;
             if(timer.ElapsedMilliseconds >= 10000) //10 seconds before saving
             {
                 net.Save(netPath);
                 timer.Restart();
                 saved = true;
+                loss = trainer.Loss(net);
             }
 
-            Console.Write(String.Format("{0,18}   {1,18}   {2,18}   {3,18}\n", trainer.Loss(net), speed, acceleration, (saved ? "saved!" : "")));
+            Console.Write(String.Format("{0,18}   {1,18}   {2,18}   {3,18}\n", (saved ? loss : ""), speed, acceleration, (saved ? "saved!" : "")));
         }
 
         net.Save(netPath);

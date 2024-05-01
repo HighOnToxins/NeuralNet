@@ -78,7 +78,6 @@ public static class MNISTLoader
         //write
         StreamWriter writer = new(File.Create(outputPath));
 
-
         for(int i = 0; i < counts.Length; i++)
         {
             writer.Write(i + "; ");

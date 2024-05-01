@@ -4,7 +4,7 @@ namespace Training;
 internal static class Octets
 {
 
-    //https://stackoverflow.com/questions/217980/c-sharp-little-endian-or-big-endian
+    //Octet-swaps inspired by: https://stackoverflow.com/questions/217980/c-sharp-little-endian-or-big-endian
 
     public static short SwapOctets(this short value)
     {
