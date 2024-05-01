@@ -63,6 +63,37 @@ public static class MNISTLoader
         return images;
     }
 
+    public static void CountLabels(string directory, string outputPath)
+    {
+        //load data
+        byte[] data = LoadLabels(directory, LoadType.trainingData);
+
+        //count
+        int[] counts = new int[10];
+        for(int i = 0; i < data.Length; i++)
+        {
+            counts[data[i]]++;
+        }
+
+        //write
+        StreamWriter writer = new(File.Create(outputPath));
+
+
+        for(int i = 0; i < counts.Length; i++)
+        {
+            writer.Write(i + "; ");
+        }
+
+        writer.WriteLine();
+
+        for(int i = 0; i < counts.Length; i++)
+        {
+            writer.Write(counts[i] + "; ");
+        }
+
+        writer.Close();
+    }
+
     async public static void DownloadMNIST(string directory)
     {
         using var client = new HttpClient();
