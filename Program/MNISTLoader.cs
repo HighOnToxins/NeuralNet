@@ -12,9 +12,9 @@ public static class MNISTLoader
     public const string imageType = "idx3-ubyte";
 
     public const string trainLabelName = "train-labels";
-    public const string trainDataName = "train-images";
-    public const string testLabelName = "t10k-images";
-    public const string testDataName = "t10k-labels";
+    public const string trainImageName = "train-images";
+    public const string testLabelName = "t10k-labels";
+    public const string testImageName = "t10k-images";
 
     public const int ImageSize = 28;
 
@@ -37,7 +37,7 @@ public static class MNISTLoader
 
     public static byte[][,] LoadImages(string directory, LoadType type)
     {
-        using BinaryReader reader = new(File.OpenRead(directory + (type == LoadType.testingData ? testDataName : trainDataName) + "." + imageType));
+        using BinaryReader reader = new(File.OpenRead(directory + (type == LoadType.testingData ? testImageName : trainImageName) + "." + imageType));
         
         int magicNumber = reader.ReadInt32().FromBigEndian();
         if(magicNumber != 2051) throw new ArgumentException("Could not read file, magic number was wrong!");
@@ -97,15 +97,15 @@ public static class MNISTLoader
     {
         using var client = new HttpClient();
         Task<byte[]> trainLabelsBytes = client.GetByteArrayAsync(webPath + trainLabelName + "-" + labelType + ".gz");
-        Task<byte[]> trainDataBytes = client.GetByteArrayAsync(webPath + trainDataName + "-" + imageType + ".gz");
+        Task<byte[]> trainDataBytes = client.GetByteArrayAsync(webPath + trainImageName + "-" + imageType + ".gz");
         Task<byte[]> testLabelsBytes = client.GetByteArrayAsync(webPath + testLabelName + "-" + labelType + ".gz");
-        Task<byte[]> testDataBytes = client.GetByteArrayAsync(webPath + testDataName + "-" + imageType + ".gz");
+        Task<byte[]> testDataBytes = client.GetByteArrayAsync(webPath + testImageName + "-" + imageType + ".gz");
 
         Directory.CreateDirectory(directory);
         using(BinaryWriter writer = new(File.Create(directory + trainLabelName + "." + labelType))) writer.Write(await trainLabelsBytes);
-        using(BinaryWriter writer = new(File.Create(directory + trainDataName + "." + imageType))) writer.Write(await trainDataBytes);
+        using(BinaryWriter writer = new(File.Create(directory + trainImageName + "." + imageType))) writer.Write(await trainDataBytes);
         using(BinaryWriter writer = new(File.Create(directory + testLabelName + "." + labelType))) writer.Write(await testLabelsBytes);
-        using(BinaryWriter writer = new(File.Create(directory + testDataName + "." + imageType))) writer.Write(await testDataBytes);
+        using(BinaryWriter writer = new(File.Create(directory + testImageName + "." + imageType))) writer.Write(await testDataBytes);
     }
 
 }

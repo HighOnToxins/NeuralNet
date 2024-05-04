@@ -12,7 +12,7 @@ public sealed class NewtonProgram: ITrainingProgram
     }
 
     protected override string[] VariatePropertyNames 
-        => new string[]{ "Loss", "Delta" };
+        => new string[]{ "Iteration", "Loss", "Delta" };
 
     protected override string[] ConstantPropertyNames
         => Array.Empty<string>();
@@ -28,7 +28,7 @@ public sealed class NewtonProgram: ITrainingProgram
         float[] delta = gradient.Scale(loss / gradient.LengthSquared());
         net.AddWeights(delta);
 
-        return new float[]{ loss, delta.Length() };
+        return new float[]{ iteration, loss, delta.Length() };
     }
 
 }

@@ -37,8 +37,7 @@ public sealed class MomentumProgram : ITrainingProgram
     protected override float[] Update(INet net, int iteration)
     {
         (float[] acceleration, float loss) = trainer.Train(net);
-        for(int j = 0; j < velocity.Length; j++)
-            velocity[j] = velocity[j] * decay + acceleration[j] * learningRate;
+        velocity = velocity.Scale(decay).Add(acceleration.Scale(learningRate));
         net.AddWeights(velocity);
 
         return new float[] { iteration, loss, velocity.Length(), acceleration.Length() };

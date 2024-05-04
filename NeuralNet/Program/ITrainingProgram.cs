@@ -36,6 +36,7 @@ public abstract class ITrainingProgram
         for(int i = 0; i < variatePropertyNames.Length; i++) format += $"{{{i}, 20}}\t";
         Console.WriteLine(string.Format(format, variatePropertyNames));
 
+        //iterations
         for(int i = 0; i < iterations; i++)
         {
             //train
@@ -45,12 +46,11 @@ public abstract class ITrainingProgram
             net.Save(savePath);
 
             //log
-            Console.WriteLine(string.Format(format, properties));
+            string[] stringProperties = new string[properties.Length];
+            for(int j = 0; j < stringProperties.Length; j++) stringProperties[j] = properties[j].ToString();
+            Console.WriteLine(string.Format(format, stringProperties));
         }
 
-        net.Save(savePath);
-
-        Console.WriteLine("saved net!");
         Console.WriteLine("training ended!");
     }
 
