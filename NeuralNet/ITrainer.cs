@@ -17,6 +17,7 @@ public interface ITrainer<N>:ITrainer where N: INet
     float[] ITrainer.Train(INet net, TrainingOption option) => Train((N)net, option);
 
     float ITrainer.Loss(INet net) => Loss((N)net);
+
 }
 
 public interface ITrainer

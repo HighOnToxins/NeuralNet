@@ -58,10 +58,9 @@ public sealed class MomentumProgram : ITrainingProgram
         }
 
         net.Save(savePath);
+
         Console.WriteLine("saved net!");
         Console.WriteLine("training ended!");
     }
-
-
 
 }

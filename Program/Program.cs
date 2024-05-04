@@ -12,7 +12,7 @@ internal class Program
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDenseNet";
 
-    private const int dataUse = -1;
+    private const int dataUse = 100;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -102,7 +102,7 @@ internal class Program
             Console.WriteLine("Loaded Network!");
         }
 
-        MomentumProgram program = new(trainer, 1f / dataUse, .5f);
+        MomentumProgram program = new(trainer, 1f / trainingInputData.Length, .5f);
         program.Run(net, 100, netPath);
     }
 
