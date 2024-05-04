@@ -18,7 +18,7 @@ internal class FileTests
     [Test]
     public void SaveLoadTest()
     {
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             10,
             new AffineLayer(2, 10),
             new AffineLayer(10, 2)

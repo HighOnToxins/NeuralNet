@@ -1,9 +1,7 @@
-﻿using NeuralNet.Feedforward.Layers;
-using System.Formats.Asn1;
-
+﻿
 namespace NeuralNet.Feedforward;
 
-public sealed class FeedForwardNet: INet
+public sealed class FeedforwardNet: INet
 {
     private readonly IFeedForwardLayer[] layers;
 
@@ -11,7 +9,7 @@ public sealed class FeedForwardNet: INet
 
     public int OutputSize { get; private init; }
 
-    public FeedForwardNet(params IFeedForwardLayer[] layers)
+    public FeedforwardNet(params IFeedForwardLayer[] layers)
     {
         this.layers = layers;
 
@@ -32,12 +30,12 @@ public sealed class FeedForwardNet: INet
         OutputSize = layers[^1].OutputSize;
     }
 
-    public FeedForwardNet(float randomRange, params IFeedForwardLayer[] layers): this(layers)
+    public FeedforwardNet(float randomRange, params IFeedForwardLayer[] layers): this(layers)
     {
         Randomize(randomRange);
     }
 
-    public FeedForwardNet(float[] weights, params IFeedForwardLayer[] layers) : this(layers)
+    public FeedforwardNet(float[] weights, params IFeedForwardLayer[] layers) : this(layers)
     {
         SetWeights(weights);
     }
@@ -163,8 +161,8 @@ public sealed class FeedForwardNet: INet
         reader.Close();
     }
 
-    public FeedForwardNet Clone()
+    public FeedforwardNet Clone()
     {
-        return new FeedForwardNet(GetWeights(), layers);
+        return new FeedforwardNet(GetWeights(), layers);
     }
 }

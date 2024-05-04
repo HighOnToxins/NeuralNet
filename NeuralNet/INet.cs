@@ -9,5 +9,6 @@ public interface INet: ILayer
     public void Save(string path);
 
     public void Load(string path);
-
+    
+    public INet Clone();
 }

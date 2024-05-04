@@ -1,12 +1,7 @@
-﻿namespace NeuralNet.Feedforward;
+﻿
+namespace NeuralNet.Feedforward;
 
-public enum TrainingOption
-{
-    Maximize = 1,
-    Minimize = -1
-}
-
-public sealed class GradientDecentTrainer: IFeedForwardTrainer
+public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
 {
 
     private readonly float[][] inputs;
@@ -14,14 +9,14 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
 
     private readonly IFeedForwardLoss loss;
 
-    public GradientDecentTrainer(float[][] inputs, float[][] targets, IFeedForwardLoss loss)
+    public FeedForwardTrainer(float[][] inputs, float[][] targets, IFeedForwardLoss loss)
     {
         this.inputs = inputs;
         this.targets = targets;
         this.loss = loss;
     }
 
-    public float[] Train(FeedForwardNet net, TrainingOption option = TrainingOption.Minimize)
+    public float[] Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
     {
         float[] totalGradient = new float[net.GetWeightLength()];
 
@@ -43,7 +38,7 @@ public sealed class GradientDecentTrainer: IFeedForwardTrainer
         return totalGradient;
     }
 
-    public float Loss(FeedForwardNet net)
+    public float Loss(FeedforwardNet net)
     {
         float totalLoss = 0;
 

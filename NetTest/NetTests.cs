@@ -13,7 +13,7 @@ internal class NetTests
         float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         float[] weights2 = { 10, 11, 12, 13 };
 
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             new AffineLayer(2, 3, weights1),
             new AffineLayer(3, 1, weights2)
         );
@@ -35,7 +35,7 @@ internal class NetTests
         float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         float[] weights2 = { 10, 11, 12, 13 };
 
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             new AffineLayer(2, 3, weights1),
             new AffineLayer(3, 1, weights2)
         );
@@ -51,7 +51,7 @@ internal class NetTests
     [Test]
     public void TestFeedforwardRun2()
     {
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             new AffineLayer(2, 3),
             new AffineLayer(3, 5),
             new AffineLayer(5, 3),
@@ -67,7 +67,7 @@ internal class NetTests
     [Test]
     public void TestFeedforwardRun3()
     {
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             new AffineLayer(2, 3),
             new AffineLayer(3, 5),
             new AffineLayer(5, 3),
@@ -89,7 +89,7 @@ internal class NetTests
         float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         float[] weights2 = { 10, 11, 12, 13 };
 
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             new AffineLayer(2, 3, weights1),
             new AffineLayer(3, 1, weights2)
         );
@@ -112,7 +112,7 @@ internal class NetTests
         float[] weights = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
         AffineLayer layer = new(2, 3, weights);
-        FeedForwardNet net = new(layer);
+        FeedforwardNet net = new(layer);
 
         float[] input = { 14, 15 };
 
@@ -125,7 +125,7 @@ internal class NetTests
     [Test]
     public void TestFeedforwardGradient3()
     {
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             new AffineLayer(2, 3),
             new AffineLayer(3, 5),
             new AffineLayer(5, 3),

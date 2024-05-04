@@ -82,10 +82,10 @@ internal class Program
 
         Console.WriteLine("Loaded files!");
 
-        GradientTrainer trainer = new(trainingInputData, trainingTargetData, new LossFunction());
+        FeedForwardTrainer trainer = new(trainingInputData, trainingTargetData, new LossFunction());
 
         //TODO:Consider downscaling images
-        FeedForwardNet net = new(
+        FeedforwardNet net = new(
             new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f))
         );
 
@@ -101,7 +101,7 @@ internal class Program
             Console.WriteLine("Loaded Network!");
         }
 
-        RunMomentumTraining(trainer, net, 100, 1f / dataUse, .25f);
+        //RunMomentumTraining(trainer, net, 100, 1f / dataUse, .25f);
     }
 
 }

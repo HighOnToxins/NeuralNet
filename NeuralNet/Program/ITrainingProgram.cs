@@ -1,6 +1,6 @@
-﻿namespace NeuralNet.Program
+﻿namespace NeuralNet.Program;
+
+public interface ITrainingProgram
 {
-    public interface ITrainingProgram
-    {
-    }
+
 }
