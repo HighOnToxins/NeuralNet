@@ -3,8 +3,6 @@ namespace NeuralNet.Program;
 
 public sealed class MomentumProgram : ITrainingProgram
 {
-    //TODO: Add saving of data to files
-
     private readonly ITrainer trainer;
 
     private readonly float learningRate;
@@ -37,13 +35,12 @@ public sealed class MomentumProgram : ITrainingProgram
         for(int i = 0; i < iterations; i++)
         {
             //train
-            float[] acceleration = trainer.Train(net);
+            (float[] acceleration, float loss) = trainer.Train(net);
             for(int j = 0; j < velocity.Length; j++)
                 velocity[j] = velocity[j] * decay + acceleration[j] * learningRate;
             net.AddWeights(velocity);
 
             //save best
-            float loss = trainer.Loss(net);
             if(loss > bestLoss)
             {
                 bestLoss = loss;
@@ -63,4 +60,7 @@ public sealed class MomentumProgram : ITrainingProgram
         Console.WriteLine("training ended!");
     }
 
+    //TODO: Consider making saving and logging seperate from the program
+    // add a logger
+    // add saver
 }

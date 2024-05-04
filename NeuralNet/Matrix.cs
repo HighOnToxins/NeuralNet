@@ -197,6 +197,18 @@ public static class Matrix
         return C;
     }
 
+    public static float[] Scale(this float[] A, float b)
+    {
+        float[] C = new float[A.Length];
+
+        for(int i = 0; i < C.GetLength(0); i++)
+        {
+            C[i] = A[i] * b;
+        }
+
+        return C;
+    }
+
     public static float[] Add(this float[] A, float[] B)
     {
         if(A.Length != B.Length)
