@@ -11,36 +11,24 @@ public sealed class NewtonProgram: ITrainingProgram
         this.trainer = trainer;
     }
 
-    public void Run(INet net, int iterations, string savePath)
+    public string[] VariatePropertyNames 
+        => new string[]{ "Loss", "Delta" };
+
+    public string[] ConstantPropertyNames
+        => Array.Empty<string>();
+
+    public float[] ConstantProperties
+        => Array.Empty<float>();
+
+    public void InitRun(INet net) { }
+
+    public float[] Update(INet net, int iteration)
     {
-        Console.WriteLine("Started training!");
-        Console.WriteLine(string.Format("\n{0,20}\t{1,20}\t{2,20}", "Iteration", "Loss", "Delta"));
+        (float[] gradient, float loss) = trainer.Train(net);
+        float[] delta = gradient.Scale(loss / gradient.LengthSquared());
+        net.AddWeights(delta);
 
-        INet best = net.Clone();
-        float bestLoss = trainer.Loss(best);
-
-        for(int i = 0; i < iterations; i++)
-        {
-            //train
-            (float[] gradient, float loss) = trainer.Train(net);
-            float[] delta = gradient.Scale(loss / gradient.LengthSquared());
-            net.AddWeights( delta );
-
-            //save best
-            if(loss > bestLoss)
-            {
-                bestLoss = loss;
-                best = net.Clone();
-                best.Save(savePath);
-            }
-
-            //log
-            Console.WriteLine(string.Format("{0,20}\t{1,20}\t{2,20}", i, loss, delta));
-        }
-
-        net.Save(savePath);
-
-        Console.WriteLine("saved net!");
-        Console.WriteLine("training ended!");
+        return new float[]{ loss, delta.Length() };
     }
+
 }

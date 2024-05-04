@@ -14,53 +14,34 @@ public sealed class MomentumProgram : ITrainingProgram
 
         this.learningRate = learningRate;
         this.decay = decay;
+
+        velocity = Array.Empty<float>();
     }
 
-    public void Run(INet net, int iterations, string savePath)
+    public string[] VariatePropertyNames 
+        => new string[] { "Iteration", "Loss", "Speed", "Acceleration" };
+
+    public string[] ConstantPropertyNames 
+        => new string[] { "Learning Rate", "Decay" };
+
+     public float[] ConstantProperties 
+        => new float[] { learningRate, decay };
+
+    private float[] velocity;
+
+    public void InitRun(INet net)
     {
-        float[] velocity = new float[net.GetWeightLength()];
-
-        Console.WriteLine();
-        Console.WriteLine($"number of iterations: {iterations} ");
-        Console.WriteLine($"learning rate: {learningRate}");
-        Console.WriteLine($"decay: {decay}");
-        Console.WriteLine();
-
-        Console.WriteLine("Started training!");
-        Console.WriteLine(string.Format("\n{0,20}\t{1,20}\t{2,20}\t{3,20}", "Iteration", "Loss", "Speed", "Acceleration"));
-
-        INet best = net.Clone();
-        float bestLoss = trainer.Loss(best);
-
-        for(int i = 0; i < iterations; i++)
-        {
-            //train
-            (float[] acceleration, float loss) = trainer.Train(net);
-            for(int j = 0; j < velocity.Length; j++)
-                velocity[j] = velocity[j] * decay + acceleration[j] * learningRate;
-            net.AddWeights(velocity);
-
-            //save best
-            if(loss > bestLoss)
-            {
-                bestLoss = loss;
-                best = net.Clone();
-                best.Save(savePath);
-            }
-
-            //log
-            Console.WriteLine(string.Format("{0,20}\t{1,20}\t{2,20}\t{3,20}",
-                i, loss, velocity.Length(), acceleration.Length()));
-
-        }
-
-        net.Save(savePath);
-
-        Console.WriteLine("saved net!");
-        Console.WriteLine("training ended!");
+        velocity = new float[net.GetWeightLength()];
     }
 
-    //TODO: Consider making saving and logging seperate from the program
-    // add a logger
-    // add saver
+    public float[] Update(INet net, int iteration)
+    {
+        (float[] acceleration, float loss) = trainer.Train(net);
+        for(int j = 0; j < velocity.Length; j++)
+            velocity[j] = velocity[j] * decay + acceleration[j] * learningRate;
+        net.AddWeights(velocity);
+
+        return new float[] { iteration, loss, velocity.Length(), acceleration.Length() };
+    }
+
 }
