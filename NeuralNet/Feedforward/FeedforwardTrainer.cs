@@ -49,4 +49,5 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
 
         return totalLoss;
     }
+
 }

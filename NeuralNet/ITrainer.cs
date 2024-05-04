@@ -14,10 +14,9 @@ public interface ITrainer<N>:ITrainer where N: INet
 
     public float Loss(N net);
 
-    //public float Validation(FeedForwardNet net);
+    float[] ITrainer.Train(INet net, TrainingOption option) => Train((N)net, option);
 
-    //public float Accuracy(FeedForwardNet net);
-
+    float ITrainer.Loss(INet net) => Loss((N)net);
 }
 
 public interface ITrainer
@@ -27,8 +26,8 @@ public interface ITrainer
 
     public float Loss(INet net);
 
-    //public float Validation(FeedForwardNet net);
+    //public float Validation(INet net);
 
-    //public float Accuracy(FeedForwardNet net);
+    //public float Accuracy(INet net);
 
 }

@@ -11,4 +11,5 @@ public interface INet: ILayer
     public void Load(string path);
     
     public INet Clone();
+
 }

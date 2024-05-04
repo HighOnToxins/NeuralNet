@@ -1,11 +1,24 @@
-﻿using NeuralNet.Feedforward;
-
+﻿
 namespace NeuralNet.Program;
 
 public sealed class MomentumProgram : ITrainingProgram
 {
+    //TODO: Add saving of data to files
 
-    public static void Run(ITrainer trainer, INet net, int iterations, float learningRate, float decay, string savePath)
+    private readonly ITrainer trainer;
+
+    private readonly float learningRate;
+    private readonly float decay;
+
+    public MomentumProgram(ITrainer trainer, float learningRate, float decay)
+    {
+        this.trainer = trainer;
+
+        this.learningRate = learningRate;
+        this.decay = decay;
+    }
+
+    public void Run(INet net, int iterations, string savePath)
     {
         float[] velocity = new float[net.GetWeightLength()];
 

@@ -161,7 +161,7 @@ public sealed class FeedforwardNet: INet
         reader.Close();
     }
 
-    public FeedforwardNet Clone()
+    public INet Clone()
     {
         return new FeedforwardNet(GetWeights(), layers);
     }

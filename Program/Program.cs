@@ -2,6 +2,7 @@
 using NeuralNet;
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
+using NeuralNet.Program;
 
 namespace Training;
 
@@ -101,7 +102,8 @@ internal class Program
             Console.WriteLine("Loaded Network!");
         }
 
-        //RunMomentumTraining(trainer, net, 100, 1f / dataUse, .25f);
+        MomentumProgram program = new(trainer, 1f / dataUse, .5f);
+        program.Run(net, 100, netPath);
     }
 
 }
