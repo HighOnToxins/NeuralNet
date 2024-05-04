@@ -82,7 +82,7 @@ internal class Program
 
         Console.WriteLine("Loaded files!");
 
-        GradientDecentTrainer trainer = new(trainingInputData, trainingTargetData, new LossFunction());
+        GradientTrainer trainer = new(trainingInputData, trainingTargetData, new LossFunction());
 
         //TODO:Consider downscaling images
         FeedForwardNet net = new(
@@ -105,7 +105,7 @@ internal class Program
     }
 
     //using momentum
-    public static void RunMomentumTraining(GradientDecentTrainer trainer, FeedForwardNet net, int iterations, float learningRate, float decay)
+    public static void RunMomentumTraining(GradientTrainer trainer, FeedForwardNet net, int iterations, float learningRate, float decay)
     {
         float[] velocity = new float[net.GetWeightLength()];
 
