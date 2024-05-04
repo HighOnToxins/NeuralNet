@@ -11,18 +11,18 @@ public sealed class NewtonProgram: ITrainingProgram
         this.trainer = trainer;
     }
 
-    public string[] VariatePropertyNames 
+    protected override string[] VariatePropertyNames 
         => new string[]{ "Loss", "Delta" };
 
-    public string[] ConstantPropertyNames
+    protected override string[] ConstantPropertyNames
         => Array.Empty<string>();
 
-    public float[] ConstantProperties
+    protected override float[] ConstantProperties
         => Array.Empty<float>();
 
-    public void InitRun(INet net) { }
+    protected override void InitRun(INet net) { }
 
-    public float[] Update(INet net, int iteration)
+    protected override float[] Update(INet net, int iteration)
     {
         (float[] gradient, float loss) = trainer.Train(net);
         float[] delta = gradient.Scale(loss / gradient.LengthSquared());

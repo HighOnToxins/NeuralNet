@@ -4,12 +4,12 @@
 // add a logger
 // add saver
 
-public interface ITrainingProgram
+public abstract class ITrainingProgram
 {
 
-    protected string[] VariatePropertyNames { get; }
-    protected string[] ConstantPropertyNames { get; }
-    protected float[] ConstantProperties { get; }
+    protected abstract string[] VariatePropertyNames { get; }
+    protected abstract string[] ConstantPropertyNames { get; }
+    protected abstract float[] ConstantProperties { get; }
 
     public void Run(INet net, int iterations, string savePath)
     {

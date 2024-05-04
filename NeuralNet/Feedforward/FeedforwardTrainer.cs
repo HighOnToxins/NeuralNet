@@ -16,14 +16,16 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         this.loss = loss;
     }
 
-    public float[] Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
+    public (float[], float) Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
     {
         float[] totalGradient = new float[net.GetWeightLength()];
+        float totalLoss = 0;
 
         for(int i = 0; i < inputs.Length; i++)
         {
             (float[,] gradient, float[] run) = net.Gradient(inputs[i]);
             totalGradient = gradient.TransposeProduct(loss.Gradient(targets[i], run)).Add(totalGradient);
+            totalLoss += loss.Compute(targets[i], run);
         }
 
         for(int i = 0; i < totalGradient.Length; i++)
@@ -31,7 +33,7 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
             totalGradient[i] *= (float)option;
         }
 
-        return totalGradient;
+        return (totalGradient, totalLoss);
     }
 
     public float Loss(FeedforwardNet net)

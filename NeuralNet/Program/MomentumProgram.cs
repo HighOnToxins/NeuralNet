@@ -18,23 +18,23 @@ public sealed class MomentumProgram : ITrainingProgram
         velocity = Array.Empty<float>();
     }
 
-    public string[] VariatePropertyNames 
+    protected override string[] VariatePropertyNames 
         => new string[] { "Iteration", "Loss", "Speed", "Acceleration" };
 
-    public string[] ConstantPropertyNames 
+    protected override string[] ConstantPropertyNames 
         => new string[] { "Learning Rate", "Decay" };
 
-     public float[] ConstantProperties 
+    protected override float[] ConstantProperties 
         => new float[] { learningRate, decay };
 
     private float[] velocity;
 
-    public void InitRun(INet net)
+    protected override void InitRun(INet net)
     {
         velocity = new float[net.GetWeightLength()];
     }
 
-    public float[] Update(INet net, int iteration)
+    protected override float[] Update(INet net, int iteration)
     {
         (float[] acceleration, float loss) = trainer.Train(net);
         for(int j = 0; j < velocity.Length; j++)
