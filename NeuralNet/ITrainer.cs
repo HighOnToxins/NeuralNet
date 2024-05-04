@@ -1,4 +1,6 @@
-﻿namespace NeuralNet.Feedforward;
+﻿using NeuralNet.Feedforward;
+
+namespace NeuralNet;
 
 internal interface IFeedForwardTrainer
 {

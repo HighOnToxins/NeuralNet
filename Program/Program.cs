@@ -104,49 +104,4 @@ internal class Program
         RunMomentumTraining(trainer, net, 100, 1f / dataUse, .25f);
     }
 
-    //using momentum
-    public static void RunMomentumTraining(GradientTrainer trainer, FeedForwardNet net, int iterations, float learningRate, float decay)
-    {
-        float[] velocity = new float[net.GetWeightLength()];
-
-        Console.WriteLine();
-        Console.WriteLine($"number of iterations: {iterations} ");
-        Console.WriteLine($"learning rate: {learningRate}");
-        Console.WriteLine($"decay: {decay}");
-        Console.WriteLine();
-
-        Console.WriteLine("Started training!");
-        Console.WriteLine(string.Format("\n{0,20}\t{1,20}\t{2,20}\t{3,20}", "Iteration", "Loss", "Speed", "Acceleration"));
-
-        FeedForwardNet best = net.Clone();
-        float bestLoss = trainer.Loss(best);
-
-        for(int i = 0; i < iterations; i++)
-        {
-            //train
-            float[] acceleration = trainer.Train(net);
-            for(int j = 0; j < velocity.Length; j++) 
-                velocity[j] = velocity[j] * decay + acceleration[j]*learningRate;
-            net.AddWeights(velocity);
-
-            //save best
-            float loss = trainer.Loss(net);
-            if(loss > bestLoss)
-            {
-                bestLoss = loss;
-                best = net.Clone();
-                best.Save(netPath);
-            }
-
-            //log
-            Console.WriteLine(string.Format("{0,20}\t{1,20}\t{2,20}\t{3,20}",
-                i, loss, Matrix.Length(velocity), Matrix.Length(acceleration)));
-
-        }
-
-        net.Save(netPath);
-        Console.WriteLine("saved net!");
-        Console.WriteLine("training ended!");
-    }
-
 }

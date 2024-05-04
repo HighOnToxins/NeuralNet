@@ -1,4 +1,4 @@
-﻿namespace NeuralNet.Feedforward
+﻿namespace NeuralNet.Program
 {
     public interface ITrainingProgram
     {
