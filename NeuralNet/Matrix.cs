@@ -1,34 +1,13 @@
 ﻿
 namespace NeuralNet;
 
+//TODO: Consider using a matrix/vector class
+
 public static class Matrix
 {
-    public static float[] ProductFirstTransposed(float[,] A, float[] B)
-    {
-        if(A.GetLength(0) != B.Length)
-        {
-            throw new ArgumentException("Expected matrices such that the second length of " +
-                "the first matrix was equal to the first length of the second!");
-        }
+    // MATRICES
 
-        float[] C = new float[A.GetLength(1)];
-
-        for(int i = 0; i < C.GetLength(0); i++)
-        {
-            float total = 0;
-
-            for(int k = 0; k < A.GetLength(0); k++)
-            {
-                total += A[k, i] * B[k];
-            }
-
-            C[i] = total;
-        }
-
-        return C;
-    }
-
-    public static float[,] ProductFirstTransposed(float[,] A, float[,] B)
+    public static float[,] TransposeProduct(this float[,] A, float[,] B)
     {
         if(A.GetLength(0) != B.GetLength(0))
         {
@@ -56,7 +35,7 @@ public static class Matrix
         return C;
     }
 
-    public static float[,] Product(float[,] A, float[,] B)
+    public static float[,] Product(this float[,] A, float[,] B)
     {
         if(A.GetLength(1) != B.GetLength(0))
         {
@@ -84,7 +63,52 @@ public static class Matrix
         return C;
     }
 
-    public static float[] Product(float[,] A, float[] B)
+    public static float[,] Add(this float[,] A, float[,] B)
+    {
+        if(A.GetLength(0) != B.GetLength(0) || A.GetLength(1) != B.GetLength(1))
+        {
+            throw new ArgumentException("Expected matrices with equal lengthed sides!");
+        }
+
+        float[,] C = new float[A.GetLength(0), B.GetLength(1)];
+
+        for(int i = 0; i < C.GetLength(0); i++)
+        {
+            for(int j = 0; j < C.GetLength(1); j++)
+            {
+                C[i, j] = A[i, j] + B[i, j];
+            }
+        }
+
+        return C;
+    }
+
+    public static float[,] ConcatByWidth(this float[,] leftPart, float[,] rightPart)
+    {
+        float[,] result = new float[leftPart.GetLength(0), leftPart.GetLength(1) + rightPart.GetLength(1)];
+
+        for(int i = 0; i < leftPart.GetLength(0); i++)
+        {
+            for(int j = 0; j < leftPart.GetLength(1); j++)
+            {
+                result[i, j] = leftPart[i, j];
+            }
+        }
+
+        for(int i = 0; i < rightPart.GetLength(0); i++)
+        {
+            for(int j = 0; j < rightPart.GetLength(1); j++)
+            {
+                result[i, j + rightPart.GetLength(0)] = rightPart[i, j];
+            }
+        }
+
+        return result;
+    }
+
+    // VECTOR-MATRIX
+
+    public static float[] Product(this float[,] A, float[] B)
     {
         if(A.GetLength(1) != B.Length)
         {
@@ -109,27 +133,71 @@ public static class Matrix
         return C;
     }
 
-    public static float[,] Add(float[,] A, float[,] B)
+    public static float[] TransposeProduct(this float[,] A, float[] B)
     {
-        if(A.GetLength(0) != B.GetLength(0) || A.GetLength(1) != B.GetLength(1))
+        if(A.GetLength(0) != B.Length)
         {
-            throw new ArgumentException("Expected matrices with equal lengthed sides!");
+            throw new ArgumentException("Expected matrices such that the second length of " +
+                "the first matrix was equal to the first length of the second!");
         }
 
-        float[,] C = new float[A.GetLength(0), B.GetLength(1)];
+        float[] C = new float[A.GetLength(1)];
+
+        for(int i = 0; i < C.GetLength(0); i++)
+        {
+            float total = 0;
+
+            for(int k = 0; k < A.GetLength(0); k++)
+            {
+                total += A[k, i] * B[k];
+            }
+
+            C[i] = total;
+        }
+
+        return C;
+    }
+
+    public static float[,] Scale(this float[] A, float[,] B)
+    {
+        if(A.Length != B.GetLength(0))
+        {
+            throw new ArgumentException("Expected vectors to have matching lengths!");
+        }
+
+        float[,] C = new float[B.GetLength(0), B.GetLength(1)];
 
         for(int i = 0; i < C.GetLength(0); i++)
         {
             for(int j = 0; j < C.GetLength(1); j++)
             {
-                C[i, j] = A[i,j] + B[i,j];
+                C[i,j] = A[i] * B[i, j];
             }
         }
 
         return C;
     }
 
-    public static float[] Add(float[] A, float[] B)
+    // VECTOR
+
+    public static float[] Scale(this float[] A, float[] B)
+    {
+        if(A.Length != B.Length)
+        {
+            throw new ArgumentException("Expected vectors to have matching lengths!");
+        }
+
+        float[] C = new float[A.Length];
+
+        for(int i = 0; i < C.GetLength(0); i++)
+        {
+            C[i] = A[i] * B[i];
+        }
+
+        return C;
+    }
+
+    public static float[] Add(this float[] A, float[] B)
     {
         if(A.Length != B.Length)
         {
@@ -146,7 +214,7 @@ public static class Matrix
         return C;
     }
 
-    public static float Length(float[] vector)
+    public static float LengthSquared(this float[] vector)
     {
         float lengthSquared = 0;
 
@@ -155,29 +223,13 @@ public static class Matrix
             lengthSquared += vector[i] * vector[i];
         }
 
-        return (float) Math.Sqrt(lengthSquared);
+        return lengthSquared;
     }
 
-    public static float[,] ConcatWidth(float[,] leftPart, float[,] rightPart)
+    public static float Length(this float[] vector)
     {
-        float[,] result = new float[leftPart.GetLength(0), leftPart.GetLength(1)+rightPart.GetLength(1)];
-
-        for(int i = 0; i < leftPart.GetLength(0); i++)
-        {
-            for(int j = 0; j < leftPart.GetLength(1); j++)
-            {
-                result[i, j] = leftPart[i, j];
-            }
-        }
-
-        for(int i = 0; i < rightPart.GetLength(0); i++)
-        {
-            for(int j = 0; j < rightPart.GetLength(1); j++)
-            {
-                result[i,j+rightPart.GetLength(0)] = rightPart[i, j];
-            }
-        }
-
-        return result;
+        return (float) Math.Sqrt(LengthSquared(vector));
     }
+
+
 }

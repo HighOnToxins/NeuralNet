@@ -1,5 +1,4 @@
-﻿
-namespace NeuralNet.Feedforward.Layers;
+﻿namespace NeuralNet.Feedforward.Layers;
 
 public class ReLU: IActivation
 {

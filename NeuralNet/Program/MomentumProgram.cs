@@ -53,7 +53,7 @@ public sealed class MomentumProgram : ITrainingProgram
 
             //log
             Console.WriteLine(string.Format("{0,20}\t{1,20}\t{2,20}\t{3,20}",
-                i, loss, Matrix.Length(velocity), Matrix.Length(acceleration)));
+                i, loss, velocity.Length(), acceleration.Length()));
 
         }
 

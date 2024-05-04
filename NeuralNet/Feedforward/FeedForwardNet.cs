@@ -81,10 +81,10 @@ public sealed class FeedforwardNet: INet
         for (int i = 1; i < layers.Length; i++)
         {
             (float[,] weightGradient, float[,] inputGradient, result) = layers[i].Gradient(result);
-            float[,] rightPart = Matrix.Product(inputGradient, gradientResult);
+            float[,] rightPart = inputGradient.Product(gradientResult);
 
             // WeightGradient + InputGradient*gradientResult
-            gradientResult = Matrix.ConcatWidth(weightGradient, rightPart); 
+            gradientResult = weightGradient.ConcatByWidth(rightPart); 
         }
 
         return (gradientResult, result);

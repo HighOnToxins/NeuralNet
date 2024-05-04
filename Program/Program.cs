@@ -68,24 +68,23 @@ internal class Program
 
     public static void Main(string[] _)
     {
+        //getting datr
         byte[]    trainLabels = MNISTLoader.LoadLabels(mnistDirectory, MNISTLoader.LoadType.trainingData);
         byte[][,] trainImages = MNISTLoader.LoadImages(mnistDirectory, MNISTLoader.LoadType.trainingData);
-        //byte[]    testLabels  = MNISTLoader.LoadLabels(mnistDirectory, MNISTLoader.LoadType.testingData );
-        //byte[][,] testImages  = MNISTLoader.LoadImages(mnistDirectory, MNISTLoader.LoadType.testingData );
+        byte[]    testLabels  = MNISTLoader.LoadLabels(mnistDirectory, MNISTLoader.LoadType.testingData );
+        byte[][,] testImages  = MNISTLoader.LoadImages(mnistDirectory, MNISTLoader.LoadType.testingData );
 
         //converting data into a usable form
         float[][] trainingTargetData = AssignLabelData(trainLabels);
         float[][] trainingInputData  = AssignImageData(trainImages);
-        //float[][] testingTargetData  = AssignLabelData(testLabels);
-        //float[][] testingInputData   = AssignImageData(testImages);
-
-        // TODO: add training run for MNIST network
+        float[][] testingTargetData  = AssignLabelData(testLabels);
+        float[][] testingInputData   = AssignImageData(testImages);
 
         Console.WriteLine("Loaded files!");
 
+        //setting up trainer and network
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargetData, new LossFunction());
 
-        //TODO:Consider downscaling images
         FeedforwardNet net = new(
             new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f))
         );
@@ -101,7 +100,8 @@ internal class Program
             net.Load(netPath);
             Console.WriteLine("Loaded Network!");
         }
-
+        
+        //running program
         MomentumProgram program = new(trainer, 1f / trainingInputData.Length, .5f);
         program.Run(net, 100, netPath);
     }

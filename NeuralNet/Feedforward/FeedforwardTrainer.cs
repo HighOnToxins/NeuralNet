@@ -23,11 +23,7 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         for(int i = 0; i < inputs.Length; i++)
         {
             (float[,] gradient, float[] run) = net.Gradient(inputs[i]);
-
-            totalGradient = Matrix.Add(
-                totalGradient,
-                Matrix.ProductFirstTransposed(gradient, loss.Gradient(targets[i], run))
-            );
+            totalGradient = gradient.TransposeProduct(loss.Gradient(targets[i], run)).Add(totalGradient);
         }
 
         for(int i = 0; i < totalGradient.Length; i++)

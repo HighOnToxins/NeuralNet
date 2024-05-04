@@ -118,7 +118,7 @@ public class MatrixTests
             { 43, 50 }
         };
 
-        float[,] matrixC = Matrix.ProductFirstTransposed(matrixA, matrixB);
+        float[,] matrixC = Matrix.TransposeProduct(matrixA, matrixB);
 
         AssertEquivalentMatrices(matrixC, expected);
     }
