@@ -20,12 +20,12 @@ public class ReLU: IActivation
         return result;
     }
 
-    public float[,] ComputeGradient(float[] input)
+    public float[] ComputeGradient(float[] input)
     {
-        float[,] result = new float[input.Length, input.Length];
+        float[] result = new float[input.Length];
         for(int i = 0; i < input.Length; i++)
         {
-            result[i,i] = input[i] >= 0 ? 1 : leak;
+            result[i] = input[i] >= 0 ? 1 : leak;
         }
         return result;
     }
