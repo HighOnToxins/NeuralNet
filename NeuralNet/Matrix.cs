@@ -1,7 +1,7 @@
 ﻿
 namespace NeuralNet;
 
-//TODO: Consider using a matrix/vector class
+//TODO: Find more optimized product methods
 
 public static class Matrix
 {

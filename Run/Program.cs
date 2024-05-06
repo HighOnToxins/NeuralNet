@@ -1,10 +1,18 @@
 ﻿
-using NeuralNet.Feedforward;
-using NeuralNet.Feedforward.Layers;
-using Training;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
+using NeuralNet;
 
-FeedforwardNet net = new(
-    new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU())
-);
+namespace Benchmarking;
 
-//TODO: Add verification and other test stuff
+internal class Program
+{
+
+    public static void Main(string[] args)
+    {
+
+        var summary = BenchmarkRunner.Run<MatrixBenchmarks>();
+
+    }
+
+}

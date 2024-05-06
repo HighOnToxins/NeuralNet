@@ -32,3 +32,5 @@ public interface ITrainer
     //public float Accuracy(INet net);
 
 }
+
+//TODO: Add verification and other test stuff
