@@ -12,7 +12,7 @@ internal class Program
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDenseNet";
 
-    private const int dataUse = 500;
+    private const int dataUse = -1;
 
     public class LossFunction: IFeedForwardLoss
     {
