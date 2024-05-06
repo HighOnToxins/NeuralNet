@@ -7,32 +7,19 @@ public static class Matrix
 {
     // MATRICES
 
-    public static float[,] TransposeProduct(this float[,] A, float[,] B)
+    public static float[,] Transpose(this float[,] A)
     {
-        if(A.GetLength(0) != B.GetLength(0))
-        {
-            throw new ArgumentException("Expected matrices such that the second length of " +
-                "the first matrix was equal to the first length of the second!");
-        }
+        float[,] B = new float[A.GetLength(1), A.GetLength(0)];
 
-        float[,] C = new float[A.GetLength(1), B.GetLength(1)];
-
-        for(int i = 0; i < C.GetLength(0); i++)
+        for(int i = 0; i < B.GetLength(0); i++)
         {
-            for(int j = 0; j < C.GetLength(1); j++)
+            for(int j = 0; j < B.GetLength(1); j++)
             {
-                float total = 0;
-
-                for(int k = 0; k < A.GetLength(0); k++)
-                {
-                    total += A[k, i] * B[k, j];
-                }
-
-                C[i, j] = total;
+                B[i, j] = A[j, i];
             }
         }
 
-        return C;
+        return B;
     }
 
     public static float[,] Product(this float[,] A, float[,] B)
@@ -43,6 +30,7 @@ public static class Matrix
                 "the first matrix was equal to the first length of the second!");
         }
 
+        float[,] B2 = B.Transpose();
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
         for(int i = 0; i < C.GetLength(0); i++)
@@ -53,7 +41,7 @@ public static class Matrix
 
                 for(int k = 0; k < A.GetLength(1); k++)
                 {
-                    total += A[i, k] * B[k, j];
+                    total += A[i, k] * B2[j, k];
                 }
 
                 C[i, j] = total;
@@ -83,28 +71,33 @@ public static class Matrix
         return C;
     }
 
-    public static float[,] ConcatByWidth(this float[,] leftPart, float[,] rightPart)
+    public static float[,] ConcatByWidth(this float[,] left, float[,] right)
     {
-        float[,] result = new float[leftPart.GetLength(0), leftPart.GetLength(1) + rightPart.GetLength(1)];
+        float[,] result = new float[left.GetLength(0), left.GetLength(1) + right.GetLength(1)];
 
-        for(int i = 0; i < leftPart.GetLength(0); i++)
+        for(int i = 0; i < left.GetLength(0); i++)
         {
-            for(int j = 0; j < leftPart.GetLength(1); j++)
-            {
-                result[i, j] = leftPart[i, j];
-            }
-        }
-
-        for(int i = 0; i < rightPart.GetLength(0); i++)
-        {
-            for(int j = 0; j < rightPart.GetLength(1); j++)
-            {
-                result[i, j + rightPart.GetLength(0)] = rightPart[i, j];
-            }
+            Buffer.BlockCopy(
+                left, i * left.GetLength(1) * sizeof(float),
+                result, i * result.GetLength(1) * sizeof(float),
+                left.GetLength(1) * sizeof(float));
+            Buffer.BlockCopy(
+                right, i * right.GetLength(1) * sizeof(float),
+                result, (i * result.GetLength(1) + left.GetLength(1)) * sizeof(float),
+                right.GetLength(1) * sizeof(float));
         }
 
         return result;
     }
+
+    public static float[,] ConcatByHeight(this float[,] top, float[,] bottom)
+    {
+        float[,] result = new float[top.GetLength(0) + bottom.GetLength(0), top.GetLength(1)];
+        Buffer.BlockCopy(top, 0, result, 0, top.Length * sizeof(float));
+        Buffer.BlockCopy(bottom, 0, result, top.Length * sizeof(float), bottom.Length * sizeof(float));
+        return result;
+    }
+
 
     // VECTOR-MATRIX
 
@@ -125,31 +118,6 @@ public static class Matrix
             for(int k = 0; k < A.GetLength(1); k++)
             {
                 total += A[i, k] * B[k];
-            }
-
-            C[i] = total;
-        }
-
-        return C;
-    }
-
-    public static float[] TransposeProduct(this float[,] A, float[] B)
-    {
-        if(A.GetLength(0) != B.Length)
-        {
-            throw new ArgumentException("Expected matrices such that the second length of " +
-                "the first matrix was equal to the first length of the second!");
-        }
-
-        float[] C = new float[A.GetLength(1)];
-
-        for(int i = 0; i < C.GetLength(0); i++)
-        {
-            float total = 0;
-
-            for(int k = 0; k < A.GetLength(0); k++)
-            {
-                total += A[k, i] * B[k];
             }
 
             C[i] = total;
@@ -242,6 +210,5 @@ public static class Matrix
     {
         return (float) Math.Sqrt(LengthSquared(vector));
     }
-
 
 }

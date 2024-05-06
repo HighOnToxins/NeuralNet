@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using NeuralNet;
 
 namespace Benchmarking;
 
@@ -221,6 +222,59 @@ public class MatrixBenchmarks
         }
 
         return C;
+    }
+
+    [Benchmark]
+    public float[,] ConcatByWidth1()
+    {
+        float[,] result = new float[A.GetLength(0), A.GetLength(1) + B.GetLength(1)];
+
+        for(int i = 0; i < A.GetLength(0); i++)
+        {
+            Buffer.BlockCopy(
+                A, i * A.GetLength(1) * sizeof(float),
+                result, i * result.GetLength(1) * sizeof(float),
+                A.GetLength(1) * sizeof(float));
+            Buffer.BlockCopy(
+                B, i * B.GetLength(1) * sizeof(float),
+                result, (i * result.GetLength(1) + A.GetLength(1)) * sizeof(float),
+                B.GetLength(1) * sizeof(float));
+        }
+
+        return result;
+    }
+
+    [Benchmark]
+    public float[,] ConcatByWidth2()
+    {
+        float[,] result = new float[A.GetLength(0), A.GetLength(1) + B.GetLength(1)];
+
+        for(int i = 0; i < A.GetLength(0); i++)
+        {
+            for(int j = 0; j < A.GetLength(1); j++)
+            {
+                result[i, j] = A[i, j];
+            }
+        }
+
+        for(int i = 0; i < B.GetLength(0); i++)
+        {
+            for(int j = 0; j < B.GetLength(1); j++)
+            {
+                result[i, B.GetLength(0)] = B[i, j];
+            }
+        }
+
+        return result;
+    }
+
+    [Benchmark]
+    public float[,] ConcatByWidth3()
+    {
+        float[,] top = A.Transpose();
+        float[,] bottom = B.Transpose();
+
+        return Matrix.ConcatByHeight(top, bottom).Transpose();
     }
 
 }

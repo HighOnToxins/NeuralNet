@@ -1,7 +1,6 @@
 ﻿
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
-using NeuralNet;
+using System.Numerics;
+using System.Runtime.InteropServices;
 
 namespace Benchmarking;
 
@@ -11,7 +10,7 @@ internal class Program
     public static void Main(string[] args)
     {
 
-        var summary = BenchmarkRunner.Run<MatrixBenchmarks>();
+        //var summary = BenchmarkRunner.Run<MatrixBenchmarks>();
 
     }
 
