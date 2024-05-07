@@ -965,7 +965,7 @@ public class StructBenchmarking
 | NonTransposeStructProduct   | 1.352 s | 0.0118 s | 0.0099 s |
 */
 
-/* size: 10_000
+/* size: 2_000
 | Method                      | Mean     | Error    | StdDev   |
 |---------------------------- |---------:|---------:|---------:|
 | DoubleArrayProduct          | 23.518 s | 0.0805 s | 0.0753 s |

@@ -1,10 +1,12 @@
-﻿namespace NeuralNet.Feedforward.Layers;
+﻿using NeuralNet.Tensor;
+
+namespace NeuralNet.Feedforward.Layers;
 
 public sealed class AffineLayer: IFeedForwardLayer
 {
 
-    private readonly float[,] matrix;
-    private readonly float[] bias;
+    private Matrix matrix;
+    private Vector bias;
 
     private readonly IActivation activation;
 
@@ -15,11 +17,11 @@ public sealed class AffineLayer: IFeedForwardLayer
         InputSize = inputSize;
         OutputSize = outputSize;
 
-        matrix = new float[outputSize, inputSize];
-        bias = new float[outputSize];
+        matrix = new(outputSize, inputSize);
+        bias = new(outputSize);
     }
 
-    public AffineLayer(int inputSize, int outputSize, float[] weights, IActivation? activation = null) : this(inputSize, outputSize, activation)
+    public AffineLayer(int inputSize, int outputSize, Vector weights, IActivation? activation = null) : this(inputSize, outputSize, activation)
     {
         SetWeights(weights);
     }
@@ -28,31 +30,35 @@ public sealed class AffineLayer: IFeedForwardLayer
     {
         Random random = new();
 
+        float[,] matrixValues = new float[outputSize, inputSize];
         for(int i = 0; i < OutputSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                matrix[i, j] = (float)random.NextDouble() * randomRange;
+                matrixValues[i, j] = (float)random.NextDouble() * randomRange;
             }
         }
+        matrix = new(matrixValues);
 
+        float[] biasValues = new float[outputSize];
         for(int i = 0; i < OutputSize; i++)
         {
-            bias[i] = (float)random.NextDouble() * randomRange;
+            biasValues[i] = (float)random.NextDouble() * randomRange;
         }
+        bias = new(biasValues);
     }
 
     public int InputSize { get; private init; }
 
     public int OutputSize { get; private init; }
 
-    private float[] Transformation(float[] input)
+    private Vector Transformation(Vector input)
     {
-        return matrix.Product(input).Add(bias);
+        return matrix*input + bias;
     }
 
-    private float[,] TransformationWeightGradient(float[] input)
-    {
+    private Matrix TransformationWeightGradient(Vector input)
+    { //TODO: Change to a fancy scalar
         float[,] result = new float[OutputSize, GetWeightLength()];
 
         // x_k
@@ -70,22 +76,22 @@ public sealed class AffineLayer: IFeedForwardLayer
             result[i, OutputSize * InputSize + i] = 1;
         }
 
-        return result;
+        return new Matrix(result);
     }
 
-    public float[] Run(float[] input)
+    public Vector Run(Vector input)
     {
         return activation.Run(Transformation(input));
     }
 
-    public (float[,], float[, ], float[]) Gradient(float[] input)
+    public (Matrix, Matrix, Vector) Gradient(Vector input)
     {
-        float[] transformation = Transformation(input);
-        float[] activationGradient = activation.ComputeGradient(transformation);
+        Vector transformation = Transformation(input);
+        Scalar activationGradient = activation.ComputeGradient(transformation);
 
-        float[,] weightGradient = activationGradient.Scale(TransformationWeightGradient(input));
-        float[,] inputGradient = activationGradient.Scale(matrix);
-        float[] result = activation.Run(transformation);
+        Matrix weightGradient = activationGradient * TransformationWeightGradient(input);
+        Matrix inputGradient = activationGradient * matrix;
+        Vector result = activation.Run(transformation);
 
         return (weightGradient, inputGradient, result);
     }
@@ -95,55 +101,48 @@ public sealed class AffineLayer: IFeedForwardLayer
         return (InputSize + 1) * OutputSize;
     }
 
-    public float[] GetWeights()
+    public Vector GetWeights()
     {
-        float[] result = new float[GetWeightLength()];
-
-        for(int i = 0; i < OutputSize; i++)
-        {
-            for(int j = 0; j < InputSize; j++)
-            {
-                result[i*InputSize + j] = matrix[i,j];
-            }
-        }
-
-        for(int i = 0; i < OutputSize; i++)
-        {
-            result[OutputSize*InputSize + i] = bias[i];
-        }
-
-        return result;
+        return matrix.Flatten().Append(bias);
     }
 
-    public void SetWeights(float[] newWeights)
+    public void SetWeights(Vector newWeights)
     {
+        float[,] matrixValues = new float[OutputSize, InputSize];
         for(int i = 0; i < OutputSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                matrix[i, j] = newWeights[i * InputSize + j];
+                matrixValues[i, j] = newWeights[i * InputSize + j];
             }
         }
+        matrix = new(matrixValues);
 
+        float[] biasValues = new float[OutputSize];
         for(int i = 0; i < OutputSize; i++)
         {
-            bias[i] = newWeights[InputSize * OutputSize + i];
+            biasValues[i] = newWeights[InputSize * OutputSize + i];
         }
+        bias = new(biasValues);
     }
 
-    public void AddWeights(float[] newWeights)
+    public void AddWeights(Vector newWeights)
     {
+        float[,] matrixValues = new float[OutputSize, InputSize];
         for(int i = 0; i < OutputSize; i++)
         {
             for(int j = 0; j < InputSize; j++)
             {
-                matrix[i, j] += newWeights[i * OutputSize + j];
+                matrixValues[i, j] = newWeights[i * OutputSize + j];
             }
         }
+        matrix += new Matrix(matrixValues);
 
+        float[] biasValues = new float[OutputSize];
         for(int i = 0; i < OutputSize; i++)
         {
-            bias[i] += newWeights[InputSize * OutputSize + i];
+            biasValues[i] += newWeights[InputSize * OutputSize + i];
         }
+        bias += new Vector(biasValues);
     }
 }

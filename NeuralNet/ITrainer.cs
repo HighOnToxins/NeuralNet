@@ -1,4 +1,6 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet;
 
 public enum TrainingOption
@@ -10,11 +12,11 @@ public enum TrainingOption
 public interface ITrainer<N>:ITrainer where N: INet
 {
 
-    public (float[], float) Train(N net, TrainingOption option = TrainingOption.Minimize);
+    public (Vector, float) Train(N net, TrainingOption option = TrainingOption.Minimize);
 
     public float Loss(N net);
 
-    (float[], float) ITrainer.Train(INet net, TrainingOption option) => Train((N)net, option);
+    (Vector, float) ITrainer.Train(INet net, TrainingOption option) => Train((N)net, option);
 
     float ITrainer.Loss(INet net) => Loss((N)net);
 
@@ -23,7 +25,7 @@ public interface ITrainer<N>:ITrainer where N: INet
 public interface ITrainer
 {
 
-    public (float[], float) Train(INet net, TrainingOption option = TrainingOption.Minimize);
+    public (Vector, float) Train(INet net, TrainingOption option = TrainingOption.Minimize);
 
     public float Loss(INet net);
 

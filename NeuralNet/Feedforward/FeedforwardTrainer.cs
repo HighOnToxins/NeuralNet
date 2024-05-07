@@ -1,37 +1,36 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet.Feedforward;
 
 public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
 {
 
-    private readonly float[][] inputs;
-    private readonly float[][] targets;
+    private readonly Vector[] inputs;
+    private readonly Vector[] targets;
 
     private readonly IFeedForwardLoss loss;
 
-    public FeedForwardTrainer(float[][] inputs, float[][] targets, IFeedForwardLoss loss)
+    public FeedForwardTrainer(Vector[] inputs, Vector[] targets, IFeedForwardLoss loss)
     {
         this.inputs = inputs;
         this.targets = targets;
         this.loss = loss;
     }
 
-    public (float[], float) Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
+    public (Vector, float) Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
     {
-        float[] totalGradient = new float[net.GetWeightLength()];
+        Vector totalGradient = new(net.GetWeightLength());
         float totalLoss = 0;
 
         for(int i = 0; i < inputs.Length; i++)
         {
-            (float[,] gradient, float[] run) = net.Gradient(inputs[i]);
-            totalGradient = gradient.Transpose().Product(loss.Gradient(targets[i], run)).Add(totalGradient);
+            (Matrix gradient, Vector run) = net.Gradient(inputs[i]);
+            totalGradient += gradient.Transpose() * loss.Gradient(targets[i], run);
             totalLoss += loss.Compute(targets[i], run);
         }
 
-        for(int i = 0; i < totalGradient.Length; i++)
-        {
-            totalGradient[i] *= (float)option;
-        }
+        totalGradient *= (float)option;
 
         return (totalGradient, totalLoss);
     }

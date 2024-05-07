@@ -1,11 +1,13 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet.Feedforward;
 
 public interface IFeedForwardLoss
 {
 
-    public float Compute(float[] output1, float[] output2);
+    public float Compute(Vector output1, Vector output2);
 
-    public float[] Gradient(float[] output1, float[] output2);
+    public Vector Gradient(Vector output1, Vector output2);
 
 }

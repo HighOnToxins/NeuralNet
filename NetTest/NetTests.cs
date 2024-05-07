@@ -1,6 +1,7 @@
 ﻿
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
+using NeuralNet.Tensor;
 
 namespace NetTest;
 
@@ -10,8 +11,8 @@ internal class NetTests
     [Test]
     public void TestFeedforwardInit()
     {
-        float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        float[] weights2 = { 10, 11, 12, 13 };
+        Vector weights1 = new(new float[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+        Vector weights2 = new(new float[]{ 10, 11, 12, 13 });
 
         FeedforwardNet net = new(
             new AffineLayer(2, 3, weights1),
@@ -23,29 +24,28 @@ internal class NetTests
         Assert.That(net.InputSize, Is.EqualTo(2));
         Assert.That(net.OutputSize, Is.EqualTo(1));
 
-        float[] expectedWeights = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
-
-        Assert.That(net.GetWeights(), Is.EquivalentTo(expectedWeights));
+        Vector expectedWeights = new(new float[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 });
+        MatrixTests.AssertEquivalentVectors(net.GetWeights(), expectedWeights);
 
     }
 
     [Test]
     public void TestFeedforwardRun()
     {
-        float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        float[] weights2 = { 10, 11, 12, 13 };
+        Vector weights1 = new(new float[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+        Vector weights2 = new(new float[]{ 10, 11, 12, 13 });
 
         FeedforwardNet net = new(
             new AffineLayer(2, 3, weights1),
             new AffineLayer(3, 1, weights2)
         );
 
-        float[] input = { 14, 15 };
-        float[] expected = { 3761 };
+        Vector input = new(new float[] { 14, 15 });
+        Vector expected = new(new float[] { 3761 });
 
-        float[] result = net.Run(input);
+        Vector result = net.Run(input);
 
-        Assert.That(result, Is.EquivalentTo(expected));
+        MatrixTests.AssertEquivalentVectors(result, expected);
     }
 
     [Test]
@@ -60,7 +60,7 @@ internal class NetTests
 
         net.Randomize(10f);
 
-        float[] input = { 14, 15 };
+        Vector input = new(new float[]{ 14, 15 });
         net.Run(input);
     }
 
@@ -76,48 +76,48 @@ internal class NetTests
 
         net.Randomize(10f);
 
-        float[] input = { 14, 15 };
-        float[] result = net.Run(input);
-        (float[,] _, float[] result2) = net.Gradient(input);
+        Vector input = new(new float[] { 14, 15 });
+        Vector result = net.Run(input);
+        (_, Vector result2) = net.Gradient(input);
 
-        Assert.That(result, Is.EquivalentTo(result2));
+        MatrixTests.AssertEquivalentVectors(result, result2);
     }
 
     [Test]
     public void TestFeedforwardGradient()
     {
-        float[] weights1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        float[] weights2 = { 10, 11, 12, 13 };
+        Vector weights1 = new(new float[]{ 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+        Vector weights2 = new(new float[] { 10, 11, 12, 13 });
 
         FeedforwardNet net = new(
             new AffineLayer(2, 3, weights1),
             new AffineLayer(3, 1, weights2)
         );
 
-        float[] input = { 14, 15 };
-        float[] expectedResult = { 3761 };
-        float[,] expectedGradient = {
-            { 51, 140, 150, 154, 165, 168, 180, 10, 11, 12, 0, 0, 0 }
-        };
+        Vector input = new(new float[] { 14, 15 });
+        Vector expectedResult = new(new float[] { 3761 });
+        Matrix expectedGradient = new(new float[,]{
+            { 51, 110, 169, 1, 140, 150, 154, 165, 168, 180, 10, 11, 12 }
+        });
 
-        (float[,] gradient, float[] result) = net.Gradient(input);
+        (Matrix gradient, Vector result) = net.Gradient(input);
 
-        Assert.That(result, Is.EquivalentTo(expectedResult));
+        MatrixTests.AssertEquivalentVectors(result, expectedResult);
         MatrixTests.AssertEquivalentMatrices(gradient, expectedGradient);
     }
 
     [Test]
     public void TestFeedforwardGradient2()
     {
-        float[] weights = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        Vector weights = new(new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
 
         AffineLayer layer = new(2, 3, weights);
         FeedforwardNet net = new(layer);
 
-        float[] input = { 14, 15 };
+        Vector input = new(new float[] { 14, 15 });
 
-        (float[,] gradient, _) = net.Gradient(input);
-        (float[,] gradient2, _, _) = layer.Gradient(input);
+        (Matrix gradient, _) = net.Gradient(input);
+        (Matrix gradient2, _, _) = layer.Gradient(input);
 
         MatrixTests.AssertEquivalentMatrices(gradient, gradient2);
     }
@@ -134,8 +134,8 @@ internal class NetTests
 
         net.Randomize(10f);
 
-        float[] input = { 14, 15 };
-        (float[,] _, float[] _) = net.Gradient(input);
+        Vector input = new(new float[] { 14, 15 });
+        (Matrix _, Vector _) = net.Gradient(input);
     }
 
 }

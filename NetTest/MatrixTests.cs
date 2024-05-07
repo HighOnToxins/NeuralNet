@@ -1,45 +1,55 @@
-using NeuralNet;
+using NeuralNet.Tensor;
 
 namespace NetTest;
 
 public class MatrixTests
 {
-    internal static void AssertEquivalentMatrices(float[,] matrix, float[,] expected)
+    internal static void AssertEquivalentMatrices(Matrix matrix, Matrix expected)
     {
-        Assert.That(matrix.GetLength(0), Is.EqualTo(expected.GetLength(0)));
-        Assert.That(matrix.GetLength(1), Is.EqualTo(expected.GetLength(1)));
+        Assert.That(matrix.Height, Is.EqualTo(expected.Height));
+        Assert.That(matrix.Width, Is.EqualTo(expected.Width));
 
-        for(int i = 0; i < matrix.GetLength(0); i++)
+        for(int i = 0; i < matrix.Height; i++)
         {
-            for(int j = 0; j < matrix.GetLength(1); j++)
+            for(int j = 0; j < matrix.Width; j++)
             {
-                Assert.That(matrix[i,j], Is.EqualTo(expected[i, j]));
+                Assert.That(matrix[i, j], Is.EqualTo(expected[i, j]));
             }
+        }
+    }
+
+    internal static void AssertEquivalentVectors(Vector vector, Vector expected)
+    {
+        Assert.That(vector.Height, Is.EqualTo(expected.Height));
+
+        for(int i = 0; i < vector.Height; i++)
+        {
+            Assert.That(vector[i], Is.EqualTo(expected[i]));
         }
     }
 
     [Test]
     public void TestMatricesProduct()
     {
-        float[,] matrixA =
+        Matrix matrixA = new(new float[,]
         {
             { 1,2},
             { 3,4},
-        };
+        });
 
-        float[,] matrixB =
+        Matrix matrixB = new(new float[,]
         {
             { 5,6},
             { 7,8},
-        };
+        });
 
-        float[,] expected =
+        Matrix expected = new(new float[,]
         {
             { 19, 22 },
             { 43, 50 }
-        };
+        });
 
-        float[,] matrixC = Matrix.Product(matrixA, matrixB);
+        Matrix matrixC = matrixA * matrixB;
 
         AssertEquivalentMatrices(matrixC, expected);
     }
@@ -47,26 +57,26 @@ public class MatrixTests
     [Test]
     public void TestMatricesProduct2()
     {
-        float[,] matrixA =
+        Matrix matrixA = new(new float[,]
         {
             { 1, 2, 9},
             { 3, 4, 10},
-        };
+        });
 
-        float[,] matrixB =
+        Matrix matrixB = new(new float[,]
         {
             { 5, 6},
             { 7, 8},
             { 11, 12},
-        };
+        });
 
-        float[,] expected =
+        Matrix expected = new(new float[,]
         {
             { 118, 130 },
             { 153, 170 }
-        };
+        });
 
-        float[,] matrixC = Matrix.Product(matrixA, matrixB);
+        Matrix matrixC = matrixA * matrixB;
 
         AssertEquivalentMatrices(matrixC, expected);
     }
@@ -74,25 +84,25 @@ public class MatrixTests
     [Test]
     public void TestMatrixAdd()
     {
-        float[,] matrixA =
+        Matrix matrixA = new(new float[,]
         {
             { 1,2},
             { 3,4},
-        };
+        });
 
-        float[,] matrixB =
+        Matrix matrixB = new(new float[,]
         {
             { 5,6},
             { 7,8},
-        };
+        });
 
-        float[,] expected =
+        Matrix expected = new(new float[,]
         {
             { 6, 8 },
             { 10, 12 }
-        };
+        });
 
-        float[,] matrixC = Matrix.Add(matrixA, matrixB);
+        Matrix matrixC = matrixA + matrixB;
 
         AssertEquivalentMatrices(matrixC, expected);
     }
@@ -100,25 +110,25 @@ public class MatrixTests
     [Test]
     public void TestTransposeProduct()
     {
-        float[,] matrixA =
-        {
+        Matrix matrixA = new(new float[,]
+        { 
             { 1,3},
-            { 2,4},
-        };
+            { 2,4}
+        });
 
-        float[,] matrixB =
+        Matrix matrixB = new(new float[,]
         {
             { 5,6},
             { 7,8},
-        };
+        });
 
-        float[,] expected =
+        Matrix expected = new(new float[,]
         {
             { 19, 22 },
             { 43, 50 }
-        };
+        });
 
-        float[,] matrixC = matrixA.Transpose().Product(matrixB);
+        Matrix matrixC = matrixA.Transpose() * matrixB;
 
         AssertEquivalentMatrices(matrixC, expected);
     }

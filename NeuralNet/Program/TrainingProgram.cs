@@ -4,7 +4,7 @@
 // add a logger
 // add saver
 
-public abstract class ITrainingProgram
+public abstract class TrainingProgram
 {
 
     protected abstract string[] VariatePropertyNames { get; }

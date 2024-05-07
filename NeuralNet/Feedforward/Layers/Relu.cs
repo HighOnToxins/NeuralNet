@@ -1,4 +1,6 @@
-﻿namespace NeuralNet.Feedforward.Layers;
+﻿using NeuralNet.Tensor;
+
+namespace NeuralNet.Feedforward.Layers;
 
 public class ReLU: IActivation
 {
@@ -10,23 +12,23 @@ public class ReLU: IActivation
         this.leak = leak;
     }
 
-    public float[] Run(float[] input)
+    public Vector Run(Vector input)
     {
-        float[] result = new float[input.Length];
-        for(int i = 0; i < input.Length; i++)
+        float[] result = new float[input.Height];
+        for(int i = 0; i < input.Height; i++)
         {
             result[i] = input[i] >= 0 ? input[i] : input[i]*leak;
         }
-        return result;
+        return new Vector(result);
     }
 
-    public float[] ComputeGradient(float[] input)
+    public Scalar ComputeGradient(Vector input)
     {
-        float[] result = new float[input.Length];
-        for(int i = 0; i < input.Length; i++)
+        float[] result = new float[input.Height];
+        for(int i = 0; i < input.Height; i++)
         {
             result[i] = input[i] >= 0 ? 1 : leak;
         }
-        return result;
+        return new Scalar(result);
     }
 }

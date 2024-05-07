@@ -1,6 +1,7 @@
 ﻿
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
+using NeuralNet.Tensor;
 
 namespace NetTest;
 
@@ -25,13 +26,13 @@ internal class FileTests
         );
 
         net.Save(path + "saveTest1");
-        float[] weights = net.GetWeights();
+        Vector weights = net.GetWeights();
 
-        net.SetWeights(new float[weights.Length]);
+        net.SetWeights(new Vector(weights.Height));
 
         net.Load(path + "saveTest1");
-        float[] weights2 = net.GetWeights();
+        Vector weights2 = net.GetWeights();
 
-        Assert.That(weights, Is.EquivalentTo(weights2));
+        MatrixTests.AssertEquivalentVectors(weights, weights2);
     }
 }

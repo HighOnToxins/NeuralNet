@@ -1,7 +1,9 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet.Program;
 
-public sealed class MomentumProgram : ITrainingProgram
+public sealed class MomentumProgram : TrainingProgram
 {
     private readonly ITrainer trainer;
 
@@ -15,7 +17,7 @@ public sealed class MomentumProgram : ITrainingProgram
         this.learningRate = learningRate;
         this.decay = decay;
 
-        velocity = Array.Empty<float>();
+        velocity = Vector.EMPTY;
     }
 
     protected override string[] VariatePropertyNames 
@@ -27,17 +29,17 @@ public sealed class MomentumProgram : ITrainingProgram
     protected override float[] ConstantProperties 
         => new float[] { learningRate, decay };
 
-    private float[] velocity;
+    private Vector velocity;
 
     protected override void InitRun(INet net)
     {
-        velocity = new float[net.GetWeightLength()];
+        velocity = new(net.GetWeightLength());
     }
 
     protected override float[] Update(INet net, int iteration)
     {
-        (float[] acceleration, float loss) = trainer.Train(net);
-        velocity = velocity.Scale(decay).Add(acceleration.Scale(learningRate));
+        (Vector acceleration, float loss) = trainer.Train(net);
+        velocity = velocity*decay + acceleration*learningRate;
         net.AddWeights(velocity);
 
         return new float[] { iteration, loss, velocity.Length(), acceleration.Length() };

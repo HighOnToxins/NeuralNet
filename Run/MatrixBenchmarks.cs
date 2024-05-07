@@ -1,10 +1,25 @@
 ﻿using BenchmarkDotNet.Attributes;
-using NeuralNet;
+using NeuralNet.Tensor;
 
 namespace Benchmarking;
 
 public class MatrixBenchmarks
 {
+
+    public static float[,] Transpose(float[,] A)
+    {
+        float[,] B = new float[A.GetLength(1), A.GetLength(0)];
+
+        for(int i = 0; i < B.GetLength(0); i++)
+        {
+            for(int j = 0; j < B.GetLength(1); j++)
+            {
+                B[i, j] = A[j, i];
+            }
+        }
+
+        return B;
+    }
 
     private readonly float[,] A;
 
@@ -268,13 +283,29 @@ public class MatrixBenchmarks
         return result;
     }
 
+
+    public float[,] ConcatByHeight(float[,] top, float[,] bottom)
+    {
+        float[,] result = new float[top.GetLength(0) + bottom.GetLength(0), top.GetLength(0)];
+        Buffer.BlockCopy(
+            top, 0,
+            result, 0, 
+            top.Length * sizeof(float));
+        Buffer.BlockCopy(
+            bottom, 0, 
+            result, top.Length * sizeof(float), 
+            bottom.Length * sizeof(float));
+        return result;
+    }
+
+
     [Benchmark]
     public float[,] ConcatByWidth3()
     {
-        float[,] top = A.Transpose();
-        float[,] bottom = B.Transpose();
+        float[,] top = Transpose(A);
+        float[,] bottom = Transpose(A);
 
-        return Matrix.ConcatByHeight(top, bottom).Transpose();
+        return Transpose(ConcatByHeight(top, bottom));
     }
 
 }

@@ -1,10 +1,13 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet;
 
 public interface INet: ILayer
 {
-
-    public (float[,], float[]) Gradient(float[] input);
+    //TODO: change to record or struct
+    // input -> gradient, results
+    public (Matrix, Vector) Gradient(Vector input);
 
     public void Save(string path);
 

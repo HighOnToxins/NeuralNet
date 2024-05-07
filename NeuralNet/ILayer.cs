@@ -1,4 +1,6 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet;
 
 public interface ILayer
@@ -7,14 +9,14 @@ public interface ILayer
     public int InputSize { get; }
     public int OutputSize { get; }
 
-    public float[] Run(float[] input);
+    public Vector Run(Vector input);
 
-    public float[] GetWeights();
+    public Vector GetWeights();
 
     public int GetWeightLength();
 
-    void SetWeights(float[] newWeights);
+    void SetWeights(Vector newWeights);
 
-    public void AddWeights(float[] newWeights);
+    public void AddWeights(Vector newWeights);
 
 }

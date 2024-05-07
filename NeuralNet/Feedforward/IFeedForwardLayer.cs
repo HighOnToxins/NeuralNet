@@ -1,7 +1,10 @@
-﻿namespace NeuralNet.Feedforward;
+﻿using NeuralNet.Tensor;
+
+namespace NeuralNet.Feedforward;
 
 public interface IFeedForwardLayer : ILayer
 {
-    public (float[,], float[,], float[]) Gradient(float[] input);
+    //input   ->   weight gradient,   input gradient,   result
+    public (Matrix, Matrix, Vector) Gradient(Vector input);
 
 }

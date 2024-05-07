@@ -1,4 +1,6 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet.Feedforward;
 
 public sealed class FeedforwardNet: INet
@@ -35,7 +37,7 @@ public sealed class FeedforwardNet: INet
         Randomize(randomRange);
     }
 
-    public FeedforwardNet(float[] weights, params IFeedForwardLayer[] layers) : this(layers)
+    public FeedforwardNet(Vector weights, params IFeedForwardLayer[] layers) : this(layers)
     {
         SetWeights(weights);
     }
@@ -48,7 +50,7 @@ public sealed class FeedforwardNet: INet
         {
             weights[i] = (float)random.NextDouble() * randomRange;
         }
-        SetWeights(weights);
+        SetWeights(new Vector(weights));
     }
 
     public void Randomize(Func<float, float> distribution)
@@ -59,12 +61,12 @@ public sealed class FeedforwardNet: INet
         {
             weights[i] = distribution.Invoke((float)random.NextDouble());
         }
-        SetWeights(weights);
+        SetWeights(new Vector(weights));
     }
 
-    public float[] Run(float[] input)
+    public Vector Run(Vector input)
     {
-        float[] result = layers[0].Run(input);
+        Vector result = layers[0].Run(input);
 
         for (int i = 1; i < layers.Length; i++)
         {
@@ -74,14 +76,14 @@ public sealed class FeedforwardNet: INet
         return result;
     }
 
-    public (float[,], float[]) Gradient(float[] input)
+    public (Matrix, Vector) Gradient(Vector input)
     {
-        (float[,] gradientResult, _, float[] result) = layers[0].Gradient(input);
+        (Matrix gradientResult, _, Vector result) = layers[0].Gradient(input);
 
         for (int i = 1; i < layers.Length; i++)
         {
-            (float[,] weightGradient, float[,] inputGradient, result) = layers[i].Gradient(result);
-            float[,] rightPart = inputGradient.Product(gradientResult);
+            (Matrix weightGradient, Matrix inputGradient, result) = layers[i].Gradient(result);
+            Matrix rightPart = inputGradient * gradientResult;
 
             // WeightGradient + InputGradient*gradientResult
             gradientResult = weightGradient.ConcatByWidth(rightPart); 
@@ -90,19 +92,19 @@ public sealed class FeedforwardNet: INet
         return (gradientResult, result);
     }
 
-    public float[] GetWeights()
+    public Vector GetWeights()
     {
         List<float> weights = new();
 
         for (int i = 0; i < layers.Length; i++)
         {
-            weights.AddRange(layers[i].GetWeights());
+            weights.AddRange(layers[i].GetWeights().ToArray());
         }
 
-        return weights.ToArray();
+        return new(weights.ToArray());
     }
 
-    public void SetWeights(float[] newWeights)
+    public void SetWeights(Vector newWeights)
     {
         int start;
         int end = 0;
@@ -115,7 +117,7 @@ public sealed class FeedforwardNet: INet
         }
     }
 
-    public void AddWeights(float[] newWeights)
+    public void AddWeights(Vector newWeights)
     {
         int start;
         int end = 0;
@@ -137,8 +139,8 @@ public sealed class FeedforwardNet: INet
     {
         BinaryWriter writer = new(File.Create(path + ".bin"));
 
-        float[] weights = GetWeights();
-        for(int i = 0; i < weights.Length; i++)
+        Vector weights = GetWeights();
+        for(int i = 0; i < weights.Height; i++)
         {
             writer.Write(weights[i]);
         }
@@ -156,7 +158,7 @@ public sealed class FeedforwardNet: INet
             weights[i] = reader.ReadSingle();
         }
 
-        SetWeights(weights);
+        SetWeights(new Vector(weights));
 
         reader.Close();
     }

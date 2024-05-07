@@ -1,10 +1,12 @@
-﻿namespace NeuralNet.Feedforward;
+﻿using NeuralNet.Tensor;
+
+namespace NeuralNet.Feedforward;
 
 public interface IActivation
 {
 
-    public float[] Run(float[] input);
+    public Vector Run(Vector input);
 
-    public float[] ComputeGradient(float[] input);
+    public Scalar ComputeGradient(Vector input);
 
 }

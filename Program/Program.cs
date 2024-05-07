@@ -3,6 +3,7 @@ using NeuralNet;
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
 using NeuralNet.Program;
+using NeuralNet.Tensor;
 
 namespace Training;
 
@@ -12,55 +13,57 @@ internal class Program
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDenseNet";
 
-    private const int dataUse = -1;
+    private const int dataUse = 100;
 
     public class LossFunction: IFeedForwardLoss
     {
-        public float Compute(float[] output1, float[] output2)
+        public float Compute(Vector output1, Vector output2)
         {
             float totalDifference = 0;
-            for(int i = 0; i < output1.Length; i++)
+            for(int i = 0; i < output1.Height; i++)
             {
                 totalDifference += Math.Abs(output2[i] - output1[i]);
             }
             return totalDifference;
         }
 
-        public float[] Gradient(float[] output1, float[] output2)
+        public Vector Gradient(Vector output1, Vector output2)
         {
-            float[] gradient = new float[output1.Length];
-            for(int i = 0; i < output1.Length; i++)
+            float[] gradient = new float[output1.Height];
+            for(int i = 0; i < output1.Height; i++)
             {
                 gradient[i] = Math.Sign(output2[i] - output1[i]);
             }
-            return gradient;
+            return new Vector(gradient);
         }
     }
 
-    private static float[][] AssignImageData(byte[][,] images)
+    private static Vector[] AssignImageData(byte[][,] images)
     {
-        float[][] values = new float[dataUse >= 0 ? dataUse : images.Length][];
+        Vector[] values = new Vector[dataUse >= 0 ? dataUse : images.Length];
 
         for(int i = 0; i <  values.Length; i++)
         {
-            values[i] = new float[images[i].GetLength(0)*images[i].GetLength(1)];
-            for(int j = 0; j < values[i].Length; j++)
+            float[] vecValues = new float[MNISTLoader.ImageSize* MNISTLoader.ImageSize];
+            for(int j = 0; j < vecValues.Length; j++)
             {
-                values[i][j] = images[i][j % images[i].GetLength(0), j / images[i].GetLength(0)] / 255f;
+                vecValues[j] = images[i][j % MNISTLoader.ImageSize, j / MNISTLoader.ImageSize] / 255f;
             }
+            values[i] = new Vector(vecValues);
         }
 
         return values;
     }
 
-    private static float[][] AssignLabelData(byte[] labels)
+    private static Vector[] AssignLabelData(byte[] labels)
     {
-        float[][] values = new float[dataUse >= 0 ? dataUse : labels.Length][];
+        Vector[] values = new Vector[dataUse >= 0 ? dataUse : labels.Length];
 
         for(int i = 0; i < values.Length; i++)
         {
-            values[i] = new float[10];
-            values[i][ labels[i] ] = 1;
+            float[] vecValues = new float[10];
+            vecValues[ labels[i] ] = 1;
+            values[i] = new(vecValues);
         }
 
         return values;
@@ -75,10 +78,10 @@ internal class Program
         byte[][,] testImages  = MNISTLoader.LoadImages(mnistDirectory, MNISTLoader.LoadType.testingData );
 
         //converting data into a usable form
-        float[][] trainingTargetData = AssignLabelData(trainLabels);
-        float[][] trainingInputData  = AssignImageData(trainImages);
-        float[][] testingTargetData  = AssignLabelData(testLabels);
-        float[][] testingInputData   = AssignImageData(testImages);
+        Vector[] trainingTargetData = AssignLabelData(trainLabels);
+        Vector[] trainingInputData  = AssignImageData(trainImages);
+        Vector[] testingTargetData  = AssignLabelData(testLabels);
+        Vector[] testingInputData   = AssignImageData(testImages);
 
         Console.WriteLine("Loaded files!");
 
@@ -102,8 +105,8 @@ internal class Program
         }
 
         //running program
-        //MomentumProgram program = new(trainer, .1f / trainingInputData.Length, 0);
-        NewtonProgram program = new(trainer);
+        MomentumProgram program = new(trainer, .1f / trainingInputData.Length, 0);
+        //NewtonProgram program = new(trainer);
         program.Run(net, 100, netPath);
     }
 

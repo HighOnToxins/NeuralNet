@@ -1,7 +1,9 @@
 ﻿
+using NeuralNet.Tensor;
+
 namespace NeuralNet.Program;
 
-public sealed class NewtonProgram: ITrainingProgram
+public sealed class NewtonProgram: TrainingProgram
 {
 
     private readonly ITrainer trainer;
@@ -24,8 +26,8 @@ public sealed class NewtonProgram: ITrainingProgram
 
     protected override float[] Update(INet net, int iteration)
     {
-        (float[] gradient, float loss) = trainer.Train(net);
-        float[] delta = gradient.Scale(loss / gradient.LengthSquared());
+        (Vector gradient, float loss) = trainer.Train(net);
+        Vector delta = gradient * (loss / gradient.LengthSquared());
         net.AddWeights(delta);
 
         return new float[]{ iteration, loss, delta.Length() };
