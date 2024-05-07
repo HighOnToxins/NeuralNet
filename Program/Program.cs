@@ -118,7 +118,7 @@ internal class Program
         //running program
         MomentumProgram program = new(trainer, .025f / trainingInputData.Length, 0);
         //NewtonProgram program = new(trainer);
-        program.Run(net, 500 - 65, netPath);
+        program.Run(net, 2, netPath);
 
         Matrix confusionMatrix = trainer.ConfusionMatrix(net);
         Console.WriteLine($"\n\nCONFUSION MATRIX:\n{confusionMatrix.ToString()}");

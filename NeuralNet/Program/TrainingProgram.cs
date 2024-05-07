@@ -33,7 +33,7 @@ public abstract class TrainingProgram
         //print properties
         string format = "";
         for(int i = 0; i < VariatePropertyNames.Length; i++) 
-            format += FormatStringRight(VariatePropertyNames[i], 20);
+            format += FormatCenter(VariatePropertyNames[i], 20);
         Console.WriteLine(format);
 
         //iterations
@@ -50,29 +50,29 @@ public abstract class TrainingProgram
             for(int j = 0; j < properties.Length; j++)
             {
                 string value = properties[j].ToString();
-                propertiesString += FormatAnchor(value, value.IndexOf(','), 10, 9);
+                propertiesString += FormatAnchor(value, value.IndexOf(','), 10, 10);
             }
-            Console.WriteLine(properties);
+            Console.WriteLine(propertiesString);
         }
 
         Console.WriteLine("training ended!");
     }
 
-    private static string FormatAnchor(string s, int anchor, int prev, int post)
+    private static string FormatAnchor(string s, int anchor, int prev, int post, char fill = ' ')
     {
         string fs = s.ToString();
-        if(anchor != -1)
+        if(anchor == -1)
         {
             anchor = fs.Length;
         }
 
-        if(fs.Length - anchor - 1 > post)
+        if(fs.Length - anchor > post)
         {
-            fs = fs[..(anchor + post + 1)];
+            fs = fs[..(anchor + post)];
         }
-        else if(fs.Length - anchor - 1 < post)
+        else if(fs.Length - anchor < post)
         {
-            fs += new string(' ', post - fs.Length + anchor + 1);
+            fs += new string(fill, post - fs.Length + anchor);
         }
 
         if(anchor > prev)
@@ -81,23 +81,29 @@ public abstract class TrainingProgram
         }
         else if(anchor < prev)
         {
-            fs = new string(' ', prev - anchor) + fs;
+            fs = new string(fill, prev - anchor) + fs;
         }
 
         return fs;
     }
-    private static string FormatStringRight(string s, int size)
+    
+    private static string FormatRight(string s, int size, char fill = ' ')
     {
         if(s.Length > size)
         {
-            s = s[(size - s.Length)..];
+            s = s[(s.Length - size)..];
         }
         else if(s.Length < size)
         {
-            s = new string(' ', size - s.Length + size + 1) + s;
+            s = new string(fill, size - s.Length) + s;
         }
 
         return s;
+    }
+
+    private static string FormatCenter(string s, int size, char fill = ' ')
+    {
+        return FormatAnchor(s, s.Length / 2, (int)Math.Floor(size/2f), (int)Math.Ceiling(size/2f), fill);
     }
 
     protected abstract void InitRun(INet net);
