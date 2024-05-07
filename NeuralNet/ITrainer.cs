@@ -29,10 +29,4 @@ public interface ITrainer
 
     public float Loss(INet net);
 
-    //public float Validation(INet net);
-
-    //public float Accuracy(INet net);
-
 }
-
-//TODO: Add verification and other test stuff

@@ -30,6 +30,34 @@ public sealed class Matrix
         Buffer.BlockCopy(matrix, 0, values, 0, values.Length * sizeof(float));
     }
 
+    public Matrix(Vector[] matrix, bool isColumns = true)
+    {
+        if(isColumns)
+        {
+            Height = matrix[0].Height;
+            Width = matrix.Length;
+            values = new float[Width * Height];
+            for(int i = 0; i < Height; i++)
+            {
+                for(int j = 0; j < Width; j++)
+                {
+                    values[i * Width + j] = matrix[j][i];
+                }
+            }
+            return;
+        }
+
+        Height = matrix.Length;
+        Width = matrix[0].Height;
+
+        values = new float[Width * Height];
+        for(int i = 0; i < Height; i++)
+        {
+            float[] values = matrix[i].ToArray();
+            Buffer.BlockCopy(values, 0, this.values, i * Width * sizeof(float), Width * sizeof(float));
+        }
+    }
+
     public Matrix(int height, int width)
     {
         Height = height;
