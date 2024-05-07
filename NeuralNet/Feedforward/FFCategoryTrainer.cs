@@ -3,26 +3,26 @@ using NeuralNet.Tensor;
 
 namespace NeuralNet.Feedforward;
 
-public sealed class FFCategoryTrainer: ITrainer<FeedforwardNet>, IEvaluator
+public sealed class FFCategoryTrainer: Evaluator, ITrainer<FeedforwardNet>
 {
 
-    private readonly Vector[][] inputs;
+    private readonly Vector[][] trainInputs;
+    private readonly Vector[][] testInputs;
     private readonly Vector[] targets;
 
     private readonly IFeedForwardLoss loss;
 
-    public int CategoryCount { get; }
-
-    public FFCategoryTrainer(Vector[][] inputs, Vector[] targets, IFeedForwardLoss loss)
+    public FFCategoryTrainer(Vector[][] trainInputs, Vector[][] testInputs, Vector[] targets, IFeedForwardLoss loss)
     {
-        CategoryCount = inputs.Length;
+        CategoryCount = trainInputs.Length;
 
-        if(targets.Length != CategoryCount)
+        if(targets.Length != CategoryCount || testInputs.Length != CategoryCount)
         {
             throw new ArgumentException();
         }
 
-        this.inputs = inputs;
+        this.trainInputs = trainInputs;
+        this.testInputs = testInputs;
         this.targets = targets;
         this.loss = loss;
     }
@@ -34,9 +34,9 @@ public sealed class FFCategoryTrainer: ITrainer<FeedforwardNet>, IEvaluator
 
         for(int i = 0; i < CategoryCount; i++)
         {
-            for(int j = 0; j < inputs[i].Length; j++)
+            for(int j = 0; j < trainInputs[i].Length; j++)
             {
-                (Matrix gradient, Vector run) = net.Gradient(inputs[i][j]);
+                (Matrix gradient, Vector run) = net.Gradient(trainInputs[i][j]);
                 totalGradient += gradient.Transpose() * loss.Gradient(targets[i], run);
                 totalLoss += loss.Compute(targets[i], run);
             }
@@ -53,16 +53,16 @@ public sealed class FFCategoryTrainer: ITrainer<FeedforwardNet>, IEvaluator
 
         for(int i = 0; i < CategoryCount; i++)
         {
-            for(int j = 0; j < inputs[i].Length; j++)
+            for(int j = 0; j < trainInputs[i].Length; j++)
             {
-                totalLoss += loss.Compute(targets[i], net.Run(inputs[i][j]));
+                totalLoss += loss.Compute(targets[i], net.Run(trainInputs[i][j]));
             }
         }
 
         return totalLoss;
     }
 
-    public Vector Guess(Vector netResult)
+    protected override Vector Guess(Vector netResult)
     {
         int maxIndex = 0;
         for(int i = 1; i < netResult.Height; i++) 
@@ -73,15 +73,13 @@ public sealed class FFCategoryTrainer: ITrainer<FeedforwardNet>, IEvaluator
             }
         }
 
-        float[] guessValues = new float[maxIndex];
+        float[] guessValues = new float[CategoryCount];
         guessValues[maxIndex] = 1f;
 
         return new(guessValues);
     }
 
-    public Vector[] CategoryData(int category)
-    {
-        return inputs[category];
-    }
+    protected override Vector[] CategoryData(int category)
+        => testInputs[category];
 
 }

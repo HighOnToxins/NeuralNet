@@ -3,14 +3,14 @@
 namespace NeuralNet;
 
 /// <summary> Allows one to construct a confusion matrix over the categories optimized over. </summary>
-public interface IEvaluator
+public abstract class Evaluator
 {
 
-    public int CategoryCount { get; }
+    public int CategoryCount { get; protected init; }
 
-    protected Vector[] CategoryData(int category);
+    protected abstract Vector[] CategoryData(int category);
 
-    public Vector Guess(Vector netResult);
+    protected abstract Vector Guess(Vector netResult);
 
     private Vector SummedPrediction(INet net, int category)
     {
@@ -24,7 +24,7 @@ public interface IEvaluator
         return total;
     }
 
-    public sealed Matrix ConfusionMatrix(INet net)
+    public Matrix ConfusionMatrix(INet net)
     {
         Vector[] matrixRows = new Vector[CategoryCount];
 

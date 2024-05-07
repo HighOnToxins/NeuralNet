@@ -1,7 +1,7 @@
 ﻿
 namespace NeuralNet.Tensor;
 
-public sealed class Vector
+public readonly struct Vector
 {
     public readonly static Vector EMPTY = new(Array.Empty<float>());
 
@@ -108,9 +108,19 @@ public sealed class Vector
         return c;
     }
 
-    public static Vector operator *(Scalar A, Vector b)
+
+    public static explicit operator Matrix(Vector a)
     {
-        if(A.Width != b.Height)
+        float[,] values = new float[a.Height, 1];
+        Buffer.BlockCopy(a.values, 0, values, 0, a.values.Length*sizeof(float));
+        return new Matrix(values);
+    }
+
+
+
+    public Vector Scale(Vector b)
+    {
+        if(Height != b.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -119,18 +129,30 @@ public sealed class Vector
         Vector c = new(b.Height);
         for(int i = 0; i < b.Height; i++)
         {
-            c[i] = A[i] * b[i];
+            c[i] = this[i] * b[i];
         }
 
         return c;
     }
 
-
-    public static explicit operator Matrix(Vector a)
+    public Matrix Scale(Matrix b)
     {
-        float[,] values = new float[a.Height, 1];
-        Buffer.BlockCopy(a.values, 0, values, 0, a.values.Length*sizeof(float));
-        return new Matrix(values);
+        if(Height != b.Height)
+        {
+            throw new ArgumentException("Expected matrices such that the second length of " +
+                "the first matrix was equal to the first length of the second!");
+        }
+
+        float[,] C = new float[b.Height, b.Width];
+        for(int i = 0; i < b.Height; i++)
+        {
+            for(int j = 0; j < b.Width; j++)
+            {
+                C[i,j] = this[i] * b[i,j];
+            }
+        }
+
+        return new Matrix(C);
     }
 
 

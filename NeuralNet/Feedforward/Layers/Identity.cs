@@ -9,7 +9,7 @@ public class Identity: IActivation
         return input;
     }
 
-    public Scalar ComputeGradient(Vector input)
+    public Vector ComputeGradient(Vector input)
     {
         float[] result = new float[input.Height];
 
@@ -18,7 +18,7 @@ public class Identity: IActivation
             result[i] = 1;
         }
 
-        return new Scalar(result);
+        return new Vector(result);
     }
 
 }

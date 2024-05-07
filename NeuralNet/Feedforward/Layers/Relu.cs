@@ -22,13 +22,13 @@ public class ReLU: IActivation
         return new Vector(result);
     }
 
-    public Scalar ComputeGradient(Vector input)
+    public Vector ComputeGradient(Vector input)
     {
         float[] result = new float[input.Height];
         for(int i = 0; i < input.Height; i++)
         {
             result[i] = input[i] >= 0 ? 1 : leak;
         }
-        return new Scalar(result);
+        return new Vector(result);
     }
 }

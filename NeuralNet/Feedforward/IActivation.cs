@@ -7,6 +7,7 @@ public interface IActivation
 
     public Vector Run(Vector input);
 
-    public Scalar ComputeGradient(Vector input);
+    //vector -> scalar-matrix
+    public Vector ComputeGradient(Vector input);
 
 }

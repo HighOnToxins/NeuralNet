@@ -8,14 +8,14 @@ public sealed class MomentumProgram : TrainingProgram
     private readonly ITrainer trainer;
 
     private readonly float learningRate;
-    private readonly float decay;
+    private readonly float carry;
 
-    public MomentumProgram(ITrainer trainer, float learningRate, float decay)
+    public MomentumProgram(ITrainer trainer, float learningRate, float carry)
     {
         this.trainer = trainer;
 
         this.learningRate = learningRate;
-        this.decay = decay;
+        this.carry = carry;
 
         velocity = Vector.EMPTY;
     }
@@ -24,10 +24,10 @@ public sealed class MomentumProgram : TrainingProgram
         => new string[] { "Iteration", "Loss", "Speed", "Acceleration" };
 
     protected override string[] ConstantPropertyNames 
-        => new string[] { "Learning Rate", "Decay" };
+        => new string[] { "Learning Rate", "Carry" };
 
     protected override float[] ConstantProperties 
-        => new float[] { learningRate, decay };
+        => new float[] { learningRate, carry };
 
     private Vector velocity;
 
@@ -39,7 +39,7 @@ public sealed class MomentumProgram : TrainingProgram
     protected override float[] Update(INet net, int iteration)
     {
         (Vector acceleration, float loss) = trainer.Train(net);
-        velocity = velocity*decay + acceleration*learningRate;
+        velocity = velocity*carry + acceleration*learningRate;
         net.AddWeights(velocity);
 
         return new float[] { iteration, loss, velocity.Length(), acceleration.Length() };

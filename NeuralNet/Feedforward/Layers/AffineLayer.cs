@@ -58,7 +58,7 @@ public sealed class AffineLayer: IFeedForwardLayer
     }
 
     private Matrix TransformationWeightGradient(Vector input)
-    { //TODO: Change to a fancy scalar
+    { 
         float[,] result = new float[OutputSize, GetWeightLength()];
 
         // x_k
@@ -87,10 +87,10 @@ public sealed class AffineLayer: IFeedForwardLayer
     public (Matrix, Matrix, Vector) Gradient(Vector input)
     {
         Vector transformation = Transformation(input);
-        Scalar activationGradient = activation.ComputeGradient(transformation);
+        Vector activationGradient = activation.ComputeGradient(transformation);
 
-        Matrix weightGradient = activationGradient * TransformationWeightGradient(input);
-        Matrix inputGradient = activationGradient * matrix;
+        Matrix weightGradient = activationGradient.Scale(TransformationWeightGradient(input));
+        Matrix inputGradient = activationGradient.Scale(matrix);
         Vector result = activation.Run(transformation);
 
         return (weightGradient, inputGradient, result);

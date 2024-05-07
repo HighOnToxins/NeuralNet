@@ -2,7 +2,7 @@
 namespace NeuralNet.Tensor;
 
 //TODO: consider adding information telling where zero are, such as to optimize product
-public sealed class Matrix
+public readonly struct Matrix
 {
     public static readonly Matrix EMPTY = new(Array.Empty<float[]>());
 
@@ -177,26 +177,6 @@ public sealed class Matrix
         return C;
     }
 
-    public static Matrix operator *(Scalar A, Matrix B)
-    {
-        if(A.Width != B.Height)
-        {
-            throw new ArgumentException("Expected matrices such that the second length of " +
-                "the first matrix was equal to the first length of the second!");
-        }
-
-        Matrix C = new(A.Height, B.Width);
-        for(int i = 0; i < A.Height; i++)
-        {
-            for(int j = 0; j < B.Width; j++)
-            {
-                C[i, j] = A[i] * B[i,j];
-            }
-        }
-
-        return C;
-    }
-    
     public static explicit operator Vector(Matrix A)
     {
         if(A.Width != 1)
@@ -249,5 +229,20 @@ public sealed class Matrix
     public Vector Flatten()
     {
         return new Vector(values);
+    }
+
+
+    public string ToString(string rowSep = "\n", string colSep = "\t")
+    {
+        string total = "";
+        for(int i = 0; i < Height; i++)
+        {
+            for(int j = 0; j < Width; j++)
+            {
+                total += this[i,j].ToString() + colSep;
+            }
+            total += rowSep;
+        }
+        return total;
     }
 }
