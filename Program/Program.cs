@@ -12,7 +12,7 @@ internal class Program
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDescentNet";
 
-    private const int dataUse = 10_000;
+    private const int dataUse = -1;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -100,13 +100,15 @@ internal class Program
         FFCategoryTrainer trainer = new(trainingInputData, testingInputData, targets, new LossFunction());
 
         FeedforwardNet net = new(
-            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f))
+            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f)),
+            new AffineLayer(50, 50,                                          new ReLU(.05f)),
+            new AffineLayer(50, 10,                                          new ReLU(.05f))
         );
 
         if(!File.Exists(netPath + ".bin"))
         {
             Directory.CreateDirectory(netDirectory);
-            net.Randomize(x => 500f * (float) Math.Pow(x - .5f, 7));
+            net.Randomize(x => 200f * (float) Math.Pow(x - .5f, 7));
             Console.WriteLine("Created New Network!");
         }
         else
@@ -116,9 +118,10 @@ internal class Program
         }
 
         //running program
-        MomentumProgram program = new(trainer, .025f / trainingInputData.Length, 0);
+        GradientDescentProgram program = new(trainer, v => v * (1f / v.Length()) );
+        //MomentumProgram program = new(trainer, .025f / trainingInputData.Length, 0);
         //NewtonProgram program = new(trainer);
-        program.Run(net, 2, netPath);
+        program.Run(net, 100, netPath);
 
         Matrix confusionMatrix = trainer.ConfusionMatrix(net);
         Console.WriteLine($"\n\nCONFUSION MATRIX:\n{confusionMatrix.ToString()}");
