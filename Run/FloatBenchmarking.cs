@@ -13,7 +13,7 @@ public readonly struct ReadonlyMatrix6 //removed readonly from indexing, with pr
     {
         get
         {
-            return values[row * Width+ col];
+            return values[row * Width + col];
         }
     }
 
@@ -90,7 +90,7 @@ public readonly struct ReadonlyMatrix6 //removed readonly from indexing, with pr
 
                 for(int k = 0; k < A.Width; k++)
                 {
-                    total += A[i, k] * B2[j * B.Height + k];
+                    total += A[i, k] * B2[j * A.Width + k];
                 }
 
                 C[i * B.Width + j] = total;
@@ -276,7 +276,7 @@ public readonly struct ReadonlyMatrix4 //double-array
     }
 }
 
-public readonly struct ReadonlyMatrix3 //removed readonly from indexing *STAR* (7)
+public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 {
     private readonly float[] values;
 
@@ -653,10 +653,10 @@ public readonly struct WriteableMatrix
     public readonly float this[int row, int col]
     { 
         get { 
-            return values[row * Width+ col];
+            return values[row * Width + col];
         } 
         set { 
-            values[row * Width+ col] = value;
+            values[row * Width + col] = value;
         }
     }
 
@@ -799,11 +799,11 @@ public struct WriteableMatrix2 // without readonly
     {
         get
         {
-            return values[row * Width+ col];
+            return values[row * Width + col];
         }
         set
         {
-            values[row * Width+ col] = value;
+            values[row * Width + col] = value;
         }
     }
 
@@ -896,7 +896,7 @@ public struct WriteableMatrix2 // without readonly
     }
 }
 
-public readonly struct WriteableMatrix3 // with properties *STAR* (9)
+public readonly struct WriteableMatrix3 // with properties 
 {
     private readonly float[] values;
 
@@ -907,11 +907,11 @@ public readonly struct WriteableMatrix3 // with properties *STAR* (9)
     {
         get
         {
-            return values[row * Width+ col];
+            return values[row * Width + col];
         }
         set
         {
-            values[row * Width+ col] = value;
+            values[row * Width + col] = value;
         }
     }
 
@@ -1054,11 +1054,11 @@ public struct WriteableMatrix4 // without readonly and with properties
     {
         get
         {
-            return values[row * Width+ col];
+            return values[row * Width + col];
         }
         set
         {
-            values[row * Width+ col] = value;
+            values[row * Width + col] = value;
         }
     }
 
@@ -1193,10 +1193,12 @@ public class FloatBenchmarking
     private readonly ReadonlyMatrix6 A13;
     private readonly ReadonlyMatrix6 B13;
 
+    private const int SIZE = 1_000;
+
     public FloatBenchmarking()
     {
-        A = RandomMatrix(100, 1000);
-        B = RandomMatrix(100, 1000);
+        A = RandomMatrix(SIZE, 1000);
+        B = RandomMatrix(SIZE, 1000);
         A2 = AssignMatrix(A);
         B2 = AssignMatrix(B);
         A3 = AssignMatrix2(A);
@@ -1347,7 +1349,6 @@ public class FloatBenchmarking
     {
         return A6 + B6;
     }
-    */
 
     [Benchmark]
     public ReadonlyMatrix3 Add7()
@@ -1385,15 +1386,14 @@ public class FloatBenchmarking
     {
         return A12 + B12;
     }
-    */
 
     [Benchmark]
     public ReadonlyMatrix6 Add13()
     {
         return A13 + B13;
     }
+    */
 
-    /*
     [Benchmark]
     public float[,] Prod1()
     {
@@ -1526,15 +1526,15 @@ public class FloatBenchmarking
     }
 
     [Benchmark]
-    public ReadableMatrix Prod5()
+    public WriteableMatrix Prod5()
     {
         return A5 * B5;
     }
 
     [Benchmark]
-    public ReadableMatrix Prod52()
+    public WriteableMatrix Prod52()
     {
-        return ReadableMatrix.OperatorProd2(A5, B5);
+        return WriteableMatrix.OperatorProd2(A5, B5);
     }
 
     [Benchmark]
@@ -1542,7 +1542,6 @@ public class FloatBenchmarking
     {
         return A6 * B6;
     }
-    */
 
     [Benchmark]
     public ReadonlyMatrix3 Prod7()
@@ -1593,3 +1592,20 @@ public class FloatBenchmarking
     }
 
 }
+
+/* size : 100
+| Method | Mean        | Error     | StdDev     | Median      |
+|------- |------------:|----------:|-----------:|------------:|
+| Add7   |    16.51 us |  0.327 us |   0.646 us |    16.37 us |
+| Add8   |    19.55 us |  0.303 us |   0.284 us |    19.46 us |
+| Add9   |    19.82 us |  0.425 us |   1.221 us |    19.25 us |
+| Add13  |    17.01 us |  0.599 us |   1.679 us |    16.38 us |
+| Prod7  | 1,199.42 us | 30.986 us |  87.902 us | 1,173.68 us |
+| Prod8  | 1,532.15 us | 56.057 us | 165.284 us | 1,492.88 us |
+| Prod9  | 1,367.44 us | 10.271 us |   8.577 us | 1,366.18 us |
+| Prod92 | 1,113.50 us | 10.859 us |   9.626 us | 1,112.56 us | *
+| Prod10 | 1,364.38 us |  5.391 us |   4.502 us | 1,363.78 us |
+| Prod11 | 3,200.32 us |  9.947 us |   8.818 us | 3,200.03 us |
+| Prod12 | 1,115.08 us |  5.915 us |   5.243 us | 1,114.52 us | *
+| Prod13 | 1,111.10 us |  2.293 us |   1.915 us | 1,112.11 us | *
+*/
