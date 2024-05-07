@@ -2,6 +2,7 @@
 
 namespace NeuralNet;
 
+/// <summary> Allows one to construct a confusion matrix over the categories optimized over. </summary>
 public interface IEvaluator
 {
 
