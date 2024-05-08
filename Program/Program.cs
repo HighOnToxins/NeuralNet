@@ -12,7 +12,7 @@ internal class Program
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDescentNet";
 
-    private const int dataUse = -1;
+    private const int dataUse = 100;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -100,9 +100,7 @@ internal class Program
         FFCategoryTrainer trainer = new(trainingInputData, testingInputData, targets, new LossFunction());
 
         FeedforwardNet net = new(
-            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f)),
-            new AffineLayer(50, 50,                                          new ReLU(.05f)),
-            new AffineLayer(50, 10,                                          new ReLU(.05f))
+            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f))
         );
 
         if(!File.Exists(netPath + ".bin"))
