@@ -7,12 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NeuralNet", "NeuralNet\Neur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetTest", "NetTest\NetTest.csproj", "{821A594C-81FD-4810-937B-55C1ECA79564}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarking", "Benchmarking\Benchmarking.csproj", "{51912039-8499-4BB7-95FD-997E0756958A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarking", "Benchmarking\Benchmarking.csproj", "{51912039-8499-4BB7-95FD-997E0756958A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MNISTTraining", "MNISTTraining\MNISTTraining.csproj", "{824DDF11-DCFA-4FA5-8567-486701190957}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MNISTTraining", "MNISTTraining\MNISTTraining.csproj", "{824DDF11-DCFA-4FA5-8567-486701190957}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7EC83171-8382-41B0-B5F2-7936AEFBE12E} = {7EC83171-8382-41B0-B5F2-7936AEFBE12E}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SandBox", "SandBox\SandBox.csproj", "{125D0A0B-C3E0-4EC9-AC82-FD0487FDB1A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +38,10 @@ Global
 		{824DDF11-DCFA-4FA5-8567-486701190957}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{824DDF11-DCFA-4FA5-8567-486701190957}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{824DDF11-DCFA-4FA5-8567-486701190957}.Release|Any CPU.Build.0 = Release|Any CPU
+		{125D0A0B-C3E0-4EC9-AC82-FD0487FDB1A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{125D0A0B-C3E0-4EC9-AC82-FD0487FDB1A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{125D0A0B-C3E0-4EC9-AC82-FD0487FDB1A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{125D0A0B-C3E0-4EC9-AC82-FD0487FDB1A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
