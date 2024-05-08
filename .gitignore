@@ -367,8 +367,8 @@ FodyWeavers.xsd
 
 
 # special net folder
-MNISTTraining\net\
+MNISTTraining/net/
 
 # sandbox project
-SandBox\
+SandBox/
 
