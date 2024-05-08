@@ -10,12 +10,14 @@ namespace MNSITTraining;
 
 internal class Program
 {
-    private const string mnistDirectory = "../../../MNISTfiles/";
+    private const string projectFolder = "../../../";
+
+    private const string MNISTDirectory = "MNISTFiles/";
     
-    private const string netDirectory = "../../../net/";
+    private const string netDirectory = projectFolder + "net/";
     private const string netPath = netDirectory + "gradientDescentNet";
 
-    private const string logDirectory = "../../../logs/";
+    private const string logDirectory = projectFolder + "logs/";
 
     private const int dataUse = 100;
 
@@ -126,11 +128,11 @@ internal class Program
     public static void Main(string[] _)
     {
         //getting data
-        byte[][,] trainImages = MNISTLoader.LoadImages(mnistDirectory, MNISTLoader.LoadType.trainingData);
-        byte[]    trainLabels = MNISTLoader.LoadLabels(mnistDirectory, MNISTLoader.LoadType.trainingData);
+        byte[][,] trainImages = MNISTLoader.LoadImages(MNISTDirectory, MNISTLoader.LoadType.trainingData);
+        byte[]    trainLabels = MNISTLoader.LoadLabels(MNISTDirectory, MNISTLoader.LoadType.trainingData);
 
-        byte[][,] testImages = MNISTLoader.LoadImages(mnistDirectory, MNISTLoader.LoadType.testingData);
-        byte[]    testLabels  = MNISTLoader.LoadLabels(mnistDirectory, MNISTLoader.LoadType.testingData );
+        byte[][,] testImages = MNISTLoader.LoadImages(MNISTDirectory, MNISTLoader.LoadType.testingData);
+        byte[]    testLabels  = MNISTLoader.LoadLabels(MNISTDirectory, MNISTLoader.LoadType.testingData );
 
         //converting data into a usable form
         Vector[] trainingInputData  = AssignTrainingData(trainImages);
