@@ -1,7 +1,7 @@
 ﻿
 using System.Reflection.PortableExecutable;
 
-namespace Training;
+namespace MNSITTraining;
 
 public static class MNISTLoader
 {

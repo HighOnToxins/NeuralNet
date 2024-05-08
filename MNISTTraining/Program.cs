@@ -6,7 +6,7 @@ using NeuralNet.Tensor;
 using NeuralNet.TrainingProgram.Display;
 using NeuralNet.TrainingProgram.Save;
 
-namespace Training;
+namespace MNSITTraining;
 
 internal class Program
 {

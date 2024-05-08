@@ -1,5 +1,5 @@
 ﻿
-namespace Training;
+namespace MNSITTraining;
 
 internal static class Octets
 {
