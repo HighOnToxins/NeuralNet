@@ -5,7 +5,6 @@ using NeuralNet.TrainingProgram;
 using NeuralNet.Tensor;
 using NeuralNet.TrainingProgram.Display;
 using NeuralNet.TrainingProgram.Save;
-using NeuralNet.TrainingProgram.Testing;
 
 namespace MNSITTraining;
 
@@ -185,7 +184,7 @@ internal class Program
         LossFunction loss = new();
 
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, loss);
-        Evaluator evaluator = new(testingInputData, Guess, MNISTLoader.CategoryCount);
+        CategoryTester tester = new(testingInputData, testingLabels, loss, Guess, MNISTLoader.CategoryCount);
         ConstantRateProgram program = new(trainer);
 
         //runner 
@@ -195,9 +194,7 @@ internal class Program
             { 
                 new IterationMeasure(), 
                 new TimeMeasure(),
-                new LossMeasure(
-                    new FlatDataTester(trainingInputData, trainingTargets, loss), 
-                    new CategoryTester(testingInputData, testingLabels, loss))
+                new LossMeasure( trainer, tester )
             },
             new ILogger[] 
             { 
@@ -209,9 +206,9 @@ internal class Program
 
         Console.WriteLine("Started training!\n");
         runner.Run(net, 100);
-        Console.WriteLine("Training ended!\n");
+        Console.WriteLine("\nTraining ended!\n");
 
-        Matrix confusionMatrix = evaluator.ConfusionMatrix(net);
+        Matrix confusionMatrix = tester.ConfusionMatrix(net);
         Console.WriteLine($"\n\nCONFUSION MATRIX:\n{confusionMatrix.ToString()}");
     }
 }

@@ -1,18 +1,24 @@
 ﻿using NeuralNet.Tensor;
 
-namespace NeuralNet.TrainingProgram.Testing;
+namespace NeuralNet.TrainingProgram;
 
 /// <summary> Allows one to construct a confusion matrix over the categories optimized over. </summary>
-public sealed class Evaluator
+public sealed class CategoryTester : ITester
 {
     private readonly Vector[][] testingData;
 
+    private readonly Vector[] labels;
+
+    private readonly ILoss loss;
+
     private readonly Func<Vector, Vector> guessInterpreter;
 
-
-    public Evaluator(Vector[][] testingData, Func<Vector, Vector> guessInterpreter, int categoryCount)
+    public CategoryTester(Vector[][] testingData, Vector[] labels, ILoss loss, Func<Vector, Vector> guessInterpreter, int categoryCount)
     {
         this.testingData = testingData;
+        this.labels = labels;
+        this.loss = loss;
+
         this.guessInterpreter = guessInterpreter;
 
         CategoryCount = categoryCount;
@@ -45,6 +51,22 @@ public sealed class Evaluator
 
         return new(matrixRows, false);
     }
+
+    public float Loss(INet net)
+    {
+        float totalLoss = 0;
+
+        for (int i = 0; i < testingData.Length; i++)
+        {
+            for (int j = 0; j < testingData[i].Length; j++)
+            {
+                totalLoss += loss.Compute(labels[i], net.Run(testingData[i][j]));
+            }
+        }
+
+        return totalLoss;
+    }
+
 
 
 

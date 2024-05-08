@@ -1,18 +1,15 @@
-﻿
-using NeuralNet.TrainingProgram.Testing;
-
-namespace NeuralNet.TrainingProgram.Display;
+﻿namespace NeuralNet.TrainingProgram.Display;
 
 public sealed class LossMeasure: IMeasure
 {
 
-    private readonly ITester training;
-    private readonly ITester testing;
+    private readonly ITrainer trainer;
+    private readonly ITester tester;
 
-    public LossMeasure(ITester training, ITester testing)
+    public LossMeasure(ITrainer training, ITester testing)
     {
-        this.training = training;
-        this.testing = testing;
+        this.trainer = training;
+        this.tester = testing;
     }
 
     public IEnumerable<string> CollectFields()
@@ -23,7 +20,7 @@ public sealed class LossMeasure: IMeasure
 
     public IEnumerable<object> CollectInfo(INet net)
     {
-        yield return training.Loss(net);
-        yield return testing.Loss(net);
+        yield return trainer.Loss(net);
+        yield return tester.Loss(net);
     }
 }

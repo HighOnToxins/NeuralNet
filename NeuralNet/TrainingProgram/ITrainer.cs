@@ -1,4 +1,5 @@
 ﻿using NeuralNet.Tensor;
+using NeuralNet.TrainingProgram;
 
 namespace NeuralNet;
 
@@ -18,7 +19,7 @@ public interface ITrainer<N> : ITrainer where N : INet
 }
 
 /// <summary> A trainer is the method for computing the full gradient for a network over some data. </summary>
-public interface ITrainer
+public interface ITrainer: ITester
 {
 
     public Vector Train(INet net, TrainingOption option = TrainingOption.Minimize);

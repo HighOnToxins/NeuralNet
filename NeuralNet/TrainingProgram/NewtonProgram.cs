@@ -1,5 +1,4 @@
 ﻿using NeuralNet.Tensor;
-using NeuralNet.TrainingProgram.Testing;
 
 namespace NeuralNet.TrainingProgram;
 
