@@ -3,13 +3,13 @@
 public sealed class LossMeasure: IMeasure
 {
 
-    private readonly ITrainer trainer;
+    private readonly ITester trainer;
     private readonly ITester tester;
 
-    public LossMeasure(ITrainer training, ITester testing)
+    public LossMeasure(ITester trainer, ITester tester)
     {
-        this.trainer = training;
-        this.tester = testing;
+        this.trainer = trainer;
+        this.tester = tester;
     }
 
     public IEnumerable<string> CollectFields()
