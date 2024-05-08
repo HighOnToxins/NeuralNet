@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Training", "Program\Trainin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetTest", "NetTest\NetTest.csproj", "{821A594C-81FD-4810-937B-55C1ECA79564}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarking", "Run\Benchmarking.csproj", "{4BCE24EF-C390-4899-9CDF-3D29F5B21B60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarking", "Benchmarking\Benchmarking.csproj", "{51912039-8499-4BB7-95FD-997E0756958A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{821A594C-81FD-4810-937B-55C1ECA79564}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{821A594C-81FD-4810-937B-55C1ECA79564}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{821A594C-81FD-4810-937B-55C1ECA79564}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4BCE24EF-C390-4899-9CDF-3D29F5B21B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4BCE24EF-C390-4899-9CDF-3D29F5B21B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4BCE24EF-C390-4899-9CDF-3D29F5B21B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4BCE24EF-C390-4899-9CDF-3D29F5B21B60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51912039-8499-4BB7-95FD-997E0756958A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51912039-8499-4BB7-95FD-997E0756958A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51912039-8499-4BB7-95FD-997E0756958A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51912039-8499-4BB7-95FD-997E0756958A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

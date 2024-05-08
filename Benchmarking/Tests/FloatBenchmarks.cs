@@ -1,12 +1,12 @@
 ﻿using BenchmarkDotNet.Attributes;
 
-namespace Benchmarking;
+namespace Benchmarking.Tests;
 
 public readonly struct ReadonlyMatrix6 //removed readonly from indexing, with properties *STAR* (13)
 {
     private readonly float[] values;
 
-    public int Height { get;  }
+    public int Height { get; }
     public int Width { get; }
 
     public float this[int row, int col]
@@ -44,16 +44,16 @@ public readonly struct ReadonlyMatrix6 //removed readonly from indexing, with pr
 
     public static ReadonlyMatrix6 operator +(ReadonlyMatrix6 A, ReadonlyMatrix6 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[] C = new float[A.Width * A.Height];
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i * A.Height + j] = A[i, j] + B[i, j];
             }
@@ -64,7 +64,7 @@ public readonly struct ReadonlyMatrix6 //removed readonly from indexing, with pr
 
     public static ReadonlyMatrix6 operator *(ReadonlyMatrix6 A, ReadonlyMatrix6 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -72,9 +72,9 @@ public readonly struct ReadonlyMatrix6 //removed readonly from indexing, with pr
 
         float[] B2 = new float[B.Height * B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i * B.Width + j] = B[j, i];
             }
@@ -82,13 +82,13 @@ public readonly struct ReadonlyMatrix6 //removed readonly from indexing, with pr
 
         float[] C = new float[A.Height * B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j * A.Width + k];
                 }
@@ -138,16 +138,16 @@ public struct ReadonlyMatrix5 // without readonly
 
     public static ReadonlyMatrix5 operator +(ReadonlyMatrix5 A, ReadonlyMatrix5 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[] C = new float[A.Width * A.Height];
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i * A.Height + j] = A[i, j] + B[i, j];
             }
@@ -158,7 +158,7 @@ public struct ReadonlyMatrix5 // without readonly
 
     public static ReadonlyMatrix5 operator *(ReadonlyMatrix5 A, ReadonlyMatrix5 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -166,9 +166,9 @@ public struct ReadonlyMatrix5 // without readonly
 
         float[] B2 = new float[B.Height * B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i * B.Width + j] = B[j, i];
             }
@@ -176,13 +176,13 @@ public struct ReadonlyMatrix5 // without readonly
 
         float[] C = new float[A.Height * B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j * B.Height + k];
                 }
@@ -219,16 +219,16 @@ public readonly struct ReadonlyMatrix4 //double-array
 
     public static ReadonlyMatrix4 operator +(ReadonlyMatrix4 A, ReadonlyMatrix4 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[,] C = new float[A.Width, A.Height];
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i, j] = A[i, j] + B[i, j];
             }
@@ -239,33 +239,33 @@ public readonly struct ReadonlyMatrix4 //double-array
 
     public static ReadonlyMatrix4 operator *(ReadonlyMatrix4 A, ReadonlyMatrix4 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
         }
 
-        float[,] B2 = new float[B.Height,B.Width];
+        float[,] B2 = new float[B.Height, B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
-                B2[i,j] = B[j, i];
+                B2[i, j] = B[j, i];
             }
         }
 
         float[,] C = new float[A.Height, B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
-                    total += A[i, k] * B2[j , k];
+                    total += A[i, k] * B2[j, k];
                 }
 
                 C[i, j] = total;
@@ -312,16 +312,16 @@ public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 
     public static ReadonlyMatrix3 operator +(ReadonlyMatrix3 A, ReadonlyMatrix3 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[] C = new float[A.Width * A.Height];
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i * A.Height + j] = A[i, j] + B[i, j];
             }
@@ -332,7 +332,7 @@ public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 
     public static ReadonlyMatrix3 operator *(ReadonlyMatrix3 A, ReadonlyMatrix3 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -340,9 +340,9 @@ public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 
         float[] B2 = new float[B.Height * B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i * B.Width + j] = B[j, i];
             }
@@ -350,13 +350,13 @@ public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 
         float[] C = new float[A.Height * B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j * B.Height + k];
                 }
@@ -370,7 +370,7 @@ public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 
     public static ReadonlyMatrix3 OperatorProd2(ReadonlyMatrix3 A, ReadonlyMatrix3 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -378,9 +378,9 @@ public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 
         float[] b2 = new float[B.Height * B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 b2[i * B.Width + j] = B[j, i];
             }
@@ -390,13 +390,13 @@ public readonly struct ReadonlyMatrix3 //removed readonly from indexing
 
         float[] C = new float[A.Height * B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j, k];
                 }
@@ -421,12 +421,12 @@ public readonly struct ReadonlyMatrix2 //array-array
     public ReadonlyMatrix2(float[,] matrix)
     {
         values = new float[matrix.GetLength(0)][];
-        for(int i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
             values[i] = new float[matrix.GetLength(1)];
             Buffer.BlockCopy(
-                matrix, i*matrix.GetLength(1)*sizeof(float), 
-                values[i], 0, 
+                matrix, i * matrix.GetLength(1) * sizeof(float),
+                values[i], 0,
                 values[i].Length * sizeof(float));
         }
     }
@@ -439,7 +439,7 @@ public readonly struct ReadonlyMatrix2 //array-array
     private ReadonlyMatrix2(ReadonlyMatrix2 matrix)
     {
         values = new float[matrix.values.Length][];
-        for(int i = 0; i < values.Length; i++)
+        for (int i = 0; i < values.Length; i++)
         {
             values[i] = new float[matrix.values[0].Length];
             Buffer.BlockCopy(
@@ -451,16 +451,16 @@ public readonly struct ReadonlyMatrix2 //array-array
 
     public static ReadonlyMatrix2 operator +(ReadonlyMatrix2 A, ReadonlyMatrix2 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[][] C = new float[A.Width][];
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i][j] = A[i, j] + B[i, j];
             }
@@ -471,32 +471,32 @@ public readonly struct ReadonlyMatrix2 //array-array
 
     public static ReadonlyMatrix2 operator *(ReadonlyMatrix2 A, ReadonlyMatrix2 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
         }
 
         float[][] B2 = new float[B.Height][];
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
             B2[i] = new float[B.Width];
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
-                B2[i][j] = B[j,i];
+                B2[i][j] = B[j, i];
             }
         }
 
         float[][] C = new float[A.Height][];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
             C[i] = new float[B.Width];
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j][k];
                 }
@@ -510,7 +510,7 @@ public readonly struct ReadonlyMatrix2 //array-array
 
 }
 
-public readonly struct ReadonlyMatrix 
+public readonly struct ReadonlyMatrix
 {
     private readonly float[] values;
 
@@ -546,16 +546,16 @@ public readonly struct ReadonlyMatrix
 
     public static ReadonlyMatrix operator +(ReadonlyMatrix A, ReadonlyMatrix B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[] C = new float[A.Width * A.Height];
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i * A.Height + j] = A[i, j] + B[i, j];
             }
@@ -566,7 +566,7 @@ public readonly struct ReadonlyMatrix
 
     public static ReadonlyMatrix operator *(ReadonlyMatrix A, ReadonlyMatrix B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -574,9 +574,9 @@ public readonly struct ReadonlyMatrix
 
         float[] B2 = new float[B.Height * B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i * B.Width + j] = B[j, i];
             }
@@ -584,13 +584,13 @@ public readonly struct ReadonlyMatrix
 
         float[] C = new float[A.Height * B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j * B.Height + k];
                 }
@@ -604,7 +604,7 @@ public readonly struct ReadonlyMatrix
 
     public static ReadonlyMatrix OperatorProd2(ReadonlyMatrix A, ReadonlyMatrix B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -612,9 +612,9 @@ public readonly struct ReadonlyMatrix
 
         float[] b2 = new float[B.Height * B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 b2[i * B.Width + j] = B[j, i];
             }
@@ -624,13 +624,13 @@ public readonly struct ReadonlyMatrix
 
         float[] C = new float[A.Height * B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j, k];
                 }
@@ -651,11 +651,13 @@ public readonly struct WriteableMatrix
     public readonly int Width;
 
     public readonly float this[int row, int col]
-    { 
-        get { 
+    {
+        get
+        {
             return values[row * Width + col];
-        } 
-        set { 
+        }
+        set
+        {
             values[row * Width + col] = value;
         }
     }
@@ -694,16 +696,16 @@ public readonly struct WriteableMatrix
 
     public static WriteableMatrix operator +(WriteableMatrix A, WriteableMatrix B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         WriteableMatrix C = new(A);
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i, j] = A[i, j] + B[i, j];
             }
@@ -714,34 +716,34 @@ public readonly struct WriteableMatrix
 
     public static WriteableMatrix operator *(WriteableMatrix A, WriteableMatrix B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
         }
 
         WriteableMatrix B2 = new(B.Height, B.Width);
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i, j] = B[j, i];
             }
         }
 
         WriteableMatrix C = new(A.Height, B.Width);
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j, k];
                 }
 
-                C[i,j] = total;
+                C[i, j] = total;
             }
         }
 
@@ -750,7 +752,7 @@ public readonly struct WriteableMatrix
 
     public static WriteableMatrix OperatorProd2(WriteableMatrix A, WriteableMatrix B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -758,9 +760,9 @@ public readonly struct WriteableMatrix
 
         float[] B2Values = new float[B.Height * A.Height];
         float[] BValues = B.values;
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2Values[i * A.Height + j] = BValues[j * B.Width + i];
             }
@@ -769,13 +771,13 @@ public readonly struct WriteableMatrix
         WriteableMatrix C = new(A.Height, B.Width);
         float[] CValues = C.values;
         float[] AValues = A.values;
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += AValues[i * A.Width + k] * B2Values[j * A.Width + k];
                 }
@@ -841,16 +843,16 @@ public struct WriteableMatrix2 // without readonly
 
     public static WriteableMatrix2 operator +(WriteableMatrix2 A, WriteableMatrix2 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         WriteableMatrix2 C = new(A);
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i, j] = A[i, j] + B[i, j];
             }
@@ -861,29 +863,29 @@ public struct WriteableMatrix2 // without readonly
 
     public static WriteableMatrix2 operator *(WriteableMatrix2 A, WriteableMatrix2 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
         }
 
         WriteableMatrix2 B2 = new(B.Height, B.Width);
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i, j] = B[j, i];
             }
         }
 
         WriteableMatrix2 C = new(A.Height, B.Width);
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j, k];
                 }
@@ -949,16 +951,16 @@ public readonly struct WriteableMatrix3 // with properties
 
     public static WriteableMatrix3 operator +(WriteableMatrix3 A, WriteableMatrix3 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         WriteableMatrix3 C = new(A);
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i, j] = A[i, j] + B[i, j];
             }
@@ -969,29 +971,29 @@ public readonly struct WriteableMatrix3 // with properties
 
     public static WriteableMatrix3 operator *(WriteableMatrix3 A, WriteableMatrix3 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
         }
 
         WriteableMatrix3 B2 = new(B.Height, B.Width);
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i, j] = B[j, i];
             }
         }
 
         WriteableMatrix3 C = new(A.Height, B.Width);
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j, k];
                 }
@@ -1005,7 +1007,7 @@ public readonly struct WriteableMatrix3 // with properties
 
     public static WriteableMatrix3 OperatorProd2(WriteableMatrix3 A, WriteableMatrix3 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -1013,9 +1015,9 @@ public readonly struct WriteableMatrix3 // with properties
 
         float[] B2 = new float[B.Height * B.Width];
 
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i * B.Width + j] = B[j, i];
             }
@@ -1023,13 +1025,13 @@ public readonly struct WriteableMatrix3 // with properties
 
         float[] C = new float[A.Height * B.Width];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j * B.Height + k];
                 }
@@ -1096,16 +1098,16 @@ public struct WriteableMatrix4 // without readonly and with properties
 
     public static WriteableMatrix4 operator +(WriteableMatrix4 A, WriteableMatrix4 B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         WriteableMatrix4 C = new(A);
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 C[i, j] = A[i, j] + B[i, j];
             }
@@ -1116,29 +1118,29 @@ public struct WriteableMatrix4 // without readonly and with properties
 
     public static WriteableMatrix4 operator *(WriteableMatrix4 A, WriteableMatrix4 B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
         }
 
         WriteableMatrix4 B2 = new(B.Height, B.Width);
-        for(int i = 0; i < B.Width; i++)
+        for (int i = 0; i < B.Width; i++)
         {
-            for(int j = 0; j < B.Height; j++)
+            for (int j = 0; j < B.Height; j++)
             {
                 B2[i, j] = B[j, i];
             }
         }
 
         WriteableMatrix4 C = new(A.Height, B.Width);
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.Width; k++)
+                for (int k = 0; k < A.Width; k++)
                 {
                     total += A[i, k] * B2[j, k];
                 }
@@ -1151,7 +1153,7 @@ public struct WriteableMatrix4 // without readonly and with properties
     }
 }
 
-public class FloatBenchmarking
+public class FloatBenchmarks
 {
 
     private readonly float[,] A;
@@ -1195,7 +1197,7 @@ public class FloatBenchmarking
 
     private const int SIZE = 1_000;
 
-    public FloatBenchmarking()
+    public FloatBenchmarks()
     {
         A = RandomMatrix(SIZE, 1000);
         B = RandomMatrix(SIZE, 1000);
@@ -1229,9 +1231,9 @@ public class FloatBenchmarking
     {
         float[,] matrix = new float[size, size];
         Random random = new();
-        for(int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++)
         {
-            for(int j = 0; j < size; j++)
+            for (int j = 0; j < size; j++)
             {
                 matrix[i, j] = (float)random.NextDouble() * 2 * range - range;
             }
@@ -1242,10 +1244,10 @@ public class FloatBenchmarking
     static float[][] AssignMatrix(float[,] matrix)
     {
         float[][] result = new float[matrix.GetLength(0)][];
-        for(int i = 0; i < result.Length; i++)
+        for (int i = 0; i < result.Length; i++)
         {
             result[i] = new float[matrix.GetLength(1)];
-            for(int j = 0; j < result[0].Length; j++)
+            for (int j = 0; j < result[0].Length; j++)
             {
                 result[i][j] = matrix[i, j];
             }
@@ -1256,11 +1258,11 @@ public class FloatBenchmarking
     static float[] AssignMatrix2(float[,] matrix)
     {
         float[] result = new float[matrix.GetLength(0) * matrix.GetLength(1)];
-        for(int i = 0; i < matrix.GetLength(0); i++)
+        for (int i = 0; i < matrix.GetLength(0); i++)
         {
-            for(int j = 0; j < matrix.GetLength(1); j++)
+            for (int j = 0; j < matrix.GetLength(1); j++)
             {
-                result[i*matrix.GetLength(1) + j] = matrix[i, j];
+                result[i * matrix.GetLength(1) + j] = matrix[i, j];
             }
         }
         return result;
@@ -1397,17 +1399,17 @@ public class FloatBenchmarking
     [Benchmark]
     public float[,] Prod1()
     {
-        if(A.GetLength(1) != B.GetLength(0))
+        if (A.GetLength(1) != B.GetLength(0))
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
         }
 
-        float[,] B2 = new float[B.GetLength(1),B.GetLength(0)];
+        float[,] B2 = new float[B.GetLength(1), B.GetLength(0)];
 
-        for(int i = 0; i < B2.GetLength(0); i++)
+        for (int i = 0; i < B2.GetLength(0); i++)
         {
-            for(int j = 0; j < B2.GetLength(1); j++)
+            for (int j = 0; j < B2.GetLength(1); j++)
             {
                 B2[i, j] = B[j, i];
             }
@@ -1415,13 +1417,13 @@ public class FloatBenchmarking
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int i = 0; i < C.GetLength(0); i++)
+        for (int i = 0; i < C.GetLength(0); i++)
         {
-            for(int j = 0; j < C.GetLength(1); j++)
+            for (int j = 0; j < C.GetLength(1); j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
                     total += A[i, k] * B[j, k];
                 }
@@ -1436,7 +1438,7 @@ public class FloatBenchmarking
     [Benchmark]
     public float[][] Prod2()
     {
-        if(A2[0].Length != B2.Length)
+        if (A2[0].Length != B2.Length)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -1444,10 +1446,10 @@ public class FloatBenchmarking
 
         float[][] B22 = new float[B2.Length][];
 
-        for(int i = 0; i < B22.Length; i++)
+        for (int i = 0; i < B22.Length; i++)
         {
             B22[i] = new float[B2[0].Length];
-            for(int j = 0; j < B22[0].Length; j++)
+            for (int j = 0; j < B22[0].Length; j++)
             {
                 B22[i][j] = B2[j][i];
             }
@@ -1455,14 +1457,14 @@ public class FloatBenchmarking
 
         float[][] C = new float[A2.Length][];
 
-        for(int i = 0; i < C.Length; i++)
+        for (int i = 0; i < C.Length; i++)
         {
             C[i] = new float[A2[0].Length];
-            for(int j = 0; j < C[0].Length; j++)
+            for (int j = 0; j < C[0].Length; j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
                     total += A2[i][k] * B2[j][k];
                 }
@@ -1477,7 +1479,7 @@ public class FloatBenchmarking
     [Benchmark]
     public float[] Prod3()
     {
-        if(A.GetLength(1) != B.GetLength(0))
+        if (A.GetLength(1) != B.GetLength(0))
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -1485,9 +1487,9 @@ public class FloatBenchmarking
 
         float[] B32 = new float[B.GetLength(0) * B.GetLength(1)];
 
-        for(int i = 0; i < B.GetLength(0); i++)
+        for (int i = 0; i < B.GetLength(0); i++)
         {
-            for(int j = 0; j < B.GetLength(1); j++)
+            for (int j = 0; j < B.GetLength(1); j++)
             {
                 B32[i * B.GetLength(1) + j] = B3[j * B.GetLength(0) + i];
             }
@@ -1495,15 +1497,15 @@ public class FloatBenchmarking
 
         float[] C = new float[A.GetLength(0) * B.GetLength(1)];
 
-        for(int i = 0; i < A.GetLength(0); i++)
+        for (int i = 0; i < A.GetLength(0); i++)
         {
-            for(int j = 0; j < B.GetLength(1); j++)
+            for (int j = 0; j < B.GetLength(1); j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
-                    total += A3[i*A.GetLength(1) + k] * B3[j*B.GetLength(0) + k];
+                    total += A3[i * A.GetLength(1) + k] * B3[j * B.GetLength(0) + k];
                 }
 
                 C[i * A.GetLength(1) + j] = total;

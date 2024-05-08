@@ -2,9 +2,9 @@
 using BenchmarkDotNet.Attributes;
 using System.Numerics;
 
-namespace Benchmarking;
+namespace Benchmarking.Tests;
 
-public class VectorBenchmarking
+public class VectorBenchmarks
 {
     public readonly struct Matrix
     {
@@ -48,9 +48,9 @@ public class VectorBenchmarking
         public Matrix Transpose()
         {
             Matrix result = new(Width, Height);
-            for(int i = 0; i < Width; i++)
+            for (int i = 0; i < Width; i++)
             {
-                for(int j = 0; j < Height; j++)
+                for (int j = 0; j < Height; j++)
                 {
                     result[i, j] = this[j, i];
                 }
@@ -61,15 +61,15 @@ public class VectorBenchmarking
 
         public static Matrix operator +(Matrix A, Matrix B)
         {
-            if(A.Width != B.Width || A.Height != B.Height)
+            if (A.Width != B.Width || A.Height != B.Height)
             {
                 throw new ArgumentException("Expected matrices with equal lengthed sides!");
             }
 
             Matrix C = new(A.Height, A.Width);
-            for(int i = 0; i < A.Height; i++)
+            for (int i = 0; i < A.Height; i++)
             {
-                for(int j = 0; j < A.Width; j++)
+                for (int j = 0; j < A.Width; j++)
                 {
                     C[i, j] = A[i, j] + B[i, j];
                 }
@@ -80,7 +80,7 @@ public class VectorBenchmarking
 
         public static Matrix operator *(Matrix A, Matrix B)
         {
-            if(A.Width != B.Height)
+            if (A.Width != B.Height)
             {
                 throw new ArgumentException("Expected matrices such that the second length of " +
                     "the first matrix was equal to the first length of the second!");
@@ -89,13 +89,13 @@ public class VectorBenchmarking
             Matrix B2 = B.Transpose();
             Matrix C = new(A.Height, B2.Height);
 
-            for(int i = 0; i < A.Height; i++)
+            for (int i = 0; i < A.Height; i++)
             {
-                for(int j = 0; j < B2.Height; j++)
+                for (int j = 0; j < B2.Height; j++)
                 {
                     float total = 0;
 
-                    for(int k = 0; k < A.Width; k++)
+                    for (int k = 0; k < A.Width; k++)
                     {
                         total += A[i, k] * B2[j, k];
                     }
@@ -110,9 +110,9 @@ public class VectorBenchmarking
         public static Matrix operator *(Matrix A, float b)
         {
             Matrix C = new(A.Height, A.Width);
-            for(int i = 0; i < A.Height; i++)
+            for (int i = 0; i < A.Height; i++)
             {
-                for(int j = 0; j < A.Width; j++)
+                for (int j = 0; j < A.Width; j++)
                 {
                     C[i, j] = A[i, j] * b;
                 }
@@ -125,9 +125,9 @@ public class VectorBenchmarking
         public string ToString(string rowSep = "\n", string colSep = "\t")
         {
             string total = "";
-            for(int i = 0; i < Height; i++)
+            for (int i = 0; i < Height; i++)
             {
-                for(int j = 0; j < Width; j++)
+                for (int j = 0; j < Width; j++)
                 {
                     total += this[i, j].ToString() + colSep;
                 }
@@ -144,9 +144,9 @@ public class VectorBenchmarking
         int internalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
         Vector<float>[] values = new Vector<float>[A.Height * internalWidth];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < internalWidth; j++)
+            for (int j = 0; j < internalWidth; j++)
             {
                 float[] floats = new float[Vector<float>.Count];
                 int nonVectorIndex = j * Vector<float>.Count;
@@ -164,15 +164,15 @@ public class VectorBenchmarking
         int internalWidth = (int)Math.Ceiling(A.Height / (float)Vector<float>.Count);
         Vector<float>[] values = new Vector<float>[A.Width * internalWidth];
 
-        for(int i = 0; i < A.Width; i++)
+        for (int i = 0; i < A.Width; i++)
         {
-            for(int j = 0; j < internalWidth; j++)
+            for (int j = 0; j < internalWidth; j++)
             {
                 float[] floats = new float[Vector<float>.Count];
                 int nonVectorIndex = j * Vector<float>.Count;
                 int length = Math.Min(Vector<float>.Count, A.Height - nonVectorIndex);
 
-                for(int k = 0; k < length; k++)
+                for (int k = 0; k < length; k++)
                 {
                     floats[k] = A[nonVectorIndex + k, i];
                 }
@@ -189,18 +189,18 @@ public class VectorBenchmarking
         int internalWidth = (int)Math.Ceiling(width / (float)Vector<float>.Count);
         Matrix result = new(height, width);
 
-        for(int i = 0; i < height; i++)
+        for (int i = 0; i < height; i++)
         {
-            for(int j = 0; j < internalWidth; j++)
+            for (int j = 0; j < internalWidth; j++)
             {
                 int length = width - j * Vector<float>.Count;
-                if(length > Vector<float>.Count)
+                if (length > Vector<float>.Count)
                 {
                     values[i * internalWidth + j].CopyTo(result.values, i * width + j * Vector<float>.Count);
                     continue;
                 }
 
-                for(int k = 0; k < length; k++)
+                for (int k = 0; k < length; k++)
                 {
                     result[i, j * Vector<float>.Count + k] = values[i * internalWidth + j][k];
                 }
@@ -214,7 +214,7 @@ public class VectorBenchmarking
 
     public static Matrix OperatorAddPre(Matrix A, Matrix B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
@@ -226,9 +226,9 @@ public class VectorBenchmarking
 
         Vector<float>[] CValues = new Vector<float>[A.Height * AInternalWidth];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < AInternalWidth; j++)
+            for (int j = 0; j < AInternalWidth; j++)
             {
                 CValues[i * AInternalWidth + j] = AValues[i * AInternalWidth + j] + BValues[i * AInternalWidth + j];
             }
@@ -239,7 +239,7 @@ public class VectorBenchmarking
 
     public static Matrix OperatorProdPre(Matrix A, Matrix B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -254,26 +254,26 @@ public class VectorBenchmarking
 
         Vector<float>[] CValues = new Vector<float>[A.Height * BInternalWidth];
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < BInternalWidth; j++)
+            for (int j = 0; j < BInternalWidth; j++)
             {
                 // vector dot product 
                 float[] value = new float[Vector<float>.Count];
 
                 int length = Math.Min(Vector<float>.Count, B.Width - j * Vector<float>.Count);
-                for(int k = 0; k < length; k++)
+                for (int k = 0; k < length; k++)
                 {
                     // single dot product 
                     Vector<float> totalVector = new();
 
-                    for(int l = 0; l < AInternalWidth; l++)
+                    for (int l = 0; l < AInternalWidth; l++)
                     {
                         totalVector += AValues[i * AInternalWidth + l] * BValuesTransposed[(j * Vector<float>.Count + k) * BTransposedInternalWidth + l];
                     }
 
                     float totalFloat = 0;
-                    for(int NNN = 0; NNN < Vector<float>.Count; NNN++)
+                    for (int NNN = 0; NNN < Vector<float>.Count; NNN++)
                     {
                         totalFloat += totalVector[NNN];
                     }
@@ -281,7 +281,7 @@ public class VectorBenchmarking
                     value[k] = totalFloat;
                 }
 
-                CValues[i*BTransposedInternalWidth + j] = new(value);
+                CValues[i * BTransposedInternalWidth + j] = new(value);
             }
         }
 
@@ -294,9 +294,9 @@ public class VectorBenchmarking
         Vector<float>[] AValues = GetValues(A);
         Vector<float>[] BValues = GetValues(A);
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < AInternalWidth; j++)
+            for (int j = 0; j < AInternalWidth; j++)
             {
                 BValues[i * AInternalWidth + j] = AValues[i * AInternalWidth + j] * b;
             }
@@ -308,7 +308,7 @@ public class VectorBenchmarking
 
     public static Matrix OperatorAddIn(Matrix A, Matrix B)
     {
-        if(A.Width != B.Width || A.Height != B.Height)
+        if (A.Width != B.Width || A.Height != B.Height)
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
@@ -316,17 +316,17 @@ public class VectorBenchmarking
         int AInternalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
 
         Matrix C = new(A.Height, A.Width);
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < AInternalWidth; j++)
+            for (int j = 0; j < AInternalWidth; j++)
             {
                 int length = Math.Min(Vector<float>.Count, A.Width - j * Vector<float>.Count);
                 int offset = (i * A.Width + j * Vector<float>.Count) * sizeof(float);
 
                 FastAdd<float>(
-                    A.values, offset, 
-                    B.values, offset, 
-                    C.values, offset, 
+                    A.values, offset,
+                    B.values, offset,
+                    C.values, offset,
                     length * sizeof(float));
             }
         }
@@ -336,7 +336,7 @@ public class VectorBenchmarking
 
     public static Matrix OperatorProdIn(Matrix A, Matrix B)
     {
-        if(A.Width != B.Height)
+        if (A.Width != B.Height)
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -345,13 +345,13 @@ public class VectorBenchmarking
         Matrix B2 = B.Transpose();
         Matrix C = new(A.Height, B2.Height);
 
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B.Width; j++)
+            for (int j = 0; j < B.Width; j++)
             {
                 C[i, j] = FastDotProduct(
-                    A.values, i*A.Width * sizeof(float), 
-                    B2.values, j*B2.Width * sizeof(float), 
+                    A.values, i * A.Width * sizeof(float),
+                    B2.values, j * B2.Width * sizeof(float),
                     A.Width * sizeof(float));
             }
         }
@@ -364,9 +364,9 @@ public class VectorBenchmarking
         int AInternalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
 
         Matrix C = new(A.Height, A.Width);
-        for(int i = 0; i < A.Height; i++)
+        for (int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < AInternalWidth; j++)
+            for (int j = 0; j < AInternalWidth; j++)
             {
                 int length = Math.Min(Vector<float>.Count, A.Width - j * Vector<float>.Count);
                 int inputOffset = i * A.Width + j * Vector<float>.Count;
@@ -374,7 +374,7 @@ public class VectorBenchmarking
                 FastScale(
                     A.values, inputOffset * sizeof(float),
                     b,
-                    C.values, (i*A.Width + j*Vector<float>.Count)*sizeof(float),
+                    C.values, (i * A.Width + j * Vector<float>.Count) * sizeof(float),
                     length * sizeof(float));
             }
         }
@@ -384,7 +384,7 @@ public class VectorBenchmarking
 
 
 
-    public static void FastAdd<T>(Array src1, int srcOffset1, Array src2, int srcOffset2, Array dst, int dstOffset, int count) where T : struct 
+    public static void FastAdd<T>(Array src1, int srcOffset1, Array src2, int srcOffset2, Array dst, int dstOffset, int count) where T : struct
     {
         T[] AValues = new T[Vector<T>.Count];
         T[] BValues = new T[Vector<T>.Count];
@@ -441,7 +441,7 @@ public class VectorBenchmarking
 
         Vector<float> totalVector = new();
 
-        for(int l = 0; l < internalLength; l++)
+        for (int l = 0; l < internalLength; l++)
         {
             int length = Math.Min(Vector<float>.Count, valueCount - l * Vector<float>.Count) * sizeof(float);
 
@@ -458,7 +458,7 @@ public class VectorBenchmarking
         }
 
         float totalFloat = 0;
-        for(int l = 0; l < Vector<float>.Count; l++)
+        for (int l = 0; l < Vector<float>.Count; l++)
         {
             totalFloat += totalVector[l];
         }
@@ -480,9 +480,9 @@ public class VectorBenchmarking
     {
         float[,] matrix = new float[size, size];
         Random random = new();
-        for(int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++)
         {
-            for(int j = 0; j < size; j++)
+            for (int j = 0; j < size; j++)
             {
                 matrix[i, j] = (float)random.NextDouble() * 2 * range - range;
             }
@@ -490,12 +490,12 @@ public class VectorBenchmarking
         return matrix;
     }
 
-    public VectorBenchmarking()
+    public VectorBenchmarks()
     {
         matrixA = new(RandomMatrix(SIZE, 1000));
         matrixB = new(RandomMatrix(SIZE, 1000));
 
-        randomNum = (float) new Random().NextDouble() * 10000f;
+        randomNum = (float)new Random().NextDouble() * 10000f;
     }
 
 

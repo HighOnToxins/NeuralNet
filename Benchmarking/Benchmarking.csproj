@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,11 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.12" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\NeuralNet\NeuralNet.csproj" />
-    <ProjectReference Include="..\Program\Training.csproj" />
   </ItemGroup>
 
 </Project>

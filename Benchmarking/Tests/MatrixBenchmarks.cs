@@ -1,7 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
-using NeuralNet.Tensor;
 
-namespace Benchmarking;
+namespace Benchmarking.Tests;
 
 public class MatrixBenchmarks
 {
@@ -10,9 +9,9 @@ public class MatrixBenchmarks
     {
         float[,] B = new float[A.GetLength(1), A.GetLength(0)];
 
-        for(int i = 0; i < B.GetLength(0); i++)
+        for (int i = 0; i < B.GetLength(0); i++)
         {
-            for(int j = 0; j < B.GetLength(1); j++)
+            for (int j = 0; j < B.GetLength(1); j++)
             {
                 B[i, j] = A[j, i];
             }
@@ -35,9 +34,9 @@ public class MatrixBenchmarks
     {
         float[,] matrix = new float[size, size];
         Random random = new();
-        for(int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++)
         {
-            for(int j = 0; j < size; j++)
+            for (int j = 0; j < size; j++)
             {
                 matrix[i, j] = (float)random.NextDouble() * 2 * range - range;
             }
@@ -48,16 +47,16 @@ public class MatrixBenchmarks
     [Benchmark]
     public float[,] Add1()
     {
-        if(A.GetLength(0) != B.GetLength(0) || A.GetLength(1) != B.GetLength(1))
+        if (A.GetLength(0) != B.GetLength(0) || A.GetLength(1) != B.GetLength(1))
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int i = 0; i < C.GetLength(0); i++)
+        for (int i = 0; i < C.GetLength(0); i++)
         {
-            for(int j = 0; j < C.GetLength(1); j++)
+            for (int j = 0; j < C.GetLength(1); j++)
             {
                 C[i, j] = A[i, j] + B[i, j];
             }
@@ -69,16 +68,16 @@ public class MatrixBenchmarks
     [Benchmark]
     public float[,] Add2()
     {
-        if(A.GetLength(0) != B.GetLength(0) || A.GetLength(1) != B.GetLength(1))
+        if (A.GetLength(0) != B.GetLength(0) || A.GetLength(1) != B.GetLength(1))
         {
             throw new ArgumentException("Expected matrices with equal lengthed sides!");
         }
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int j = 0; j < C.GetLength(1); j++)
+        for (int j = 0; j < C.GetLength(1); j++)
         {
-            for(int i = 0; i < C.GetLength(0); i++)
+            for (int i = 0; i < C.GetLength(0); i++)
             {
                 C[i, j] = A[i, j] + B[i, j];
             }
@@ -90,7 +89,7 @@ public class MatrixBenchmarks
     [Benchmark]
     public float[,] Prod1()
     {
-        if(A.GetLength(1) != B.GetLength(0))
+        if (A.GetLength(1) != B.GetLength(0))
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -98,13 +97,13 @@ public class MatrixBenchmarks
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int i = 0; i < C.GetLength(0); i++)
+        for (int i = 0; i < C.GetLength(0); i++)
         {
-            for(int j = 0; j < C.GetLength(1); j++)
+            for (int j = 0; j < C.GetLength(1); j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
                     total += A[i, k] * B[k, j];
                 }
@@ -119,7 +118,7 @@ public class MatrixBenchmarks
     [Benchmark]
     public float[,] Prod2()
     {
-        if(A.GetLength(1) != B.GetLength(0))
+        if (A.GetLength(1) != B.GetLength(0))
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -127,13 +126,13 @@ public class MatrixBenchmarks
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int j = 0; j < C.GetLength(1); j++)
+        for (int j = 0; j < C.GetLength(1); j++)
         {
-            for(int i = 0; i < C.GetLength(0); i++)
+            for (int i = 0; i < C.GetLength(0); i++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
                     total += A[i, k] * B[j, k];
                 }
@@ -148,7 +147,7 @@ public class MatrixBenchmarks
     [Benchmark]
     public float[,] Prod3()
     {
-        if(A.GetLength(1) != B.GetLength(0))
+        if (A.GetLength(1) != B.GetLength(0))
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -156,11 +155,11 @@ public class MatrixBenchmarks
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int i = 0; i < C.GetLength(0); i++)
+        for (int i = 0; i < C.GetLength(0); i++)
         {
-            for(int j = 0; j < C.GetLength(1); j++)
+            for (int j = 0; j < C.GetLength(1); j++)
             {
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
                     C[i, j] += A[i, k] * B[j, k];
                 }
@@ -173,7 +172,7 @@ public class MatrixBenchmarks
     [Benchmark]
     public float[,] Prod4()
     {
-        if(A.GetLength(1) != B.GetLength(0))
+        if (A.GetLength(1) != B.GetLength(0))
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -181,9 +180,9 @@ public class MatrixBenchmarks
 
         float[,] B2 = new float[B.GetLength(1), B.GetLength(0)];
 
-        for(int i = 0; i < B2.GetLength(0); i++)
+        for (int i = 0; i < B2.GetLength(0); i++)
         {
-            for(int j = 0; j < B2.GetLength(1); j++)
+            for (int j = 0; j < B2.GetLength(1); j++)
             {
                 B2[i, j] = B[j, i];
             }
@@ -191,13 +190,13 @@ public class MatrixBenchmarks
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int i = 0; i < C.GetLength(0); i++)
+        for (int i = 0; i < C.GetLength(0); i++)
         {
-            for(int j = 0; j < C.GetLength(1); j++)
+            for (int j = 0; j < C.GetLength(1); j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
                     total += A[i, k] * B2[j, k];
                 }
@@ -213,7 +212,7 @@ public class MatrixBenchmarks
     [Benchmark]
     public float[,] Prod5()
     {
-        if(A.GetLength(1) != B.GetLength(0))
+        if (A.GetLength(1) != B.GetLength(0))
         {
             throw new ArgumentException("Expected matrices such that the second length of " +
                 "the first matrix was equal to the first length of the second!");
@@ -221,13 +220,13 @@ public class MatrixBenchmarks
 
         float[,] C = new float[A.GetLength(0), B.GetLength(1)];
 
-        for(int i = 0; i < C.GetLength(0); i++)
+        for (int i = 0; i < C.GetLength(0); i++)
         {
-            for(int j = 0; j < C.GetLength(1); j++)
+            for (int j = 0; j < C.GetLength(1); j++)
             {
                 float total = 0;
 
-                for(int k = 0; k < A.GetLength(1); k++)
+                for (int k = 0; k < A.GetLength(1); k++)
                 {
                     total += A[i, k] * B[j, k];
                 }
@@ -244,7 +243,7 @@ public class MatrixBenchmarks
     {
         float[,] result = new float[A.GetLength(0), A.GetLength(1) + B.GetLength(1)];
 
-        for(int i = 0; i < A.GetLength(0); i++)
+        for (int i = 0; i < A.GetLength(0); i++)
         {
             Buffer.BlockCopy(
                 A, i * A.GetLength(1) * sizeof(float),
@@ -264,17 +263,17 @@ public class MatrixBenchmarks
     {
         float[,] result = new float[A.GetLength(0), A.GetLength(1) + B.GetLength(1)];
 
-        for(int i = 0; i < A.GetLength(0); i++)
+        for (int i = 0; i < A.GetLength(0); i++)
         {
-            for(int j = 0; j < A.GetLength(1); j++)
+            for (int j = 0; j < A.GetLength(1); j++)
             {
                 result[i, j] = A[i, j];
             }
         }
 
-        for(int i = 0; i < B.GetLength(0); i++)
+        for (int i = 0; i < B.GetLength(0); i++)
         {
-            for(int j = 0; j < B.GetLength(1); j++)
+            for (int j = 0; j < B.GetLength(1); j++)
             {
                 result[i, B.GetLength(0)] = B[i, j];
             }
@@ -289,11 +288,11 @@ public class MatrixBenchmarks
         float[,] result = new float[top.GetLength(0) + bottom.GetLength(0), top.GetLength(0)];
         Buffer.BlockCopy(
             top, 0,
-            result, 0, 
+            result, 0,
             top.Length * sizeof(float));
         Buffer.BlockCopy(
-            bottom, 0, 
-            result, top.Length * sizeof(float), 
+            bottom, 0,
+            result, top.Length * sizeof(float),
             bottom.Length * sizeof(float));
         return result;
     }
