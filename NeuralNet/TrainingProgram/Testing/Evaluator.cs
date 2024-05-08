@@ -1,6 +1,6 @@
 ﻿using NeuralNet.Tensor;
 
-namespace NeuralNet.TrainingProgram;
+namespace NeuralNet.TrainingProgram.Testing;
 
 /// <summary> Allows one to construct a confusion matrix over the categories optimized over. </summary>
 public sealed class Evaluator

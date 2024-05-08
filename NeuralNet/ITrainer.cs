@@ -13,11 +13,7 @@ public interface ITrainer<N> : ITrainer where N : INet
 
     public Vector Train(N net, TrainingOption option = TrainingOption.Minimize);
 
-    public float Loss(N net);
-
     Vector ITrainer.Train(INet net, TrainingOption option) => Train((N)net, option);
-
-    float ITrainer.Loss(INet net) => Loss((N)net);
 
 }
 
@@ -27,6 +23,5 @@ public interface ITrainer
 
     public Vector Train(INet net, TrainingOption option = TrainingOption.Minimize);
 
-    public float Loss(INet net);
 
 }

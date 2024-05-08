@@ -5,6 +5,7 @@ using NeuralNet.TrainingProgram;
 using NeuralNet.Tensor;
 using NeuralNet.TrainingProgram.Display;
 using NeuralNet.TrainingProgram.Save;
+using NeuralNet.TrainingProgram.Testing;
 
 namespace MNSITTraining;
 
@@ -109,6 +110,20 @@ internal class Program
         return inputs;
     }
 
+    private static Vector[] AssignTestingLabels(int categoryCount)
+    {
+        Vector[] result = new Vector[categoryCount];
+
+        for(int i = 0; i < categoryCount; i++)
+        {
+            float[] floats = new float[categoryCount];
+            floats[i] = 1;
+            result[i] = new(floats);
+        }
+
+        return result;
+    }
+
     private static Vector Guess(Vector output)
     {
         int maxIndex = 0;
@@ -139,6 +154,7 @@ internal class Program
         Vector[] trainingTargets = AssignTrainingLabels(trainLabels, MNISTLoader.CategoryCount);
 
         Vector[][] testingInputData   = AssignTestingData(testImages, testLabels, MNISTLoader.CategoryCount);
+        Vector[] testingLabels = AssignTestingLabels(MNISTLoader.CategoryCount);
 
         Console.WriteLine("Loaded files!");
 
@@ -166,7 +182,9 @@ internal class Program
             Directory.CreateDirectory(logDirectory);
 
         //trainer, evaluator & program
-        FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, new LossFunction());
+        LossFunction loss = new();
+
+        FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, loss);
         Evaluator evaluator = new(testingInputData, Guess, MNISTLoader.CategoryCount);
         ConstantRateProgram program = new(trainer);
 
@@ -176,7 +194,10 @@ internal class Program
             new IMeasure[] 
             { 
                 new IterationMeasure(), 
-                new TimeMeasure() 
+                new TimeMeasure(),
+                new LossMeasure(
+                    new FlatDataTester(trainingInputData, trainingTargets, loss), 
+                    new CategoryTester(testingInputData, testingLabels, loss))
             },
             new ILogger[] 
             { 

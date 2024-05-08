@@ -32,16 +32,4 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         return totalGradient;
     }
 
-    public float Loss(FeedforwardNet net)
-    {
-        float totalLoss = 0;
-
-        for(int i = 0; i < inputs.Length; i++)
-        {
-            totalLoss += loss.Compute(targets[i], net.Run(inputs[i]));
-        }
-
-        return totalLoss;
-    }
-
 }
