@@ -8,7 +8,7 @@ public sealed class ConstantRateProgram : ITrainingProgram
 
     private readonly float learningRate;
 
-    public ConstantRateProgram(ITrainer trainer, float learningRate = 1)
+    public ConstantRateProgram(ITrainer trainer, float learningRate = .1f)
     {
         this.trainer = trainer;
         this.learningRate = learningRate;

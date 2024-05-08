@@ -180,7 +180,7 @@ internal class Program
         if(!Directory.Exists(logDirectory)) 
             Directory.CreateDirectory(logDirectory);
 
-        //trainer, evaluator & program
+        //trainer, tester & program
         LossFunction loss = new();
 
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, loss);

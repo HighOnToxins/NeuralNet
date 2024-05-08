@@ -12,6 +12,11 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
 
     public FeedForwardTrainer(Vector[] inputs, Vector[] targets, IFeedForwardLoss loss)
     {
+        if(inputs.Length != targets.Length)
+        {
+            throw new ArgumentException();
+        }
+
         this.inputs = inputs;
         this.targets = targets;
         this.loss = loss;
@@ -30,6 +35,18 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         totalGradient *= (float)option;
 
         return totalGradient;
+    }
+
+    public float Loss(INet net)
+    {
+        float total = 0;
+
+        for(int i = 0; i < inputs.Length; i++)
+        {
+            total += loss.Compute(targets[i], net.Run(inputs[i]));
+        }
+
+        return total;
     }
 
 }
