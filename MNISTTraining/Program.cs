@@ -166,8 +166,7 @@ internal class Program
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, loss);
         CategoryTester tester = new(testingInputData, testingLabels, loss, Guess, MNISTLoader.CategoryCount);
         ConstantRateProgram program = new(trainer);
-        //MomentumProgram program = new(trainer, dataUse/1e3f, 0);
-
+        
         //runner 
         string now = DateTime.Now.ToString().Replace('/', '_').Replace('.', '_');
         string netPath = netDirectory + now;
