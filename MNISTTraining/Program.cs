@@ -15,7 +15,6 @@ internal class Program
     private const string MNISTDirectory = projectFolder + "MNISTFiles/";
     
     private const string netDirectory = projectFolder + "net/";
-    private const string netPath = netDirectory + "gradientDescentNet";
 
     private const string logDirectory = projectFolder + "logs/";
 
@@ -157,25 +156,6 @@ internal class Program
 
         Console.WriteLine("Loaded files!");
 
-        //network
-        FeedforwardNet net = new(
-            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, MNISTLoader.CategoryCount, new ReLU(.05f))
-        );
-
-        if(!File.Exists(netPath + ".bin"))
-        {
-            if(!Directory.Exists(netDirectory))
-                Directory.CreateDirectory(netDirectory);
-
-            net.Randomize(x => 200f * (float) Math.Pow(x - .5f, 7));
-            Console.WriteLine("Created New Network!");
-        }
-        else
-        {
-            net.Load(netPath);
-            Console.WriteLine("Loaded Network!");
-        }
-
         //setting up log folder
         if(!Directory.Exists(logDirectory)) 
             Directory.CreateDirectory(logDirectory);
@@ -186,9 +166,11 @@ internal class Program
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, loss);
         CategoryTester tester = new(testingInputData, testingLabels, loss, Guess, MNISTLoader.CategoryCount);
         ConstantRateProgram program = new(trainer);
+        //MomentumProgram program = new(trainer, dataUse/1e3f, 0);
 
         //runner 
         string now = DateTime.Now.ToString().Replace('/', '_').Replace('.', '_');
+        string netPath = netDirectory + now;
         TrainingRunner runner = new(program,
             new IMeasure[] 
             { 
@@ -203,6 +185,25 @@ internal class Program
             },
             new NewestSaver(netPath)
          );
+
+        //network
+        FeedforwardNet net = new(
+            new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, MNISTLoader.CategoryCount, new ReLU(.05f))
+        );
+
+        if(!Directory.Exists(netDirectory))
+            Directory.CreateDirectory(netDirectory);
+
+        if(!File.Exists(netPath + ".bin"))
+        {
+            net.Randomize(x => 100f * (float)Math.Pow(x - .5f, 7));
+            Console.WriteLine("Created New Network!");
+        }
+        else
+        {
+            net.Load(netPath);
+            Console.WriteLine("Loaded Network!");
+        }
 
         Console.WriteLine("Started training!\n");
         runner.Run(net, 100);

@@ -1,4 +1,4 @@
-﻿namespace NeuralNet.TrainingProgram;
+﻿namespace NeuralNet;
 
 public interface ITester
 {
