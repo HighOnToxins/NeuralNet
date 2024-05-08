@@ -1,4 +1,6 @@
 ﻿
+using NeuralNet.TrainingProgram.Testing;
+
 namespace NeuralNet.TrainingProgram.Display;
 
 public sealed class LossMeasure: IMeasure

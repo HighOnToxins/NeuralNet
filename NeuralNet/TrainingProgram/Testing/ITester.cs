@@ -1,7 +1,6 @@
-﻿
-namespace NeuralNet;
+﻿namespace NeuralNet.TrainingProgram.Testing;
 
-public interface ITester<T>:ITester
+public interface ITester<T> : ITester
 {
 
     public float Loss(T net);
