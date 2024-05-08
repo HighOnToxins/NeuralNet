@@ -151,7 +151,7 @@ public class VectorBenchmarking
                 float[] floats = new float[Vector<float>.Count];
                 int nonVectorIndex = j * Vector<float>.Count;
                 int length = Math.Min(Vector<float>.Count, A.Width - nonVectorIndex);
-                Buffer.BlockCopy(A.values, (i * A.Width + nonVectorIndex)*sizeof(float), floats, 0, length * sizeof(float));
+                Buffer.BlockCopy(A.values, (i * A.Width + nonVectorIndex) * sizeof(float), floats, 0, length * sizeof(float));
                 values[i * internalWidth + j] = new(floats);
             }
         }
@@ -184,10 +184,10 @@ public class VectorBenchmarking
         return values;
     }
 
-    public static Matrix GetMatrix(int width, int height, Vector<float>[] values)
+    public static Matrix GetMatrix(int height, int width, Vector<float>[] values)
     {
         int internalWidth = (int)Math.Ceiling(width / (float)Vector<float>.Count);
-        Matrix result = new(width, height);
+        Matrix result = new(height, width);
 
         for(int i = 0; i < height; i++)
         {
@@ -210,7 +210,7 @@ public class VectorBenchmarking
         return result;
     }
 
-    
+
 
     public static Matrix OperatorAddPre(Matrix A, Matrix B)
     {
@@ -474,7 +474,7 @@ public class VectorBenchmarking
 
     public readonly float randomNum;
 
-    public const int SIZE = 1_000;
+    public const int SIZE = 100;
 
     static float[,] RandomMatrix(int size, int range)
     {
@@ -533,7 +533,7 @@ public class VectorBenchmarking
 
 }
 
-/* size: 100
+/* size: 100 (before fix)
 | Method         | Mean         | Error       | StdDev      | Median       |
 |--------------- |-------------:|------------:|------------:|-------------:|
 | DefaultAdd     |    18.546 us |   0.3669 us |   0.6231 us |    18.481 us |
@@ -547,7 +547,7 @@ public class VectorBenchmarking
 | InVectorProd   | 5,566.406 us | 155.9426 us | 449.9302 us | 5,323.045 us |
 */
 
-/* size: 500
+/* size: 500  (before fix)
 | Method         | Mean         | Error        | StdDev       | Median       |
 |--------------- |-------------:|-------------:|-------------:|-------------:|
 | DefaultAdd     |     552.1 us |     10.28 us |      9.62 us |     551.5 us |
@@ -561,7 +561,7 @@ public class VectorBenchmarking
 | InVectorProd   | 617,909.0 us | 10,883.53 us | 13,365.95 us | 616,641.8 us |
 */
 
-/* size: 1000
+/* size: 1000  (before fix)
 | Method         | Mean         | Error      | StdDev      |
 |--------------- |-------------:|-----------:|------------:|
 | DefaultAdd     |     2.326 ms |  0.0336 ms |   0.0314 ms |
@@ -573,4 +573,18 @@ public class VectorBenchmarking
 | InVectorAdd    |     9.502 ms |  0.1874 ms |   0.1753 ms |
 | InVectorScale  |     7.118 ms |  0.0517 ms |   0.0403 ms |
 | InVectorProd   | 4,907.852 ms | 90.7938 ms | 100.9171 ms |
+*/
+
+/* size 100 (after fix)
+| Method         | Mean         | Error      | StdDev     |
+|--------------- |-------------:|-----------:|-----------:|
+| DefaultAdd     |    12.917 us |  0.2220 us |  0.3522 us |
+| DefaultScale   |     8.594 us |  0.1205 us |  0.1006 us |
+| DefaultProd    | 1,630.031 us | 23.8919 us | 21.1795 us |
+| PreVectorAdd   |    66.148 us |  0.8088 us |  0.6754 us |
+| PreVectorScale |    63.814 us |  0.6000 us |  0.5010 us |
+| PreVectorProd  |   302.989 us |  5.7470 us |  8.7763 us |
+| InVectorAdd    |    80.488 us |  1.5358 us |  1.8283 us |
+| InVectorScale  |    56.068 us |  1.1016 us |  1.5443 us |
+| InVectorProd   | 5,256.522 us | 82.2249 us | 72.8902 us |
 */
