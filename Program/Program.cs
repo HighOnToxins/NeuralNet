@@ -1,8 +1,10 @@
 ﻿
 using NeuralNet.Feedforward;
 using NeuralNet.Feedforward.Layers;
-using NeuralNet.Program;
+using NeuralNet.TrainingProgram;
 using NeuralNet.Tensor;
+using NeuralNet.TrainingProgram.Display;
+using NeuralNet.TrainingProgram.Save;
 
 namespace Training;
 
@@ -12,7 +14,7 @@ internal class Program
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDescentNet";
 
-    private const int dataUse = -1;
+    private const int dataUse = 100;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -37,7 +39,45 @@ internal class Program
         }
     }
 
-    private static Vector[][] AssignData(byte[][,] images, byte[] labels, int categoryCount)
+    private static Vector[] AssignTrainingData(byte[][,] images)
+    {
+        int maxUse = dataUse >= 0 ? dataUse : images.Length;
+
+        Vector[] data = new Vector[maxUse];
+
+        for(int i = 0; i < maxUse; i++)
+        {
+            float[] vecValues = new float[MNISTLoader.ImageSize * MNISTLoader.ImageSize];
+            for(int j = 0; j < vecValues.Length; j++)
+            {
+                vecValues[j] = images[i][j % MNISTLoader.ImageSize, j / MNISTLoader.ImageSize] / 255f;
+            }
+            data[i] = new(vecValues);
+        }
+
+        return data;
+    }
+
+    private static Vector[] AssignTrainingLabels(byte[][] labels, int categoryCount)
+    {
+        int maxUse = dataUse >= 0 ? dataUse : labels.Length;
+
+        Vector[] data = new Vector[maxUse];
+
+        for(int i = 0; i < maxUse; i++)
+        {
+            float[] vecValues = new float[categoryCount];
+            for(int j = 0; j < vecValues.Length; j++)
+            {
+                vecValues[j] = labels[i][j] / 255f;
+            }
+            data[i] = new(vecValues);
+        }
+
+        return data;
+    }
+
+    private static Vector[][] AssignTestingData(byte[][,] images, byte[] labels, int categoryCount)
     {
         int maxUse = dataUse >= 0 ? dataUse : images.Length;
 
@@ -67,17 +107,20 @@ internal class Program
         return inputs;
     }
 
-    private static Vector[] GenerateOneHotTargets(int categoryCount)
+    private static Vector Guess(Vector output)
     {
-        Vector[] targets = new Vector[categoryCount];
-
-        for(int i = 0; i < targets.Length; i++)
+        int maxIndex = 0;
+        for(int i = 1; i < output.Height; i++)
         {
-            float[] values = new float[categoryCount];
-            values[i] = 1;
-            targets[i] = new Vector(values);
+            if(output[i] > maxIndex)
+            {
+                maxIndex = i;
+            }
         }
-        return targets;
+
+        float[] result = new float[MNISTLoader.CategoryCount];
+        result[maxIndex] = 1;
+        return new(result);
     }
 
     public static void Main(string[] _)
@@ -90,19 +133,16 @@ internal class Program
         byte[]    testLabels  = MNISTLoader.LoadLabels(mnistDirectory, MNISTLoader.LoadType.testingData );
 
         //converting data into a usable form
-        Vector[][] trainingInputData  = AssignData(trainImages, trainLabels, 10);
-        Vector[][] testingInputData   = AssignData(testImages, testLabels, 10);
-        Vector[] targets              = GenerateOneHotTargets(10);
+        Vector[] trainingInputData  = AssignTrainingData(trainImages);
+        Vector[] trainingTargets = AssignTrainingLabels(trainLabels, MNISTLoader.CategoryCount);
+
+        Vector[][] testingInputData   = AssignTestingData(testImages, testLabels, MNISTLoader.CategoryCount);
 
         Console.WriteLine("Loaded files!");
 
-        //setting up trainer and network
-        FFCategoryTrainer trainer = new(trainingInputData, testingInputData, targets, new LossFunction());
-
+        //network
         FeedforwardNet net = new(
-            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, new ReLU(.05f)),
-            new AffineLayer(50, 50,                                          new ReLU(.05f)),
-            new AffineLayer(50, 10,                                          new ReLU(.05f))
+            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, MNISTLoader.CategoryCount, new ReLU(.05f))
         );
 
         if(!File.Exists(netPath + ".bin"))
@@ -117,13 +157,35 @@ internal class Program
             Console.WriteLine("Loaded Network!");
         }
 
-        //running program
+        //trainer 
+        FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, new LossFunction());
+
+        //evaluator
+        Evaluator evaluator = new(testingInputData, Guess, MNISTLoader.CategoryCount);
+
+        //program
         GradientDescentProgram program = new(trainer, v => v * (1f / v.Length()) );
         //MomentumProgram program = new(trainer, .025f / trainingInputData.Length, 0);
         //NewtonProgram program = new(trainer);
-        program.Run(net, 100, netPath);
 
-        Matrix confusionMatrix = trainer.ConfusionMatrix(net);
+        //runner 
+        string now = DateTime.Now.ToString().Replace('/', '_').Replace('.', '_');
+        TrainingRunner runner = new(program,
+            new IInfoCollector[] { new TimeCollector(), new IterationCollector() },
+            new ILogger[] { new ConsoleLogger(), new CSVFileLogger("../../../net/logs/" + now + ".csv") },
+            new NewestSaver(netPath)
+         );
+
+        Console.WriteLine("Started training!\n");
+        runner.Run(net, 100);
+        Console.WriteLine("Training ended!\n");
+
+        Matrix confusionMatrix = evaluator.ConfusionMatrix(net);
         Console.WriteLine($"\n\nCONFUSION MATRIX:\n{confusionMatrix.ToString()}");
+    }
+
+    private static Vector[] AssignTrainingLabels(byte[] trainLabels, object categoryCount)
+    {
+        throw new NotImplementedException();
     }
 }

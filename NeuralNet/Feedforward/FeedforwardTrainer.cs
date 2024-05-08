@@ -1,5 +1,4 @@
-﻿
-using NeuralNet.Tensor;
+﻿using NeuralNet.Tensor;
 
 namespace NeuralNet.Feedforward;
 
@@ -18,21 +17,19 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         this.loss = loss;
     }
 
-    public (Vector, float) Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
+    public Vector Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
     {
         Vector totalGradient = new(net.GetWeightLength());
-        float totalLoss = 0;
 
         for(int i = 0; i < inputs.Length; i++)
         {
-            (Matrix gradient, Vector run) = net.Gradient(inputs[i]);
+            (Matrix gradient, Vector run) = net.Gradient(inputs[i]); //TODO: remove touple outputs
             totalGradient += gradient.Transpose() * loss.Gradient(targets[i], run);
-            totalLoss += loss.Compute(targets[i], run);
         }
 
         totalGradient *= (float)option;
 
-        return (totalGradient, totalLoss);
+        return totalGradient;
     }
 
     public float Loss(FeedforwardNet net)

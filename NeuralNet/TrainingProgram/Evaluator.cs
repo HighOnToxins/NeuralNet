@@ -1,24 +1,34 @@
 ﻿using NeuralNet.Tensor;
 
-namespace NeuralNet;
+namespace NeuralNet.TrainingProgram;
 
 /// <summary> Allows one to construct a confusion matrix over the categories optimized over. </summary>
-public abstract class Evaluator
+public sealed class Evaluator
 {
+    private readonly Vector[][] testingData;
 
-    public int CategoryCount { get; protected init; }
+    private readonly Func<Vector, Vector> guessInterpreter;
 
-    protected abstract Vector[] CategoryData(int category);
 
-    protected abstract Vector Guess(Vector netResult);
+    public Evaluator(Vector[][] testingData, Func<Vector, Vector> guessInterpreter, int categoryCount)
+    {
+        this.testingData = testingData;
+        this.guessInterpreter = guessInterpreter;
+
+        CategoryCount = categoryCount;
+    }
+
+
+
+    public int CategoryCount { get; private init; }
 
     private Vector SummedPrediction(INet net, int category)
     {
         Vector total = new(CategoryCount);
-        Vector[] data = CategoryData(category);
-        for(int j = 0; j < data.Length; j++)
+        Vector[] data = testingData[category];
+        for (int j = 0; j < data.Length; j++)
         {
-            total += Guess(net.Run(data[j])); 
+            total += guessInterpreter.Invoke(net.Run(data[j]));
         }
 
         return total;
@@ -28,7 +38,7 @@ public abstract class Evaluator
     {
         Vector[] matrixRows = new Vector[CategoryCount];
 
-        for(int i = 0; i < CategoryCount; i++)
+        for (int i = 0; i < CategoryCount; i++)
         {
             matrixRows[i] = SummedPrediction(net, i);
         }
@@ -47,11 +57,11 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            for(int j = 0; j < confusionMatrix.Width; j++)
+            for (int j = 0; j < confusionMatrix.Width; j++)
             {
-                if(i == category || j == category) continue;
+                if (i == category || j == category) continue;
 
                 total += confusionMatrix[i, j];
             }
@@ -64,9 +74,9 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            if(i == category) continue;
+            if (i == category) continue;
             total += confusionMatrix[i, category];
         }
 
@@ -77,9 +87,9 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Width; i++)
+        for (int i = 0; i < confusionMatrix.Width; i++)
         {
-            if(i == category) continue;
+            if (i == category) continue;
             total += confusionMatrix[category, i];
         }
 
@@ -91,11 +101,11 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            for(int j = 0; j < confusionMatrix.Width; j++)
+            for (int j = 0; j < confusionMatrix.Width; j++)
             {
-                if(i == category ^ j == category) continue;
+                if (i == category ^ j == category) continue;
 
                 total += confusionMatrix[i, j];
             }
@@ -109,7 +119,7 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
             total += confusionMatrix[i, category];
         }
@@ -122,7 +132,7 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Width; i++)
+        for (int i = 0; i < confusionMatrix.Width; i++)
         {
             total += confusionMatrix[category, i];
         }
@@ -135,10 +145,10 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            if(i == category) continue;
-            for(int j = 0; j < confusionMatrix.Width; j++)
+            if (i == category) continue;
+            for (int j = 0; j < confusionMatrix.Width; j++)
             {
                 total += confusionMatrix[i, j];
             }
@@ -154,9 +164,9 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            for(int j = 0; j < confusionMatrix.Width; j++)
+            for (int j = 0; j < confusionMatrix.Width; j++)
             {
                 total += confusionMatrix[i, j];
             }
@@ -169,7 +179,7 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Width; i++)
+        for (int i = 0; i < confusionMatrix.Width; i++)
         {
             total += confusionMatrix[i, i];
         }
@@ -181,11 +191,11 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            for(int j = 0; j < confusionMatrix.Width; j++)
+            for (int j = 0; j < confusionMatrix.Width; j++)
             {
-                if(i == j) continue;
+                if (i == j) continue;
                 total += confusionMatrix[i, j];
             }
         }
@@ -238,7 +248,7 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
             total += Accuracy(confusionMatrix, category);
         }
@@ -251,7 +261,7 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
             total += Precision(confusionMatrix, category);
         }
@@ -264,9 +274,9 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Recall(confusionMatrix, category   );
+            total += Recall(confusionMatrix, category);
         }
 
         return total;
@@ -277,7 +287,7 @@ public abstract class Evaluator
     {
         float total = 0;
 
-        for(int i = 0; i < confusionMatrix.Height; i++)
+        for (int i = 0; i < confusionMatrix.Height; i++)
         {
             total += Specificity(confusionMatrix, category);
         }

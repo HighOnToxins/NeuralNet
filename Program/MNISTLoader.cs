@@ -18,6 +18,8 @@ public static class MNISTLoader
 
     public const int ImageSize = 28;
 
+    public const int CategoryCount = 10;
+
     public static byte[] LoadLabels(string directory, LoadType type)
     {
         using BinaryReader reader = new(File.OpenRead(directory + (type == LoadType.testingData ? testLabelName : trainLabelName) + "." + labelType));
