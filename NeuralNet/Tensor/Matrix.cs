@@ -1,4 +1,6 @@
 ﻿
+using System.Numerics;
+
 namespace NeuralNet.Tensor;
 
 //TODO: consider adding information telling where zero are, such as to optimize product
@@ -134,6 +136,77 @@ public readonly struct Matrix
         return C;
     }
 
+    public static Vector<float>[] GetValues(Matrix A)
+    {
+        int internalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
+        Vector<float>[] values = new Vector<float>[A.Height * internalWidth];
+
+        for(int i = 0; i < A.Height; i++)
+        {
+            for(int j = 0; j < internalWidth; j++)
+            {
+                float[] floats = new float[Vector<float>.Count];
+                int nonVectorIndex = j * Vector<float>.Count;
+                int length = Math.Min(Vector<float>.Count, A.Width - nonVectorIndex);
+                Buffer.BlockCopy(A.values, (i * A.Width + nonVectorIndex) * sizeof(float), floats, 0, length * sizeof(float));
+                values[i * internalWidth + j] = new(floats);
+            }
+        }
+
+        return values;
+    }
+
+    public static Vector<float>[] GetValuesTransposed(Matrix A)
+    {
+        int internalWidth = (int)Math.Ceiling(A.Height / (float)Vector<float>.Count);
+        Vector<float>[] values = new Vector<float>[A.Width * internalWidth];
+
+        for(int i = 0; i < A.Width; i++)
+        {
+            for(int j = 0; j < internalWidth; j++)
+            {
+                float[] floats = new float[Vector<float>.Count];
+                int nonVectorIndex = j * Vector<float>.Count;
+                int length = Math.Min(Vector<float>.Count, A.Height - nonVectorIndex);
+
+                for(int k = 0; k < length; k++)
+                {
+                    floats[k] = A[nonVectorIndex + k, i];
+                }
+
+                values[i * internalWidth + j] = new(floats);
+            }
+        }
+
+        return values;
+    }
+
+    public static Matrix GetMatrix(int height, int width, Vector<float>[] values)
+    {
+        int internalWidth = (int)Math.Ceiling(width / (float)Vector<float>.Count);
+        Matrix result = new(height, width);
+
+        for(int i = 0; i < height; i++)
+        {
+            for(int j = 0; j < internalWidth; j++)
+            {
+                int length = width - j * Vector<float>.Count;
+                if(length > Vector<float>.Count)
+                {
+                    values[i * internalWidth + j].CopyTo(result.values, i * width + j * Vector<float>.Count);
+                    continue;
+                }
+
+                for(int k = 0; k < length; k++)
+                {
+                    result[i, j * Vector<float>.Count + k] = values[i * internalWidth + j][k];
+                }
+            }
+        }
+
+        return result;
+    }
+
     public static Matrix operator *(Matrix A, Matrix B)
     {
         if(A.Width != B.Height)
@@ -142,25 +215,47 @@ public readonly struct Matrix
                 "the first matrix was equal to the first length of the second!");
         }
 
-        Matrix B2 = B.Transpose();
-        Matrix C = new(A.Height, B2.Height);
+        int AInternalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
+        int BInternalWidth = (int)Math.Ceiling(B.Width / (float)Vector<float>.Count);
+        int BTransposedInternalWidth = (int)Math.Ceiling(B.Height / (float)Vector<float>.Count);
+
+        Vector<float>[] BValuesTransposed = GetValuesTransposed(B);
+        Vector<float>[] AValues = GetValues(A);
+
+        Vector<float>[] CValues = new Vector<float>[A.Height * BInternalWidth];
 
         for(int i = 0; i < A.Height; i++)
         {
-            for(int j = 0; j < B2.Height; j++)
+            for(int j = 0; j < BInternalWidth; j++)
             {
-                float total = 0;
+                // vector dot product 
+                float[] value = new float[Vector<float>.Count];
 
-                for(int k = 0; k < A.Width; k++)
+                int length = Math.Min(Vector<float>.Count, B.Width - j * Vector<float>.Count);
+                for(int k = 0; k < length; k++)
                 {
-                    total += A[i, k] * B2[j, k];
+                    // single dot product 
+                    Vector<float> totalVector = new();
+
+                    for(int l = 0; l < AInternalWidth; l++)
+                    {
+                        totalVector += AValues[i * AInternalWidth + l] * BValuesTransposed[(j * Vector<float>.Count + k) * BTransposedInternalWidth + l];
+                    }
+
+                    float totalFloat = 0;
+                    for(int l = 0; l < Vector<float>.Count; l++)
+                    {
+                        totalFloat += totalVector[l];
+                    }
+
+                    value[k] = totalFloat;
                 }
 
-                C[i, j] = total;
+                CValues[i * BTransposedInternalWidth + j] = new(value);
             }
         }
 
-        return C;
+        return GetMatrix(A.Height, B.Width, CValues);
     }
 
     public static Matrix operator *(Matrix A, float b)
