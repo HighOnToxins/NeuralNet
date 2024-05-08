@@ -53,7 +53,7 @@ public sealed class TrainingRunner
         }
     }
 
-    private void Log(float[] info)
+    private void Log(object[] info)
     {
         for(int i = 0; i < loggers.Length; i++)
         {
@@ -71,9 +71,9 @@ public sealed class TrainingRunner
         return fields.ToArray();
     }
 
-    private float[] CollectInfo(INet net)
+    private object[] CollectInfo(INet net)
     {
-        List<float> info = new();
+        List<object> info = new();
         for(int i = 0; i < collectors.Length; i++)
         {
             info.AddRange(collectors[i].CollectInfo(net));

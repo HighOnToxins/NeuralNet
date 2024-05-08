@@ -15,6 +15,8 @@ public sealed class TimeCollector: IInfoCollector
 
     public IEnumerable<string> CollectFields()
     {
+        yield return "Current Time [date]";
+
         yield return "Elapsed Time [s]";
 
         stopwatch.Stop();
@@ -22,8 +24,10 @@ public sealed class TimeCollector: IInfoCollector
         stopwatch.Start();
     }
 
-    public IEnumerable<float> CollectInfo(INet net)
+    public IEnumerable<object> CollectInfo(INet net)
     {
-        yield return stopwatch.ElapsedTicks / Stopwatch.Frequency;
+        yield return DateTime.Now;
+
+        yield return stopwatch.ElapsedTicks / (float)Stopwatch.Frequency;
     }
 }

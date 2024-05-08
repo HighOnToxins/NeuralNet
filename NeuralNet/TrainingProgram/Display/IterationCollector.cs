@@ -12,7 +12,7 @@ public sealed class IterationCollector: IInfoCollector
         yield return "Iteration";
     }
 
-    public IEnumerable<float> CollectInfo(INet net)
+    public IEnumerable<object> CollectInfo(INet net)
     {
         yield return iterationCount;
 

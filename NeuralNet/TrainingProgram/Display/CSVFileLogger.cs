@@ -27,13 +27,17 @@ public class CSVFileLogger: ILogger
         writer.Write(rowSep);
     }
 
-    public void Log(float[] info)
+    public void Log(object[] info)
     {
-        using StreamWriter writer = new(File.Create(path));
+        using StreamWriter writer = new(path, true);
 
         for(int i = 0; i < info.Length; i++)
         {
-            string s = info[i].ToString();
+            if(info[i].ToString() is not string s)
+            {
+                throw new ArgumentException();
+            }
+
             writer.Write(s + columnSep);
         }
 

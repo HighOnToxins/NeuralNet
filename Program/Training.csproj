@@ -8,10 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="net\NewFolder\**" />
+    <EmbeddedResource Remove="net\NewFolder\**" />
+    <None Remove="net\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="logs\" />
     <Folder Include="MNISTfiles\" />
   </ItemGroup>
 

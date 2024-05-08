@@ -2,16 +2,16 @@
 
 namespace NeuralNet.TrainingProgram;
 
-public sealed class GradientDescentProgram : ITrainingProgram
+public sealed class ConstantRateProgram : ITrainingProgram
 {
     private readonly ITrainer trainer;
 
-    private readonly Func<Vector, Vector> learningScalar;
+    private readonly float learningRate;
 
-    public GradientDescentProgram(ITrainer trainer, Func<Vector, Vector> learningScalar)
+    public ConstantRateProgram(ITrainer trainer, float learningRate = 1)
     {
         this.trainer = trainer;
-        this.learningScalar = learningScalar;
+        this.learningRate = learningRate;
     }
 
     public void InitRun(INet net) { }
@@ -19,7 +19,7 @@ public sealed class GradientDescentProgram : ITrainingProgram
     public void Update(INet net)
     {
         Vector acceleration = trainer.Train(net);
-        Vector speed = learningScalar.Invoke(acceleration);
+        Vector speed = acceleration * (learningRate / acceleration.Length());
         net.AddWeights(speed);
     }
 }

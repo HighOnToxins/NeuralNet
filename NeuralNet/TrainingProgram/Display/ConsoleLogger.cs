@@ -16,18 +16,37 @@ public sealed class ConsoleLogger: ILogger
 
     public void InitLog(string[] fields)
     {
+        Console.WriteLine();
+
         for(int i = 0; i < fields.Length; i++)
         {
-            Console.WriteLine(Formatting.FormatCenter(fields[i], boxSize, fill));
+            Console.Write(Formatting.FormatCenter(fields[i], boxSize, fill));
         }
     }
 
-    public void Log(float[] info)
+    public void Log(object[] info)
     {
+        Console.WriteLine();
+
+        string print = "";
+
         for(int i = 0; i < info.Length; i++)
         {
-            string s = info[i].ToString();
-            Console.WriteLine(Formatting.FormatAnchor(s, s.IndexOf(','), boxSize, fill));
+            if(info[i].ToString() is not string s)
+            {
+                throw new ArgumentException();
+            }
+
+            if(info[i] is float)
+            {
+                print += Formatting.FormatAnchorCenter(s, s.IndexOf(','), boxSize, fill);
+            }
+            else
+            {
+                print += Formatting.FormatCenter(s, boxSize, fill);
+            }
         }
+
+        Console.Write(print);
     }
 }

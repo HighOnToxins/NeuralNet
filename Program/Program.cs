@@ -11,8 +11,11 @@ namespace Training;
 internal class Program
 {
     private const string mnistDirectory = "../../../MNISTfiles/";
+    
     private const string netDirectory = "../../../net/";
     private const string netPath = netDirectory + "gradientDescentNet";
+
+    private const string logDirectory = "../../../logs/";
 
     private const int dataUse = 100;
 
@@ -58,7 +61,7 @@ internal class Program
         return data;
     }
 
-    private static Vector[] AssignTrainingLabels(byte[][] labels, int categoryCount)
+    private static Vector[] AssignTrainingLabels(byte[] labels, int categoryCount)
     {
         int maxUse = dataUse >= 0 ? dataUse : labels.Length;
 
@@ -67,10 +70,7 @@ internal class Program
         for(int i = 0; i < maxUse; i++)
         {
             float[] vecValues = new float[categoryCount];
-            for(int j = 0; j < vecValues.Length; j++)
-            {
-                vecValues[j] = labels[i][j] / 255f;
-            }
+            vecValues[labels[i]] = 1;
             data[i] = new(vecValues);
         }
 
@@ -147,7 +147,9 @@ internal class Program
 
         if(!File.Exists(netPath + ".bin"))
         {
-            Directory.CreateDirectory(netDirectory);
+            if(!Directory.Exists(netDirectory))
+                Directory.CreateDirectory(netDirectory);
+
             net.Randomize(x => 200f * (float) Math.Pow(x - .5f, 7));
             Console.WriteLine("Created New Network!");
         }
@@ -157,22 +159,28 @@ internal class Program
             Console.WriteLine("Loaded Network!");
         }
 
-        //trainer 
+        //setting up log folder
+        if(!Directory.Exists(logDirectory)) 
+            Directory.CreateDirectory(logDirectory);
+
+        //trainer, evaluator & program
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, new LossFunction());
-
-        //evaluator
         Evaluator evaluator = new(testingInputData, Guess, MNISTLoader.CategoryCount);
-
-        //program
-        GradientDescentProgram program = new(trainer, v => v * (1f / v.Length()) );
-        //MomentumProgram program = new(trainer, .025f / trainingInputData.Length, 0);
-        //NewtonProgram program = new(trainer);
+        ConstantRateProgram program = new(trainer);
 
         //runner 
         string now = DateTime.Now.ToString().Replace('/', '_').Replace('.', '_');
         TrainingRunner runner = new(program,
-            new IInfoCollector[] { new TimeCollector(), new IterationCollector() },
-            new ILogger[] { new ConsoleLogger(), new CSVFileLogger("../../../net/logs/" + now + ".csv") },
+            new IInfoCollector[] 
+            { 
+                new IterationCollector(), 
+                new TimeCollector() 
+            },
+            new ILogger[] 
+            { 
+                new ConsoleLogger(), 
+                new CSVFileLogger(logDirectory + now + ".csv"),
+            },
             new NewestSaver(netPath)
          );
 
@@ -182,10 +190,5 @@ internal class Program
 
         Matrix confusionMatrix = evaluator.ConfusionMatrix(net);
         Console.WriteLine($"\n\nCONFUSION MATRIX:\n{confusionMatrix.ToString()}");
-    }
-
-    private static Vector[] AssignTrainingLabels(byte[] trainLabels, object categoryCount)
-    {
-        throw new NotImplementedException();
     }
 }

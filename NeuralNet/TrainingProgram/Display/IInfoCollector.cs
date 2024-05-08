@@ -5,6 +5,6 @@ public interface IInfoCollector
 {
     public IEnumerable<string> CollectFields();
 
-    public IEnumerable<float> CollectInfo(INet net);
+    public IEnumerable<object> CollectInfo(INet net);
 
 }

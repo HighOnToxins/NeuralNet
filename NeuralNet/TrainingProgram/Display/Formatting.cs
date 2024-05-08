@@ -60,9 +60,14 @@ internal static class Formatting
         return fs;
     }
 
+    public static string FormatAnchorCenter(string s, int anchor, int size, char fill = ' ')
+    {
+        return FormatAnchor(s, anchor, (int)Math.Floor(size / 2f), (int)Math.Ceiling(size / 2f), fill);
+    }
+
     public static string FormatCenter(string s, int size, char fill = ' ')
     {
-        return FormatAnchor(s, s.Length / 2, (int)Math.Floor(size / 2f), (int)Math.Ceiling(size / 2f), fill);
+        return FormatAnchorCenter(s, s.Length/2, size, fill);
     }
 
 }
