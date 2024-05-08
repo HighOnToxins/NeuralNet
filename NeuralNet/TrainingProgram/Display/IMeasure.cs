@@ -1,7 +1,7 @@
 ﻿
 namespace NeuralNet.TrainingProgram.Display;
 
-public interface IInfoCollector
+public interface IMeasure
 {
     public IEnumerable<string> CollectFields();
 

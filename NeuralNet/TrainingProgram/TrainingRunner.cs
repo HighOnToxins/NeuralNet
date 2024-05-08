@@ -9,13 +9,13 @@ public sealed class TrainingRunner
 
     private readonly ITrainingProgram program;
     
-    private readonly IInfoCollector[] collectors;
+    private readonly IMeasure[] collectors;
 
     private readonly ILogger[] loggers;
 
     private readonly INetSaver? saver;
 
-    public TrainingRunner(ITrainingProgram program, IInfoCollector[] collectors, ILogger[] loggers, INetSaver? saver = null)
+    public TrainingRunner(ITrainingProgram program, IMeasure[] collectors, ILogger[] loggers, INetSaver? saver = null)
     {
         this.program = program;
         this.loggers = loggers;

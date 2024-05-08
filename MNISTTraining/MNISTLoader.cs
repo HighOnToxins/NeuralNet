@@ -1,6 +1,4 @@
 ﻿
-using System.Reflection.PortableExecutable;
-
 namespace MNSITTraining;
 
 public static class MNISTLoader

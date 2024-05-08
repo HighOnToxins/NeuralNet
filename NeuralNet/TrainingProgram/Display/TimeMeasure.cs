@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 namespace NeuralNet.TrainingProgram.Display;
 
-public sealed class TimeCollector: IInfoCollector
+public sealed class TimeMeasure: IMeasure
 {
 
     private readonly Stopwatch stopwatch;
 
-    public TimeCollector()
+    public TimeMeasure()
     {
         stopwatch = new();
     }

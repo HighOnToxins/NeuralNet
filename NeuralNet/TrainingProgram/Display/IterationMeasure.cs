@@ -1,7 +1,7 @@
 ﻿
 namespace NeuralNet.TrainingProgram.Display;
 
-public sealed class IterationCollector: IInfoCollector
+public sealed class IterationMeasure: IMeasure
 {
     private int iterationCount;
 

@@ -12,14 +12,14 @@ internal class Program
 {
     private const string projectFolder = "../../../";
 
-    private const string MNISTDirectory = "MNISTFiles/";
+    private const string MNISTDirectory = projectFolder + "MNISTFiles/";
     
     private const string netDirectory = projectFolder + "net/";
     private const string netPath = netDirectory + "gradientDescentNet";
 
     private const string logDirectory = projectFolder + "logs/";
 
-    private const int dataUse = 100;
+    private const int dataUse = 1_000;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -173,10 +173,10 @@ internal class Program
         //runner 
         string now = DateTime.Now.ToString().Replace('/', '_').Replace('.', '_');
         TrainingRunner runner = new(program,
-            new IInfoCollector[] 
+            new IMeasure[] 
             { 
-                new IterationCollector(), 
-                new TimeCollector() 
+                new IterationMeasure(), 
+                new TimeMeasure() 
             },
             new ILogger[] 
             { 
