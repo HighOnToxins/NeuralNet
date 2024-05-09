@@ -1,5 +1,6 @@
 ﻿
 using BenchmarkDotNet.Attributes;
+using NeuralNet.Tensor;
 using System.Numerics;
 
 namespace Benchmarking.Tests;
@@ -472,9 +473,13 @@ public class VectorBenchmarks
 
     public readonly Matrix matrixB;
 
+    public readonly VectorProdMatrix vectorProdA;
+
+    public readonly VectorProdMatrix vectorProdB;
+
     public readonly float randomNum;
 
-    public const int SIZE = 100;
+    public const int SIZE = 1_000;
 
     static float[,] RandomMatrix(int size, int range)
     {
@@ -492,44 +497,52 @@ public class VectorBenchmarks
 
     public VectorBenchmarks()
     {
-        matrixA = new(RandomMatrix(SIZE, 1000));
-        matrixB = new(RandomMatrix(SIZE, 1000));
+        float[,] floatsA = RandomMatrix(SIZE, 1000);
+        float[,] floatsB = RandomMatrix(SIZE, 1000);
+        matrixA = new(floatsA);
+        matrixB = new(floatsB);
+        vectorProdA = new(floatsA);
+        vectorProdB = new(floatsB);
 
         randomNum = (float)new Random().NextDouble() * 10000f;
     }
 
 
 
-    [Benchmark]
-    public Matrix DefaultAdd() => matrixA + matrixB;
+    //[Benchmark]
+    //public Matrix DefaultAdd() => matrixA + matrixB;
 
-    [Benchmark]
-    public Matrix DefaultScale() => matrixA * randomNum;
+    //[Benchmark]
+    //public Matrix DefaultScale() => matrixA * randomNum;
 
     [Benchmark]
     public Matrix DefaultProd() => matrixA * matrixB;
 
 
 
-    [Benchmark]
-    public Matrix PreVectorAdd() => OperatorAddPre(matrixA, matrixB);
+    //[Benchmark]
+    //public Matrix PreVectorAdd() => OperatorAddPre(matrixA, matrixB);
 
-    [Benchmark]
-    public Matrix PreVectorScale() => OperatorScalePre(matrixA, randomNum);
+    //[Benchmark]
+    //public Matrix PreVectorScale() => OperatorScalePre(matrixA, randomNum);
 
     [Benchmark]
     public Matrix PreVectorProd() => OperatorProdPre(matrixA, matrixB);
 
 
 
-    [Benchmark]
-    public Matrix InVectorAdd() => OperatorAddIn(matrixA, matrixB);
+    //[Benchmark]
+    //public Matrix InVectorAdd() => OperatorAddIn(matrixA, matrixB);
+
+    //[Benchmark]
+    //public Matrix InVectorScale() => OperatorScaleIn(matrixA, randomNum);
+
+    //[Benchmark]
+    //public Matrix InVectorProd() => OperatorProdIn(matrixA, matrixB);
+
 
     [Benchmark]
-    public Matrix InVectorScale() => OperatorScaleIn(matrixA, randomNum);
-
-    [Benchmark]
-    public Matrix InVectorProd() => OperatorProdIn(matrixA, matrixB);
+    public VectorProdMatrix VectorMatrixProd() => vectorProdA * vectorProdB;
 
 }
 
@@ -588,3 +601,4 @@ public class VectorBenchmarks
 | InVectorScale  |    56.068 us |  1.1016 us |  1.5443 us |
 | InVectorProd   | 5,256.522 us | 82.2249 us | 72.8902 us |
 */
+
