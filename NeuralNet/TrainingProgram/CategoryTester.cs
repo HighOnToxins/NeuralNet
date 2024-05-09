@@ -266,52 +266,52 @@ public sealed class CategoryTester : ITester
 
 
     /// <summary> The by-category average accuracy. </summary>
-    public static float MacroAccuracy(Matrix confusionMatrix, int category)
+    public static float MacroAccuracy(Matrix confusionMatrix)
     {
         float total = 0;
 
         for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Accuracy(confusionMatrix, category);
+            total += Accuracy(confusionMatrix, i);
         }
 
         return total;
     }
 
     /// <summary> The by-category average precision. </summary>
-    public static float MacroPrecision(Matrix confusionMatrix, int category)
+    public static float MacroPrecision(Matrix confusionMatrix)
     {
         float total = 0;
 
         for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Precision(confusionMatrix, category);
+            total += Precision(confusionMatrix, i);
         }
 
         return total;
     }
 
     /// <summary> The by-category average recall. </summary>
-    public static float MacroRecall(Matrix confusionMatrix, int category)
+    public static float MacroRecall(Matrix confusionMatrix)
     {
         float total = 0;
 
         for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Recall(confusionMatrix, category);
+            total += Recall(confusionMatrix, i);
         }
 
         return total;
     }
 
     /// <summary> The by-category average specificity. </summary>
-    public static float MacroSpecificity(Matrix confusionMatrix, int category)
+    public static float MacroSpecificity(Matrix confusionMatrix)
     {
         float total = 0;
 
         for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Specificity(confusionMatrix, category);
+            total += Specificity(confusionMatrix, i);
         }
 
         return total;
@@ -320,7 +320,7 @@ public sealed class CategoryTester : ITester
 
 
     /// <summary> The full accuracy/precision/recall over the entire matrix. </summary>
-    public static float MicroAccuracy(Matrix confusionMatrix, int category)
+    public static float MicroAccuracy(Matrix confusionMatrix)
     {
         float fullTrue = TotalTrue(confusionMatrix);
         float total = Total(confusionMatrix);
