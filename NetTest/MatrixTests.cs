@@ -164,4 +164,32 @@ public class MatrixTests
 
         AssertEquivalentMatrices(matrixC, expected);
     }
+
+    [Test]
+    public void TestMatrixVectorProduct()
+    {
+        Matrix matrix = new(new float[,]
+        {
+            { 1, 2, 3},
+            { 4, 5, 6},
+        });
+
+        Vector vector = new(new float[]
+        {
+            7, 
+            8, 
+            9
+        });
+
+        Vector expected = new(new float[]
+        {
+            1*7 + 2*8 + 3*9,
+            4*7 + 5*8 + 6*9,
+        });
+
+        Vector matrixC = matrix * vector;
+
+        AssertEquivalentVectors(matrixC, expected);
+    }
+
 }

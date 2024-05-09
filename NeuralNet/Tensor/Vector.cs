@@ -83,20 +83,32 @@ public readonly struct Vector
                 "the first matrix was equal to the first length of the second!");
         }
 
-        Vector c = new(A.Height);
+        int InternalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
+
+        Vector<float>[] BValues = GetValues(b);
+        Vector<float>[] AValues = Matrix.GetValues(A);
+
+        Vector result = new(A.Height);
+
         for(int i = 0; i < A.Height; i++)
         {
-            float total = 0;
+            Vector<float> totalVector = new();
 
-            for(int k = 0; k < A.Width; k++)
+            for(int l = 0; l < InternalWidth; l++)
             {
-                total += A[i, k] * b[k];
+                totalVector += AValues[i * InternalWidth + l] * BValues[l];
             }
 
-            c[i] = total;
+            float totalFloat = 0;
+            for(int l = 0; l < Vector<float>.Count; l++)
+            {
+                totalFloat += totalVector[l];
+            }
+
+            result[i] = totalFloat;
         }
 
-        return c;
+        return result;
     }
 
     public static Vector operator *(Vector a, float b)
@@ -197,12 +209,19 @@ public readonly struct Vector
     //TODO: add pre-vector change to matrix-vector product
     internal static Vector<float>[] GetValues(Vector A)
     {
-        throw new NotImplementedException();
-    }
+        int internalLength = (int)Math.Ceiling(A.Height / (float)Vector<float>.Count);
+        Vector<float>[] values = new Vector<float>[A.Height * internalLength];
 
-    internal static Vector GetVector(int height, Vector<float>[] values)
-    {
-        throw new NotImplementedException();
+        for(int i = 0; i < internalLength; i++)
+        {
+            float[] floats = new float[Vector<float>.Count];
+            int nonVectorIndex = i * Vector<float>.Count;
+            int length = Math.Min(Vector<float>.Count, A.Height - nonVectorIndex);
+            Buffer.BlockCopy(A.values, nonVectorIndex * sizeof(float), floats, 0, length * sizeof(float));
+            values[i] = new(floats);
+        }
+
+        return values;
     }
 
 }

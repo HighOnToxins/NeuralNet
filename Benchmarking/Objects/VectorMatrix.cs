@@ -1,7 +1,7 @@
 ﻿
 using System.Numerics;
 
-namespace NeuralNet.Tensor;
+namespace Benchmarking.Objects;
 
 internal readonly struct VectorMatrix
 {
@@ -10,7 +10,7 @@ internal readonly struct VectorMatrix
 
     public VectorMatrix(int height, int width, float[] matrixValues, bool transpose)
     {
-        if(!transpose)
+        if (!transpose)
         {
             Height = height;
             Width = width;
@@ -20,9 +20,9 @@ internal readonly struct VectorMatrix
 
             values = new Vector<float>[InternalHeight * InternalWidth];
 
-            for(int i = 0; i < height; i++)
+            for (int i = 0; i < height; i++)
             {
-                for(int j = 0; j < InternalWidth; j++)
+                for (int j = 0; j < InternalWidth; j++)
                 {
                     float[] floats = new float[Vector<float>.Count];
                     int nonVectorIndex = j * Vector<float>.Count;
@@ -42,17 +42,17 @@ internal readonly struct VectorMatrix
 
         values = new Vector<float>[InternalHeight * InternalWidth];
 
-        for(int i = 0; i < width; i++)
+        for (int i = 0; i < width; i++)
         {
-            for(int j = 0; j < InternalWidth; j++)
+            for (int j = 0; j < InternalWidth; j++)
             {
                 float[] floats = new float[Vector<float>.Count];
                 int nonVectorIndex = j * Vector<float>.Count;
                 int length = Math.Min(Vector<float>.Count, height - nonVectorIndex);
 
-                for(int k = 0; k < length; k++)
+                for (int k = 0; k < length; k++)
                 {
-                    floats[k] = matrixValues[(nonVectorIndex + k)*width + i];
+                    floats[k] = matrixValues[(nonVectorIndex + k) * width + i];
                 }
 
                 values[i * InternalWidth + j] = new(floats);
