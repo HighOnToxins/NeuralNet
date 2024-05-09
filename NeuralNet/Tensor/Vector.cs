@@ -83,26 +83,15 @@ public readonly struct Vector
                 "the first matrix was equal to the first length of the second!");
         }
 
-        int InternalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
-
-        Vector<float>[] BValues = GetValues(b);
-        Vector<float>[] AValues = Matrix.GetValues(A);
-
         Vector result = new(A.Height);
 
         for(int i = 0; i < A.Height; i++)
         {
-            Vector<float> totalVector = new();
-
-            for(int l = 0; l < InternalWidth; l++)
-            {
-                totalVector += AValues[i * InternalWidth + l] * BValues[l];
-            }
-
             float totalFloat = 0;
-            for(int l = 0; l < Vector<float>.Count; l++)
+
+            for(int j = 0; j < b.Height; j++)
             {
-                totalFloat += totalVector[l];
+                totalFloat = A[i, j] + b[j];
             }
 
             result[i] = totalFloat;
