@@ -10,6 +10,6 @@ internal class Program
     {
         BenchmarkingUtil.MatrixSize = 1_000;
 
-        BenchmarkRunner.Run<VectorProdBenchmarks>();
+        BenchmarkRunner.Run<MatrixVectorProduct>();
     }
 }

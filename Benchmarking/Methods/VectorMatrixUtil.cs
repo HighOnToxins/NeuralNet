@@ -7,6 +7,22 @@ namespace Benchmarking.Methods;
 internal static class VectorMatrixUtil
 {
 
+    internal static Vector<float>[] GetValues(StructVector A)
+    {
+        int internalLength = (int)Math.Ceiling(A.Height / (float)Vector<float>.Count);
+        Vector<float>[] values = new Vector<float>[A.Height * internalLength];
+
+        for(int i = 0; i < internalLength; i++)
+        {
+            float[] floats = new float[Vector<float>.Count];
+            int nonVectorIndex = i * Vector<float>.Count;
+            int length = Math.Min(Vector<float>.Count, A.Height - nonVectorIndex);
+            Buffer.BlockCopy(A.values, nonVectorIndex * sizeof(float), floats, 0, length * sizeof(float));
+            values[i] = new(floats);
+        }
+
+        return values;
+    }
     public static Vector<float>[] GetValues(StructMatrix A)
     {
         int internalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
