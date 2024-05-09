@@ -1,10 +1,26 @@
 ﻿
+using Benchmarking.Objects;
+
 namespace Benchmarking;
 
-internal static class BenchmarkingUtil
+public static class BenchmarkingUtil
 {
-    public static int MatrixSize = 100;
-    public static float MatrixValueRange = 10_000;
+    internal static int MatrixSize = 100;
+    internal static float MatrixValueRange = 10_000;
+
+    public static readonly StructMatrix matrixA;
+
+    public static readonly StructMatrix matrixB;
+
+    public static readonly float randomNum;
+
+    static BenchmarkingUtil()
+    {
+        matrixA = new(RandomMatrix());
+        matrixB = new(RandomMatrix());
+
+        randomNum = (float)new Random().NextDouble() * 10000f;
+    }
 
     public static float[,] RandomMatrix()
     {

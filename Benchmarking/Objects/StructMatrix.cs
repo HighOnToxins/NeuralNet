@@ -2,7 +2,7 @@
 
 namespace Benchmarking.Objects;
 
-internal readonly struct StructMatrix
+public readonly struct StructMatrix
 {
     internal readonly float[] values;
 

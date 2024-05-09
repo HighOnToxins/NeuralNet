@@ -1,5 +1,6 @@
 ﻿
 using BenchmarkDotNet.Running;
+using Benchmarking.Benchmarks.VectorBenchmarks;
 
 namespace Benchmarking;
 
@@ -9,6 +10,6 @@ internal class Program
     {
         BenchmarkingUtil.MatrixSize = 1_000;
 
-        BenchmarkRunner.Run<VectorBenchmarks>();
+        BenchmarkRunner.Run<VectorProdBenchmarks>();
     }
 }
