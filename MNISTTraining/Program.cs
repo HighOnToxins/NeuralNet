@@ -175,7 +175,8 @@ internal class Program
             { 
                 new IterationMeasure(), 
                 new TimeMeasure(),
-                new LossMeasure( trainer, tester )
+                new LossMeasure( trainer, tester ),
+                new EvaluationMeasure( tester, true, true )
             },
             new ILogger[] 
             { 
