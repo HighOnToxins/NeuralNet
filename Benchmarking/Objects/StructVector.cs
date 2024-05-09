@@ -89,7 +89,7 @@ public readonly struct StructVector
 
             for(int j = 0; j < b.Height; j++)
             {
-                totalFloat = A[i,j] + b[j];
+                totalFloat += A[i, j] * b[j];
             }
 
             result[i] = totalFloat;
