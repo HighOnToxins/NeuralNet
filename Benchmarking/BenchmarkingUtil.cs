@@ -5,8 +5,8 @@ namespace Benchmarking;
 
 public static class BenchmarkingUtil
 {
-    internal static int MatrixSize = 100;
-    internal static float MatrixValueRange = 10_000;
+    internal const int MATRIXSIZE = 1_000;
+    internal const float MATRIXVALUERANGE = 10_000;
 
     public static readonly StructMatrix matrixA;
     public static readonly StructMatrix matrixB;
@@ -27,13 +27,13 @@ public static class BenchmarkingUtil
 
     public static float[,] RandomMatrix()
     {
-        float[,] matrix = new float[MatrixSize, MatrixSize];
+        float[,] matrix = new float[MATRIXSIZE, MATRIXSIZE];
         Random random = new();
-        for(int i = 0; i < MatrixSize; i++)
+        for(int i = 0; i < MATRIXSIZE; i++)
         {
-            for(int j = 0; j < MatrixSize; j++)
+            for(int j = 0; j < MATRIXSIZE; j++)
             {
-                matrix[i, j] = (float)random.NextDouble() * 2 * MatrixValueRange - MatrixValueRange;
+                matrix[i, j] = (float)random.NextDouble() * 2 * MATRIXVALUERANGE - MATRIXVALUERANGE;
             }
         }
         return matrix;
@@ -41,11 +41,11 @@ public static class BenchmarkingUtil
 
     public static float[] RandomVector()
     {
-        float[] vector = new float[MatrixSize];
+        float[] vector = new float[MATRIXSIZE];
         Random random = new();
-        for(int i = 0; i < MatrixSize; i++)
+        for(int i = 0; i < MATRIXSIZE; i++)
         {
-            vector[i] = (float)random.NextDouble() * 2 * MatrixValueRange - MatrixValueRange;
+            vector[i] = (float)random.NextDouble() * 2 * MATRIXVALUERANGE - MATRIXVALUERANGE;
         }
         return vector;
     }

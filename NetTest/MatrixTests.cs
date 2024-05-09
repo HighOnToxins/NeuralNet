@@ -187,9 +187,9 @@ public class MatrixTests
             4*7 + 5*8 + 6*9,
         });
 
-        Vector matrixC = matrix * vector;
+        Vector resultVector = matrix * vector;
 
-        AssertEquivalentVectors(matrixC, expected);
+        AssertEquivalentVectors(resultVector, expected);
     }
 
 }
