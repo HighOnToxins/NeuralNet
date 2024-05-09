@@ -136,77 +136,6 @@ public readonly struct Matrix
         return C;
     }
 
-    public static Vector<float>[] GetValues(Matrix A)
-    {
-        int internalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
-        Vector<float>[] values = new Vector<float>[A.Height * internalWidth];
-
-        for(int i = 0; i < A.Height; i++)
-        {
-            for(int j = 0; j < internalWidth; j++)
-            {
-                float[] floats = new float[Vector<float>.Count];
-                int nonVectorIndex = j * Vector<float>.Count;
-                int length = Math.Min(Vector<float>.Count, A.Width - nonVectorIndex);
-                Buffer.BlockCopy(A.values, (i * A.Width + nonVectorIndex) * sizeof(float), floats, 0, length * sizeof(float));
-                values[i * internalWidth + j] = new(floats);
-            }
-        }
-
-        return values;
-    }
-
-    public static Vector<float>[] GetValuesTransposed(Matrix A)
-    {
-        int internalWidth = (int)Math.Ceiling(A.Height / (float)Vector<float>.Count);
-        Vector<float>[] values = new Vector<float>[A.Width * internalWidth];
-
-        for(int i = 0; i < A.Width; i++)
-        {
-            for(int j = 0; j < internalWidth; j++)
-            {
-                float[] floats = new float[Vector<float>.Count];
-                int nonVectorIndex = j * Vector<float>.Count;
-                int length = Math.Min(Vector<float>.Count, A.Height - nonVectorIndex);
-
-                for(int k = 0; k < length; k++)
-                {
-                    floats[k] = A[nonVectorIndex + k, i];
-                }
-
-                values[i * internalWidth + j] = new(floats);
-            }
-        }
-
-        return values;
-    }
-
-    public static Matrix GetMatrix(int height, int width, Vector<float>[] values)
-    {
-        int internalWidth = (int)Math.Ceiling(width / (float)Vector<float>.Count);
-        Matrix result = new(height, width);
-
-        for(int i = 0; i < height; i++)
-        {
-            for(int j = 0; j < internalWidth; j++)
-            {
-                int length = width - j * Vector<float>.Count;
-                if(length > Vector<float>.Count)
-                {
-                    values[i * internalWidth + j].CopyTo(result.values, i * width + j * Vector<float>.Count);
-                    continue;
-                }
-
-                for(int k = 0; k < length; k++)
-                {
-                    result[i, j * Vector<float>.Count + k] = values[i * internalWidth + j][k];
-                }
-            }
-        }
-
-        return result;
-    }
-
     public static Matrix operator *(Matrix A, Matrix B)
     {
         if(A.Width != B.Height)
@@ -340,4 +269,78 @@ public readonly struct Matrix
         }
         return total;
     }
+
+
+
+    internal static Vector<float>[] GetValues(Matrix A)
+    {
+        int internalWidth = (int)Math.Ceiling(A.Width / (float)Vector<float>.Count);
+        Vector<float>[] values = new Vector<float>[A.Height * internalWidth];
+
+        for(int i = 0; i < A.Height; i++)
+        {
+            for(int j = 0; j < internalWidth; j++)
+            {
+                float[] floats = new float[Vector<float>.Count];
+                int nonVectorIndex = j * Vector<float>.Count;
+                int length = Math.Min(Vector<float>.Count, A.Width - nonVectorIndex);
+                Buffer.BlockCopy(A.values, (i * A.Width + nonVectorIndex) * sizeof(float), floats, 0, length * sizeof(float));
+                values[i * internalWidth + j] = new(floats);
+            }
+        }
+
+        return values;
+    }
+
+    internal static Vector<float>[] GetValuesTransposed(Matrix A)
+    {
+        int internalWidth = (int)Math.Ceiling(A.Height / (float)Vector<float>.Count);
+        Vector<float>[] values = new Vector<float>[A.Width * internalWidth];
+
+        for(int i = 0; i < A.Width; i++)
+        {
+            for(int j = 0; j < internalWidth; j++)
+            {
+                float[] floats = new float[Vector<float>.Count];
+                int nonVectorIndex = j * Vector<float>.Count;
+                int length = Math.Min(Vector<float>.Count, A.Height - nonVectorIndex);
+
+                for(int k = 0; k < length; k++)
+                {
+                    floats[k] = A[nonVectorIndex + k, i];
+                }
+
+                values[i * internalWidth + j] = new(floats);
+            }
+        }
+
+        return values;
+    }
+
+    internal static Matrix GetMatrix(int height, int width, Vector<float>[] values)
+    {
+        int internalWidth = (int)Math.Ceiling(width / (float)Vector<float>.Count);
+        Matrix result = new(height, width);
+
+        for(int i = 0; i < height; i++)
+        {
+            for(int j = 0; j < internalWidth; j++)
+            {
+                int length = width - j * Vector<float>.Count;
+                if(length > Vector<float>.Count)
+                {
+                    values[i * internalWidth + j].CopyTo(result.values, i * width + j * Vector<float>.Count);
+                    continue;
+                }
+
+                for(int k = 0; k < length; k++)
+                {
+                    result[i, j * Vector<float>.Count + k] = values[i * internalWidth + j][k];
+                }
+            }
+        }
+
+        return result;
+    }
+
 }

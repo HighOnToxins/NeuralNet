@@ -11,4 +11,9 @@
     <ProjectReference Include="..\NeuralNet\NeuralNet.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="logs\" />
+    <Folder Include="net\" />
+  </ItemGroup>
+
 </Project>

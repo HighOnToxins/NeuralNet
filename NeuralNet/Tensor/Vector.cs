@@ -1,4 +1,6 @@
 ﻿
+using System.Numerics;
+
 namespace NeuralNet.Tensor;
 
 public readonly struct Vector
@@ -188,6 +190,19 @@ public readonly struct Vector
         Buffer.BlockCopy(values, 0, result.values, 0, values.Length * sizeof(float));
         Buffer.BlockCopy(bottom.values, 0, result.values, values.Length * sizeof(float), bottom.values.Length * sizeof(float));
         return result;
+    }
+
+
+
+    //TODO: add pre-vector change to matrix-vector product
+    internal static Vector<float>[] GetValues(Vector A)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal static Vector GetVector(int height, Vector<float>[] values)
+    {
+        throw new NotImplementedException();
     }
 
 }
