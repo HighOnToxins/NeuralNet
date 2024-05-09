@@ -181,7 +181,7 @@ internal class Program
             new ILogger[] 
             { 
                 new ConsoleLogger(), 
-                new CSVFileLogger(logDirectory + now + ".csv"),
+                new CSVLogger(logDirectory + now + ".csv"),
             },
             new NewestSaver(netPath)
          );

@@ -1,14 +1,14 @@
 ﻿
 namespace NeuralNet.TrainingProgram.Display;
 
-public class CSVFileLogger: ILogger
+public class CSVLogger: ILogger
 {
 
     private readonly string path;
     private readonly char columnSep;
     private readonly char rowSep;
 
-    public CSVFileLogger(string path, char columnSep = ';', char rowSep = '\n')
+    public CSVLogger(string path, char columnSep = ';', char rowSep = '\n')
     {
         this.path = path;
         this.columnSep = columnSep;
