@@ -1,4 +1,5 @@
 ﻿using NeuralNet.Tensor;
+using System.Security.Principal;
 
 namespace NeuralNet.TrainingProgram;
 
@@ -269,52 +270,84 @@ public sealed class CategoryTester : ITester
     public static float MacroAccuracy(Matrix confusionMatrix)
     {
         float total = 0;
+        int nanCount = 0;
 
-        for (int i = 0; i < confusionMatrix.Height; i++)
+        for(int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Accuracy(confusionMatrix, i);
+            float value = Accuracy(confusionMatrix, i);
+            if(float.IsNaN(value))
+            {
+                nanCount++;
+                continue;
+            }
+
+            total += value;
         }
 
-        return total / confusionMatrix.Height;
+        return total / (confusionMatrix.Height - nanCount);
     }
 
     /// <summary> The by-category average precision. </summary>
     public static float MacroPrecision(Matrix confusionMatrix)
     {
         float total = 0;
+        int nanCount = 0;
 
         for (int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Precision(confusionMatrix, i);
+            float value = Precision(confusionMatrix, i);
+            if(float.IsNaN(value))
+            {
+                nanCount++;
+                continue;
+            }
+
+            total += value;
         }
 
-        return total / confusionMatrix.Height;
+        return total / (confusionMatrix.Height - nanCount);
     }
 
     /// <summary> The by-category average recall. </summary>
     public static float MacroRecall(Matrix confusionMatrix)
     {
         float total = 0;
+        int nanCount = 0;
 
-        for (int i = 0; i < confusionMatrix.Height; i++)
+        for(int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Recall(confusionMatrix, i);
+            float value = Recall(confusionMatrix, i);
+            if(float.IsNaN(value))
+            {
+                nanCount++;
+                continue;
+            }
+
+            total += value;
         }
 
-        return total / confusionMatrix.Height;
+        return total / (confusionMatrix.Height - nanCount);
     }
 
     /// <summary> The by-category average specificity. </summary>
     public static float MacroSpecificity(Matrix confusionMatrix)
     {
         float total = 0;
+        int nanCount = 0;
 
-        for (int i = 0; i < confusionMatrix.Height; i++)
+        for(int i = 0; i < confusionMatrix.Height; i++)
         {
-            total += Specificity(confusionMatrix, i);
+            float value = Specificity(confusionMatrix, i);
+            if(float.IsNaN(value))
+            {
+                nanCount++;
+                continue;
+            }
+
+            total += value;
         }
 
-        return total / confusionMatrix.Height;
+        return total / (confusionMatrix.Height - nanCount);
     }
 
 

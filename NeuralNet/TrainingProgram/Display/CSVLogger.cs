@@ -29,6 +29,7 @@ public class CSVLogger: ILogger
 
     public void Log(object[] info)
     {
+        //TODO: Remove separators from information
         using StreamWriter writer = new(path, true);
 
         for(int i = 0; i < info.Length; i++)

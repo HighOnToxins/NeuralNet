@@ -5,20 +5,21 @@ using NeuralNet.TrainingProgram;
 using NeuralNet.Tensor;
 using NeuralNet.TrainingProgram.Display;
 using NeuralNet.TrainingProgram.Save;
+using NeuralNet;
+using System.Diagnostics.Metrics;
+using System.IO;
+using System.Diagnostics;
 
 namespace MNSITTraining;
 
 internal class Program
 {
     private const string projectFolder = "../../../";
+    private const string solutionFolder = "../../../../";
 
     private const string MNISTDirectory = projectFolder + "MNISTFiles/";
     
-    private const string netDirectory = projectFolder + "net/";
-
-    private const string logDirectory = projectFolder + "logs/";
-
-    private const int dataUse = 1_000;
+    private const int dataUse = -1;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -156,60 +157,134 @@ internal class Program
 
         Console.WriteLine("Loaded files!");
 
-        //setting up log folder
-        if(!Directory.Exists(logDirectory)) 
-            Directory.CreateDirectory(logDirectory);
-
         //trainer, tester & program
         LossFunction loss = new();
 
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, loss);
         CategoryTester tester = new(testingInputData, testingLabels, loss, Guess, MNISTLoader.CategoryCount);
-        ConstantRateProgram program = new(trainer);
+
+        string directory = solutionFolder + "projectRuns/";
+
+        //running
+        int iterationCount = 50;
+
+        Stopwatch timer = new();
+        timer.Start();
+
+        LinearRateTraining(directory + "LR/_01/", trainer, tester, .01f, iterationCount);
+        LinearRateTraining(directory + "LR/_001/", trainer, tester, .001f, iterationCount);
+        LinearRateTraining(directory + "LR/_0001/", trainer, tester, .0001f, iterationCount);
+
+        NewtonsMethodTraining(directory + "NM/1/", trainer, tester, 1f, iterationCount);
+        NewtonsMethodTraining(directory + "NM/_01/", trainer, tester, .01f, iterationCount);
+        NewtonsMethodTraining(directory + "NM/_0001/", trainer, tester, .0001f, iterationCount);
+
+        ConstantRateTraining(directory + "CR/1/", trainer, tester, 1f, iterationCount);
+        ConstantRateTraining(directory + "CR/_1/", trainer, tester, .1f, iterationCount);
+        ConstantRateTraining(directory + "CR/_01/", trainer, tester, .01f, iterationCount);
+
+        timer.Stop();
+        Console.WriteLine($"COMPLETED FULL TRAINING! in {timer.Elapsed}");
+        Console.WriteLine("program ended!");
+    }
+
+    public static INet CreateMNISTNetwork(int layerCount, int layerBreath, IActivation activation)
+    {
+        IFeedForwardLayer[] layers = new IFeedForwardLayer[layerCount];
         
-        //runner 
-        string now = DateTime.Now.ToString().Replace('/', '_').Replace('.', '_');
-        string netPath = netDirectory + now;
-        TrainingRunner runner = new(program,
-            new IMeasure[] 
-            { 
-                new IterationMeasure(), 
-                new TimeMeasure(),
-                new LossMeasure( trainer, tester ),
-                new EvaluationMeasure( tester, true, true )
-            },
-            new ILogger[] 
-            { 
-                new ConsoleLogger(), 
-                new CSVLogger(logDirectory + now + ".csv"),
-            },
-            new NewestSaver(netPath)
-         );
-
-        //network
-        FeedforwardNet net = new(
-            new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, MNISTLoader.CategoryCount, new ReLU(.05f))
-        );
-
-        if(!Directory.Exists(netDirectory))
-            Directory.CreateDirectory(netDirectory);
-
-        if(!File.Exists(netPath + ".bin"))
+        if(layerCount == 0)
         {
-            net.Randomize(x => 100f * (float)Math.Pow(x - .5f, 7));
-            Console.WriteLine("Created New Network!");
+            layers[0] = new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, MNISTLoader.CategoryCount, activation);
         }
         else
         {
-            net.Load(netPath);
-            Console.WriteLine("Loaded Network!");
+            layers[0] = new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, layerBreath, activation);
         }
 
-        Console.WriteLine("Started training!\n");
-        runner.Run(net, 100);
-        Console.WriteLine("\nTraining ended!\n");
+        for(int i = 1; i < layerCount - 1; i++)
+        {
+            layers[i] = new AffineLayer(layerBreath, layerBreath, activation);
+        }
 
-        Matrix confusionMatrix = tester.ConfusionMatrix(net);
-        Console.WriteLine($"\n\nCONFUSION MATRIX:\n{confusionMatrix.ToString()}");
+        layers[^1] = new AffineLayer(layerBreath, MNISTLoader.CategoryCount, activation);
+
+        FeedforwardNet net = new(layers);
+        net.Randomize(x => 100f * (float)Math.Pow(x - .5f, 7));
+
+        return net;
     }
+
+    public static TrainingRunner CreateRunner(ITrainingProgram program, ITrainer trainer, CategoryTester tester, string csvPath, string netPath) => new(program,
+        new IMeasure[]
+        {
+            new IterationMeasure(),
+            new TimeMeasure(),
+            new LossMeasure( trainer, tester ),
+            new EvaluationMeasure( tester, true, true )
+        },
+        new ILogger[]
+        {
+            new ConsoleLogger(),
+            new CSVLogger(csvPath + ".csv"),
+        },
+        new FrequencySaver(netPath, 10, false)
+    );
+
+    public static void SetupAndRun(ITrainingProgram program, ITrainer trainer, CategoryTester tester, string directory, int iterationCount)
+    {
+        if(!Directory.Exists(directory))
+            Directory.CreateDirectory(directory);
+
+        string csvPath = directory + "log";
+        string netPath = directory + "net";
+
+        //runner 
+        TrainingRunner runner = CreateRunner(program, trainer, tester, csvPath, netPath);
+
+        //network
+        INet net = CreateMNISTNetwork(5, 50, new ReLU(.05f));
+        Console.WriteLine("Created New Network!");
+
+        //running
+        Console.WriteLine("Started training!\n");
+        runner.Run(net, iterationCount);
+        Console.WriteLine("\nTraining ended!\n");
+    }
+
+    public static void LinearRateTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
+    {
+        //screen logging
+        Console.WriteLine(" - - - Linear rate training - - - ");
+        Console.WriteLine($"learning rate = {learningRate}");
+
+        //program
+        MomentumProgram program = new(trainer, learningRate);
+
+        SetupAndRun(program, trainer, tester, directory, iterationCount);
+    }
+
+    public static void NewtonsMethodTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
+    {
+        //screen logging
+        Console.WriteLine(" - - - Newtons method training - - - ");
+        Console.WriteLine($"learning rate = {learningRate}");
+
+        //program
+        NewtonProgram program = new(trainer, learningRate);
+
+        SetupAndRun(program, trainer, tester, directory, iterationCount);
+    }
+
+    public static void ConstantRateTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
+    {
+        //screen logging
+        Console.WriteLine(" - - - Constant rate training - - - ");
+        Console.WriteLine($"learning rate = {learningRate}");
+
+        //program
+        ConstantRateProgram program = new(trainer, learningRate);
+
+        SetupAndRun(program, trainer, tester, directory, iterationCount);
+    }
+
 }

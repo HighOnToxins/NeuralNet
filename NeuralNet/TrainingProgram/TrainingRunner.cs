@@ -28,8 +28,8 @@ public sealed class TrainingRunner
         //init logs 
         InitLogs(CollectFields());
 
-        //write initial condition to logs
-        Log(CollectInfo(net));
+        Log(CollectInfo(net)); //write initial condition to logs
+        saver?.Save(net); //initial save net
 
         //init program
         program.InitRun(net);
@@ -40,11 +40,8 @@ public sealed class TrainingRunner
             //train
             program.Update(net);
 
-            //possibly save net
-            saver?.Save(net);
-
-            //write to logs
-            Log(CollectInfo(net));
+            saver?.Save(net); //possibly save net
+            Log(CollectInfo(net)); //write to logs
         }
     }
 
