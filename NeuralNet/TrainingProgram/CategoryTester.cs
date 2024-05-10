@@ -275,7 +275,7 @@ public sealed class CategoryTester : ITester
             total += Accuracy(confusionMatrix, i);
         }
 
-        return total;
+        return total / confusionMatrix.Height;
     }
 
     /// <summary> The by-category average precision. </summary>
@@ -288,7 +288,7 @@ public sealed class CategoryTester : ITester
             total += Precision(confusionMatrix, i);
         }
 
-        return total;
+        return total / confusionMatrix.Height;
     }
 
     /// <summary> The by-category average recall. </summary>
@@ -301,7 +301,7 @@ public sealed class CategoryTester : ITester
             total += Recall(confusionMatrix, i);
         }
 
-        return total;
+        return total / confusionMatrix.Height;
     }
 
     /// <summary> The by-category average specificity. </summary>
@@ -314,7 +314,7 @@ public sealed class CategoryTester : ITester
             total += Specificity(confusionMatrix, i);
         }
 
-        return total;
+        return total / confusionMatrix.Height;
     }
 
 
