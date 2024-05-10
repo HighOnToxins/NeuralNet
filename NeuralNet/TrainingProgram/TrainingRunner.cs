@@ -28,6 +28,9 @@ public sealed class TrainingRunner
         //init logs 
         InitLogs(CollectFields());
 
+        //write initial condition to logs
+        Log(CollectInfo(net));
+
         //init program
         program.InitRun(net);
 
