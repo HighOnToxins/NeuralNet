@@ -27,7 +27,7 @@ public class ReLU: IActivation
         float[] result = new float[input.Height];
         for(int i = 0; i < input.Height; i++)
         {
-            result[i] = input[i] >= 0 ? 1 : leak;
+            result[i] = input[i] >= 0 ? 1 : -leak;
         }
         return new Vector(result);
     }
