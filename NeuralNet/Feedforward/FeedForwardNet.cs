@@ -76,20 +76,26 @@ public sealed class FeedforwardNet: INet
         return result;
     }
 
-    public (Matrix, Vector) Gradient(Vector input)
+    public Matrix Gradient(Vector input, out Vector result)
     {
-        (Matrix gradientResult, _, Vector result) = layers[0].Gradient(input);
+        layers[0].Gradient(input, 
+            out Matrix gradientResult, 
+            out _, 
+            out result);
 
         for (int i = 1; i < layers.Length; i++)
         {
-            (Matrix weightGradient, Matrix inputGradient, result) = layers[i].Gradient(result);
+            layers[i].Gradient(result, 
+                out Matrix weightGradient, 
+                out Matrix inputGradient, 
+                out result);
             Matrix rightPart = inputGradient * gradientResult;
 
             // WeightGradient + InputGradient*gradientResult
             gradientResult = weightGradient.ConcatByWidth(rightPart); 
         }
 
-        return (gradientResult, result);
+        return gradientResult;
     }
 
     public Vector GetWeights()

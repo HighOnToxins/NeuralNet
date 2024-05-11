@@ -28,7 +28,7 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
 
         for(int i = 0; i < inputs.Length; i++)
         {
-            (Matrix gradient, Vector run) = net.Gradient(inputs[i]); //TODO: remove touple outputs
+            Matrix gradient = net.Gradient(inputs[i], out Vector run); 
             totalGradient += gradient.Transpose() * loss.Gradient(targets[i], run);
         }
 

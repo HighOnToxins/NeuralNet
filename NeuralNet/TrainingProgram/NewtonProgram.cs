@@ -24,5 +24,4 @@ public sealed class NewtonProgram: ITrainingProgram
         Vector delta = gradient * (learningRate * loss / gradient.LengthSquared());
         net.AddWeights(delta);
     }
-
 }
