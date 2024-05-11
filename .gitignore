@@ -372,3 +372,5 @@ MNISTTraining/net/
 # sandbox project
 SandBox/
 
+# MNIST project runs
+ProjectRuns/
