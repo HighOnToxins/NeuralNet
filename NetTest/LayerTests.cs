@@ -57,7 +57,7 @@ internal class LayerTests
             {  0,  0,  0,  0, 10, 11, 0, 0, 1},
         });
 
-        (Matrix result, _, _) = layer.Gradient(input);
+        Matrix result = layer.Gradient(input, out _, out _);
 
         MatrixTests.AssertEquivalentMatrices(result, expected);
     }
@@ -80,7 +80,7 @@ internal class LayerTests
             { 5, 6 },
         });
 
-        (_, Matrix result, _) = layer.Gradient(input);
+        layer.Gradient(input, out Matrix result, out _);
 
         MatrixTests.AssertEquivalentMatrices(result, expected);
     }

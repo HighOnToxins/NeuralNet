@@ -78,15 +78,13 @@ public sealed class FeedforwardNet: INet
 
     public Matrix Gradient(Vector input, out Vector result)
     {
-        layers[0].Gradient(input, 
-            out Matrix gradientResult, 
+        Matrix gradientResult = layers[0].Gradient(input, 
             out _, 
             out result);
 
         for (int i = 1; i < layers.Length; i++)
         {
-            layers[i].Gradient(result, 
-                out Matrix weightGradient, 
+            Matrix weightGradient = layers[i].Gradient(result, 
                 out Matrix inputGradient, 
                 out result);
             Matrix rightPart = inputGradient * gradientResult;

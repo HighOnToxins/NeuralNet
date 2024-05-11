@@ -78,7 +78,7 @@ internal class NetTests
 
         Vector input = new(new float[] { 14, 15 });
         Vector result = net.Run(input);
-        (_, Vector result2) = net.Gradient(input);
+        net.Gradient(input, out Vector result2);
 
         MatrixTests.AssertEquivalentVectors(result, result2);
     }
@@ -100,7 +100,7 @@ internal class NetTests
             { 51, 110, 169, 1, 140, 150, 154, 165, 168, 180, 10, 11, 12 }
         });
 
-        (Matrix gradient, Vector result) = net.Gradient(input);
+        Matrix gradient = net.Gradient(input, out Vector result);
 
         MatrixTests.AssertEquivalentVectors(result, expectedResult);
         MatrixTests.AssertEquivalentMatrices(gradient, expectedGradient);
@@ -116,8 +116,8 @@ internal class NetTests
 
         Vector input = new(new float[] { 14, 15 });
 
-        (Matrix gradient, _) = net.Gradient(input);
-        (Matrix gradient2, _, _) = layer.Gradient(input);
+        Matrix gradient = net.Gradient(input, out _);
+        Matrix gradient2 = layer.Gradient(input, out _, out _);
 
         MatrixTests.AssertEquivalentMatrices(gradient, gradient2);
     }
@@ -135,7 +135,7 @@ internal class NetTests
         net.Randomize(10f);
 
         Vector input = new(new float[] { 14, 15 });
-        (Matrix _, Vector _) = net.Gradient(input);
+        net.Gradient(input, out _);
     }
 
 }

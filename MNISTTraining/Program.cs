@@ -203,7 +203,7 @@ internal class Program
 
     private static int layerCount;
     private static int layerBreath;
-    private static IActivation activation;
+    private static IActivation? activation;
 
     public static INet CreateMNISTNetwork()
     {

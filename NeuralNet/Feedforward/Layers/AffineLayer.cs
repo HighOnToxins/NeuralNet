@@ -84,14 +84,14 @@ public sealed class AffineLayer: IFeedForwardLayer
         return activation.Run(Transformation(input));
     }
 
-    public void Gradient(Vector input, out Matrix weightGradient, out Matrix inputGradient, out Vector result)
+    public Matrix Gradient(Vector input, out Matrix inputGradient, out Vector result)
     {
         Vector transformation = Transformation(input);
         Vector activationGradient = activation.ComputeGradient(transformation);
 
-        weightGradient = activationGradient.Scale(TransformationWeightGradient(input));
         inputGradient = activationGradient.Scale(matrix);
         result = activation.Run(transformation);
+        return activationGradient.Scale(TransformationWeightGradient(input));
     }
 
     public int GetWeightLength()
