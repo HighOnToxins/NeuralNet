@@ -15,7 +15,7 @@ namespace MNSITTraining;
 internal class Program
 {
     private const string projectFolder = "../../../";
-    private const string solutionFolder = "../../../../";
+    private const string solutionFolder = projectFolder + "../";
     private const string runsDirectory = solutionFolder + "ProjectRuns/";
 
     private const string MNISTDirectory = projectFolder + "MNISTFiles/";
