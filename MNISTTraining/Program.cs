@@ -184,17 +184,20 @@ internal class Program
         Stopwatch timer = new();
         timer.Start();
 
-        LinearRateTraining(runDirectory + "LR/_01/", trainer, tester, .01f, iterationCount);
-        LinearRateTraining(runDirectory + "LR/_001/", trainer, tester, .001f, iterationCount);
-        LinearRateTraining(runDirectory + "LR/_0001/", trainer, tester, .0001f, iterationCount);
+        LinearRateTraining(runDirectory + "LR/_001/", trainer, tester,   .001f, iterationCount);
+        LinearRateTraining(runDirectory + "LR/_0001/", trainer, tester,  .0001f, iterationCount);
+        LinearRateTraining(runDirectory + "LR/_00001/", trainer, tester, .00001f, iterationCount);
 
         NewtonsMethodTraining(runDirectory + "NM/1/", trainer, tester, 1f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/_01/", trainer, tester, .01f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/_0001/", trainer, tester, .0001f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/_001/", trainer, tester, .001f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/_00001/", trainer, tester, .00001f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/_0000001/", trainer, tester, .0000001f, iterationCount);
 
+        ConstantRateTraining(runDirectory + "CR/10/", trainer, tester, 10f, iterationCount);
         ConstantRateTraining(runDirectory + "CR/1/", trainer, tester, 1f, iterationCount);
         ConstantRateTraining(runDirectory + "CR/_1/", trainer, tester, .1f, iterationCount);
         ConstantRateTraining(runDirectory + "CR/_01/", trainer, tester, .01f, iterationCount);
+        ConstantRateTraining(runDirectory + "CR/_001/", trainer, tester, .001f, iterationCount);
 
         timer.Stop();
         Console.WriteLine($"COMPLETED FULL TRAINING! in {timer.Elapsed}");
@@ -295,7 +298,7 @@ internal class Program
         Console.WriteLine($"learning rate = {learningRate}");
 
         //program
-        MomentumProgram program = new(trainer, learningRate);
+        LinearRateProgram program = new(trainer, learningRate);
 
         SetupAndRun(program, trainer, tester, directory, iterationCount);
     }

@@ -2,14 +2,14 @@
 
 namespace NeuralNet.TrainingProgram;
 
-public sealed class MomentumProgram : ITrainingProgram
+public sealed class LinearRateProgram : ITrainingProgram
 {
     private readonly ITrainer trainer;
 
     private readonly float learningRate;
     private readonly float carry;
 
-    public MomentumProgram(ITrainer trainer, float learningRate, float carry = 0)
+    public LinearRateProgram(ITrainer trainer, float learningRate, float carry = 0)
     {
         this.trainer = trainer;
 
