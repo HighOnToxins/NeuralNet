@@ -283,6 +283,8 @@ internal class Program
             writer.WriteLine(e.Message);
             writer.WriteLine(e.StackTrace);
             writer.WriteLine(e.Source);
+
+            Console.WriteLine("\nPROGRAM CRASHED!\n");
         }
     }
 
