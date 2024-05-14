@@ -26,9 +26,9 @@ public sealed class NewtonProgram: ITrainingProgram
 
     public void Update(INet net)
     {
-        Vector gradient = trainer.Train(net) * -(float) option;
+        Vector gradient = trainer.Train(net);
         float loss = trainer.Loss(net);
-        Vector delta = gradient * (learningRate * loss / gradient.LengthSquared());
+        Vector delta = gradient * ((float)option * learningRate * loss / gradient.LengthSquared());
         net.AddWeights(delta);
     }
 }
