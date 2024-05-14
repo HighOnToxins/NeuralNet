@@ -22,7 +22,7 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         this.loss = loss;
     }
 
-    public Vector Train(FeedforwardNet net, TrainingOption option = TrainingOption.Minimize)
+    public Vector Train(FeedforwardNet net)
     {
         Vector totalGradient = new(net.GetWeightLength());
 
@@ -31,8 +31,6 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
             Matrix gradient = net.Gradient(inputs[i], out Vector run); 
             totalGradient += gradient.Transpose() * loss.Gradient(targets[i], run);
         }
-
-        totalGradient *= (float)option;
 
         return totalGradient;
     }

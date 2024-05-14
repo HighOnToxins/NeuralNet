@@ -9,11 +9,19 @@ public sealed class ConstantRateProgram : ITrainingProgram
     private readonly float learningRate;
     private readonly float carry;
 
-    public ConstantRateProgram(ITrainer trainer, float learningRate = .1f, float carry = 0)
+    private readonly TrainingOption option;
+
+    public ConstantRateProgram(
+        ITrainer trainer, 
+        float learningRate = .1f, 
+        float carry = 0,
+        TrainingOption option = TrainingOption.Minimize)
     {
         this.trainer = trainer;
         this.learningRate = learningRate;
         this.carry = carry;
+
+        this.option = option;
 
         velocity = Vector.EMPTY;
     }
@@ -27,7 +35,7 @@ public sealed class ConstantRateProgram : ITrainingProgram
 
     public void Update(INet net)
     {
-        Vector acceleration = trainer.Train(net);
+        Vector acceleration = trainer.Train(net) * (float)option;
         velocity = velocity*carry + acceleration * (learningRate / acceleration.Length());
         net.AddWeights(velocity);
     }

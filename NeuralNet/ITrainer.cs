@@ -2,18 +2,12 @@
 
 namespace NeuralNet;
 
-public enum TrainingOption
-{
-    Maximize = 1,
-    Minimize = -1
-}
-
 public interface ITrainer<N> : ITrainer where N : INet
 {
 
-    public Vector Train(N net, TrainingOption option = TrainingOption.Minimize);
+    public Vector Train(N net);
 
-    Vector ITrainer.Train(INet net, TrainingOption option) => Train((N)net, option);
+    Vector ITrainer.Train(INet net) => Train((N)net);
 
 }
 
@@ -21,7 +15,7 @@ public interface ITrainer<N> : ITrainer where N : INet
 public interface ITrainer: ITester
 {
 
-    public Vector Train(INet net, TrainingOption option = TrainingOption.Minimize);
+    public Vector Train(INet net);
 
 
 }

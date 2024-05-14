@@ -124,7 +124,7 @@ internal class Program
         return result;
     }
 
-    private static Vector Guess(Vector output)
+    private static Vector MaxGuess(Vector output)
     {
         int maxIndex = 0;
         for(int i = 1; i < output.Height; i++)
@@ -140,6 +140,11 @@ internal class Program
         return new(result);
     }
 
+    private static Vector FullGuess(Vector output)
+    {
+        return output;
+    }
+    
     public static void Main(string[] _)
     {
         //getting data
@@ -162,7 +167,7 @@ internal class Program
         LossFunction loss = new();
 
         FeedForwardTrainer trainer = new(trainingInputData, trainingTargets, loss);
-        CategoryTester tester = new(testingInputData, testingLabels, loss, Guess, MNISTLoader.CategoryCount);
+        CategoryTester tester = new(testingInputData, testingLabels, loss, MaxGuess, MNISTLoader.CategoryCount);
 
         //directory
         if(!Directory.Exists(runsDirectory)) Directory.CreateDirectory(runsDirectory);
@@ -184,20 +189,21 @@ internal class Program
         Stopwatch timer = new();
         timer.Start();
 
-        LinearRateTraining(runDirectory + "LR/_001/", trainer, tester,   .001f, iterationCount);
-        LinearRateTraining(runDirectory + "LR/_0001/", trainer, tester,  .0001f, iterationCount);
-        LinearRateTraining(runDirectory + "LR/_00001/", trainer, tester, .00001f, iterationCount);
+        LinearRateTraining(runDirectory + "LR/", trainer, tester,   .001f, iterationCount);
+        LinearRateTraining(runDirectory + "LR/", trainer, tester,  .0001f, iterationCount);
+        LinearRateTraining(runDirectory + "LR/", trainer, tester, .00001f, iterationCount);
 
-        NewtonsMethodTraining(runDirectory + "NM/1/", trainer, tester, 1f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/_001/", trainer, tester, .001f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/_00001/", trainer, tester, .00001f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/_0000001/", trainer, tester, .0000001f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, 1f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, 1f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, .001f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, .00001f, iterationCount);
+        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, .0000001f, iterationCount);
 
-        ConstantRateTraining(runDirectory + "CR/10/", trainer, tester, 10f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/1/", trainer, tester, 1f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/_1/", trainer, tester, .1f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/_01/", trainer, tester, .01f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/_001/", trainer, tester, .001f, iterationCount);
+        ConstantRateTraining(runDirectory + "CR/", trainer, tester, 10f, iterationCount);
+        ConstantRateTraining(runDirectory + "CR/", trainer, tester, 1f, iterationCount);
+        ConstantRateTraining(runDirectory + "CR/", trainer, tester, .1f, iterationCount);
+        ConstantRateTraining(runDirectory + "CR/", trainer, tester, .01f, iterationCount);
+        ConstantRateTraining(runDirectory + "CR/", trainer, tester, .001f, iterationCount);
 
         timer.Stop();
         Console.WriteLine($"COMPLETED FULL TRAINING! in {timer.Elapsed}");
@@ -250,17 +256,24 @@ internal class Program
         new FrequencySaver(netPath, 10, false)
     );
 
-    public static void SetupAndRun(ITrainingProgram program, ITrainer trainer, CategoryTester tester, string directory, int iterationCount)
+    public static void SetupAndRun(ITrainingProgram program, ITrainer trainer, CategoryTester tester, string directory, int iterationCount, float learningRate)
     {
         INet? net = null;
 
+        string fileFolderName = 
+            learningRate.ToString().Replace('.', '_') 
+            + "_" + layerCount
+            + "_" + layerBreath
+            + "_" + activation?.GetType().Name;
+        string fileDirectory = directory + fileFolderName + "/";
+
         try
         {
-            if(!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            if(!Directory.Exists(fileDirectory))
+                Directory.CreateDirectory(fileDirectory);
 
-            string csvPath = directory + "log";
-            string netPath = directory + "net";
+            string csvPath = fileDirectory + "log";
+            string netPath = fileDirectory + "net";
 
             //runner 
             TrainingRunner runner = CreateRunner(program, trainer, tester, csvPath, netPath);
@@ -276,9 +289,9 @@ internal class Program
         }
         catch(Exception e) 
         {
-            net?.Save(runsDirectory + "caughtNet");
+            net?.Save(fileDirectory + "caughtNet");
 
-            StreamWriter writer = new(runsDirectory + "error message.txt", true);
+            StreamWriter writer = new(fileDirectory + "error message.txt", true);
             writer.WriteLine();
             writer.WriteLine();
 
@@ -300,7 +313,7 @@ internal class Program
         //program
         LinearRateProgram program = new(trainer, learningRate);
 
-        SetupAndRun(program, trainer, tester, directory, iterationCount);
+        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate);
     }
 
     public static void NewtonsMethodTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
@@ -312,7 +325,7 @@ internal class Program
         //program
         NewtonProgram program = new(trainer, learningRate);
 
-        SetupAndRun(program, trainer, tester, directory, iterationCount);
+        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate);
     }
 
     public static void ConstantRateTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
@@ -324,7 +337,7 @@ internal class Program
         //program
         ConstantRateProgram program = new(trainer, learningRate);
 
-        SetupAndRun(program, trainer, tester, directory, iterationCount);
+        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate);
     }
 
 }
