@@ -182,37 +182,48 @@ internal class Program
         //running
         int iterationCount = 50;
 
-        layerCount = 3;
-        layerBreath = 10;
+        layerCount = 8;
+        layerBreath = 5;
         activation = new ReLU(.05f);
+
+        AddParameterNote(layerCount, layerBreath, activation.GetType().Name);
 
         Stopwatch timer = new();
         timer.Start();
+        
+        for(int i = 0; i < 4; i++)
+        {
+            LinearRateTraining(runDirectory + "Gradient Descent (linear)/", trainer, tester, SciNot(-i - 5), iterationCount, i+1);
+        }
 
-        LinearRateTraining(runDirectory + "LR/", trainer, tester,   .001f, iterationCount);
-        LinearRateTraining(runDirectory + "LR/", trainer, tester,  .0001f, iterationCount);
-        LinearRateTraining(runDirectory + "LR/", trainer, tester, .00001f, iterationCount);
+        for(int i = 0; i < 4; i++)
+        {
+            NewtonsMethodTraining(runDirectory + "Newtons Method/", trainer, tester, SciNot(-i), iterationCount, i+1);
+        }
 
-        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, 1f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, 1f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, .001f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, .00001f, iterationCount);
-        NewtonsMethodTraining(runDirectory + "NM/", trainer, tester, .0000001f, iterationCount);
-
-        ConstantRateTraining(runDirectory + "CR/", trainer, tester, 10f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/", trainer, tester, 1f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/", trainer, tester, .1f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/", trainer, tester, .01f, iterationCount);
-        ConstantRateTraining(runDirectory + "CR/", trainer, tester, .001f, iterationCount);
-
+        for(int i = 0; i < 4; i++)
+        {
+            ConstantRateTraining(runDirectory + "Gradient Descent (constant)/", trainer, tester, SciNot(-i), iterationCount, i + 1);
+        }
+        
         timer.Stop();
         Console.WriteLine($"COMPLETED FULL TRAINING! in {timer.Elapsed}");
         Console.WriteLine("program ended!");
     }
 
+    private static float SciNot(int x)
+    {
+        return (float) Math.Pow(10, x);
+    }
+
     private static int layerCount;
     private static int layerBreath;
     private static IActivation? activation;
+
+    private static void AddParameterNote(int layerCount, int layerBreath, string activationName)
+    {
+
+    }
 
     public static INet CreateMNISTNetwork()
     {
@@ -256,24 +267,25 @@ internal class Program
         new FrequencySaver(netPath, 10, false)
     );
 
-    public static void SetupAndRun(ITrainingProgram program, ITrainer trainer, CategoryTester tester, string directory, int iterationCount, float learningRate)
+    public static void SetupAndRun(ITrainingProgram program, ITrainer trainer, CategoryTester tester, string directory, int iterationCount, float learningRate, int fileNum)
     {
         INet? net = null;
 
-        string fileFolderName = 
-            learningRate.ToString().Replace('.', '_') 
+        string fileName =
+            $"({fileNum}) "
+            + learningRate.ToString().Replace('.', '_')
             + "_" + layerCount
             + "_" + layerBreath
             + "_" + activation?.GetType().Name;
-        string fileDirectory = directory + fileFolderName + "/";
+        string netSaveDirectory = directory + $"Saved Nets/{fileNum}/";
 
         try
         {
-            if(!Directory.Exists(fileDirectory))
-                Directory.CreateDirectory(fileDirectory);
+            if(!Directory.Exists(netSaveDirectory))
+                Directory.CreateDirectory(netSaveDirectory);
 
-            string csvPath = fileDirectory + "log";
-            string netPath = fileDirectory + "net";
+            string csvPath = directory + fileName;
+            string netPath = netSaveDirectory + "net";
 
             //runner 
             TrainingRunner runner = CreateRunner(program, trainer, tester, csvPath, netPath);
@@ -289,9 +301,9 @@ internal class Program
         }
         catch(Exception e) 
         {
-            net?.Save(fileDirectory + "caughtNet");
+            net?.Save(netSaveDirectory + "caughtNet");
 
-            StreamWriter writer = new(fileDirectory + "error message.txt", true);
+            StreamWriter writer = new(directory + $"({fileNum}) error message.txt", true);
             writer.WriteLine();
             writer.WriteLine();
 
@@ -304,7 +316,7 @@ internal class Program
         }
     }
 
-    public static void LinearRateTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
+    public static void LinearRateTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount, int num)
     {
         //screen logging
         Console.WriteLine(" - - - Linear rate training - - - ");
@@ -313,10 +325,10 @@ internal class Program
         //program
         LinearRateProgram program = new(trainer, learningRate);
 
-        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate);
+        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate, num);
     }
 
-    public static void NewtonsMethodTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
+    public static void NewtonsMethodTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount, int num)
     {
         //screen logging
         Console.WriteLine(" - - - Newtons method training - - - ");
@@ -325,10 +337,10 @@ internal class Program
         //program
         NewtonProgram program = new(trainer, learningRate);
 
-        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate);
+        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate, num);
     }
 
-    public static void ConstantRateTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount)
+    public static void ConstantRateTraining(string directory, ITrainer trainer, CategoryTester tester, float learningRate, int iterationCount, int num)
     {
         //screen logging
         Console.WriteLine(" - - - Constant rate training - - - ");
@@ -337,7 +349,7 @@ internal class Program
         //program
         ConstantRateProgram program = new(trainer, learningRate);
 
-        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate);
+        SetupAndRun(program, trainer, tester, directory, iterationCount, learningRate, num);
     }
 
 }
