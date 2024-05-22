@@ -7,8 +7,9 @@ public class CSVLogger: ILogger
     private readonly string path;
     private readonly char columnSep;
     private readonly char rowSep;
+    private readonly char floatComma;
 
-    public CSVLogger(string path, char columnSep = ';', char rowSep = '\n')
+    public CSVLogger(string path, char columnSep = ';', char rowSep = '\n', char floatComma = ',')
     {
         this.path = path;
         this.columnSep = columnSep;
@@ -37,6 +38,11 @@ public class CSVLogger: ILogger
             if(info[i].ToString() is not string s)
             {
                 throw new ArgumentException();
+            }
+
+            if(info[i] is float)
+            {
+                s = s.Replace(',', floatComma);
             }
 
             writer.Write(s + columnSep);

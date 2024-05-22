@@ -20,7 +20,7 @@ internal class Program
 
     private const string MNISTDirectory = projectFolder + "MNISTFiles/";
     
-    private const int dataUse = 1000;
+    private const int dataUse = -1;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -177,35 +177,41 @@ internal class Program
         {
             runCount++;
         }
-        string runDirectory = runsDirectory + $"run{runCount}/";
 
         //running
-        int iterationCount = 50;
-
         layerCount = 8;
         layerBreadth = 5;
         activation = new ReLU(.05f);
+
+        Run(runCount, trainer, tester);
+    }
+
+    private static void Run(int runCount, ITrainer trainer, CategoryTester tester)
+    {
+        string runDirectory = runsDirectory + $"run{runCount}/";
+
+        int iterationCount = 50;
 
         AddParameterNote(runDirectory, layerCount, layerBreadth, activation.GetType().Name);
 
         Stopwatch timer = new();
         timer.Start();
-        
+
         for(int i = 0; i < 4; i++)
         {
-            LinearRateTraining(runDirectory + "Gradient Descent (linear)/", trainer, tester, SciNot(-i - 5), iterationCount, i+1);
+            LinearRateTraining(runDirectory + "Gradient Descent (linear)/", trainer, tester, SciNot(-i - 5), iterationCount, i + 1);
         }
 
         for(int i = 0; i < 4; i++)
         {
-            NewtonsMethodTraining(runDirectory + "Newtons Method/", trainer, tester, SciNot(-i), iterationCount, i+1);
+            NewtonsMethodTraining(runDirectory + "Newtons Method/", trainer, tester, SciNot(-i), iterationCount, i + 1);
         }
 
         for(int i = 0; i < 4; i++)
         {
             ConstantRateTraining(runDirectory + "Gradient Descent (constant)/", trainer, tester, SciNot(-i), iterationCount, i + 1);
         }
-        
+
         timer.Stop();
         Console.WriteLine($"COMPLETED FULL TRAINING! in {timer.Elapsed}");
         Console.WriteLine("program ended!");
@@ -269,7 +275,7 @@ internal class Program
         new ILogger[]
         {
             new ConsoleLogger(),
-            new CSVLogger(csvPath + ".csv"),
+            new CSVLogger(csvPath + ".csv", floatComma: '.'),
         },
         new FrequencySaver(netPath, doOverrideFile: false)
     );
