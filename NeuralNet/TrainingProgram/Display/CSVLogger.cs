@@ -14,6 +14,7 @@ public class CSVLogger: ILogger
         this.path = path;
         this.columnSep = columnSep;
         this.rowSep = rowSep;
+        this.floatComma = floatComma;
     }
 
     public void InitLog(string[] fields)
