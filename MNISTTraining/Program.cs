@@ -20,7 +20,7 @@ internal class Program
 
     private const string MNISTDirectory = projectFolder + "MNISTFiles/";
     
-    private const int dataUse = -1;
+    private const int dataUse = 1000;
 
     public class LossFunction: IFeedForwardLoss
     {
@@ -183,10 +183,10 @@ internal class Program
         int iterationCount = 50;
 
         layerCount = 8;
-        layerBreath = 5;
+        layerBreadth = 5;
         activation = new ReLU(.05f);
 
-        AddParameterNote(layerCount, layerBreath, activation.GetType().Name);
+        AddParameterNote(runDirectory, layerCount, layerBreadth, activation.GetType().Name);
 
         Stopwatch timer = new();
         timer.Start();
@@ -217,33 +217,40 @@ internal class Program
     }
 
     private static int layerCount;
-    private static int layerBreath;
+    private static int layerBreadth;
     private static IActivation? activation;
 
-    private static void AddParameterNote(int layerCount, int layerBreath, string activationName)
+    private static void AddParameterNote(string runDirectory, int layerCount, int layerBreadth, string activationName)
     {
+        if(!Directory.Exists(runDirectory))
+            Directory.CreateDirectory(runDirectory);
 
+        StreamWriter writer = new(runDirectory + "parameters.txt", false);
+        writer.WriteLine($"layerCount = {layerCount}");
+        writer.WriteLine($"layerBreadth = {layerBreadth}");
+        writer.WriteLine($"activationName = {activationName}");
+        writer.Close();
     }
 
     public static INet CreateMNISTNetwork()
     {
         IFeedForwardLayer[] layers = new IFeedForwardLayer[layerCount];
         
-        if(layerCount == 0)
+        if(layerCount == 1)
         {
             layers[0] = new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, MNISTLoader.CategoryCount, activation);
         }
         else
         {
-            layers[0] = new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, layerBreath, activation);
+            layers[0] = new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, layerBreadth, activation);
         }
 
         for(int i = 1; i < layerCount - 1; i++)
         {
-            layers[i] = new AffineLayer(layerBreath, layerBreath, activation);
+            layers[i] = new AffineLayer(layerBreadth, layerBreadth, activation);
         }
 
-        layers[^1] = new AffineLayer(layerBreath, MNISTLoader.CategoryCount, activation);
+        layers[^1] = new AffineLayer(layerBreadth, MNISTLoader.CategoryCount, activation);
 
         FeedforwardNet net = new(layers);
         net.Randomize(x => 100f * (float)Math.Pow(x - .5f, 7));
@@ -264,7 +271,7 @@ internal class Program
             new ConsoleLogger(),
             new CSVLogger(csvPath + ".csv"),
         },
-        new FrequencySaver(netPath, 10, false)
+        new FrequencySaver(netPath, doOverrideFile: false)
     );
 
     public static void SetupAndRun(ITrainingProgram program, ITrainer trainer, CategoryTester tester, string directory, int iterationCount, float learningRate, int fileNum)
@@ -275,7 +282,7 @@ internal class Program
             $"({fileNum}) "
             + learningRate.ToString().Replace('.', '_')
             + "_" + layerCount
-            + "_" + layerBreath
+            + "_" + layerBreadth
             + "_" + activation?.GetType().Name;
         string netSaveDirectory = directory + $"Saved Nets/{fileNum}/";
 

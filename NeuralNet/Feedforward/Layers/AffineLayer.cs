@@ -131,7 +131,7 @@ public sealed class AffineLayer: IFeedForwardLayer
         {
             for(int j = 0; j < InputSize; j++)
             {
-                matrixValues[i, j] = newWeights[i * OutputSize + j];
+                matrixValues[i, j] = newWeights[i * InputSize + j];
             }
         }
         matrix += new Matrix(matrixValues);
@@ -139,7 +139,7 @@ public sealed class AffineLayer: IFeedForwardLayer
         float[] biasValues = new float[OutputSize];
         for(int i = 0; i < OutputSize; i++)
         {
-            biasValues[i] += newWeights[InputSize * OutputSize + i];
+            biasValues[i] = newWeights[InputSize * OutputSize + i];
         }
         bias += new Vector(biasValues);
     }
