@@ -178,12 +178,43 @@ internal class Program
             runCount++;
         }
 
-        //running
-        layerCount = 8;
-        layerBreadth = 5;
+        int[] layerBreadths = { 5, 10, 15 };
+        int[] layerCounts = { 8, 5, 3 };
         activation = new ReLU(.05f);
 
-        Run(runCount, trainer, tester);
+        //running
+        for(int i = 0; i <  layerCounts.Length; i++)
+        {
+            for(int j = 0; j <  layerBreadths.Length; j++)
+            {
+                if(i == 0 && j == 0) continue; 
+
+                layerCount = layerCounts[i];
+                layerBreadth = layerBreadths[j];
+
+                try
+                {
+                    Run(runCount, trainer, tester);
+                }
+                catch(Exception e)
+                {
+                    StreamWriter writer = new(runsDirectory + $"run{runCount}/error message.txt", false);
+                    writer.WriteLine(e.ToString());
+                    writer.WriteLine(e.Message);
+                    writer.WriteLine(e.StackTrace);
+                    writer.WriteLine(e.Source);
+
+                    Console.WriteLine($"\nRUNS CRASHED!\n");
+                    Console.WriteLine($"Of types: " +
+                        $"lc:{layerCount}, " +
+                        $"lb:{layerBreadth}, " +
+                        $"ac:{activation?.GetType().Name}\n");
+                }
+
+                runCount++;
+            }
+        }
+
     }
 
     private static void Run(int runCount, ITrainer trainer, CategoryTester tester)
@@ -209,7 +240,7 @@ internal class Program
 
         for(int i = 0; i < 4; i++)
         {
-            ConstantRateTraining(runDirectory + "Gradient Descent (constant)/", trainer, tester, SciNot(-i), iterationCount, i + 1);
+            ConstantRateTraining(runDirectory + "Gradient Descent (constant)/", trainer, tester, SciNot(-i+1), iterationCount, i + 1);
         }
 
         timer.Stop();
@@ -316,16 +347,18 @@ internal class Program
         {
             net?.Save(netSaveDirectory + "caughtNet");
 
-            StreamWriter writer = new(directory + $"({fileNum}) error message.txt", true);
-            writer.WriteLine();
-            writer.WriteLine();
-
+            StreamWriter writer = new(directory + $"({fileNum}) error message.txt", false);
             writer.WriteLine(e.ToString());
             writer.WriteLine(e.Message);
             writer.WriteLine(e.StackTrace);
             writer.WriteLine(e.Source);
 
-            Console.WriteLine("\nPROGRAM CRASHED!\n");
+            Console.WriteLine($"\nRUN CRASHED!\n");
+            Console.WriteLine($"Of type: " +
+                $"lr:{learningRate}, " +
+                $"lc:{layerCount}, " +
+                $"lb:{layerBreadth}, " +
+                $"ac:{activation?.GetType().Name}\n");
         }
     }
 

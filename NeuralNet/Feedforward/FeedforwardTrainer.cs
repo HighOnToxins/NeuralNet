@@ -1,4 +1,5 @@
 ﻿using NeuralNet.Tensor;
+using System.Linq.Expressions;
 
 namespace NeuralNet.Feedforward;
 
@@ -30,16 +31,30 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         {
             Thread[] thread = new Thread[THREADCOUNT];
             Vector[] results = new Vector[THREADCOUNT];
+            Exception[] exceptions = new Exception[THREADCOUNT];
 
+            results[0] = new(net.GetWeightLength());
+            for(int i = 1; i < THREADCOUNT; i++)  results[i] = results[0];
+
+            void ThreadRun(object? num) => ThreadedGradient(net, loss, inputs, targets, results, (int)num, exceptions);
+            
+            // setting up threads
             for(int i = 0; i < THREADCOUNT; i++)
             {
-                thread[i] = new(num => ThreadedGradient(net, loss, inputs, targets, results, num));
+                thread[i] = new(ThreadRun);
                 thread[i].Start(i);
             }
 
+            //waiting for threads
             for(int i = 0; i < THREADCOUNT; i++)
             {
                 thread[i].Join();
+
+                //handling exceptions
+                if(exceptions[i] is not null)
+                {
+                    throw exceptions[i];
+                }
             }
 
             Vector threadedTotalGradient = results[0];
@@ -69,23 +84,25 @@ public sealed class FeedForwardTrainer: ITrainer<FeedforwardNet>
         Vector[] inputs, 
         Vector[] targets, 
         Vector[] results, 
-        object? threadNum)
+        int threadNum,
+        Exception[] exceptions)
     {
-        if(threadNum is not int num)
+        try
         {
-            throw new ArgumentException();
+            float unit = inputs.Length / THREADCOUNT;
+            int start = (int)(unit * threadNum);
+            int end = (int)(unit * (threadNum + 1));
+
+            for(int i = start; i < end; i++)
+            {
+                Matrix gradient = net.Gradient(inputs[i], out Vector run);
+                results[threadNum] += gradient.Transpose() * loss.Gradient(targets[i], run);
+            }
         }
-
-        results[num] = new(net.GetWeightLength());
-
-        float unit = inputs.Length / THREADCOUNT;
-        int start = (int) (unit * num);
-        int end = (int)(unit * (num+1));
-
-        for(int i = start; i < end; i++)
+        catch(Exception e) 
         {
-            Matrix gradient = net.Gradient(inputs[i], out Vector run);
-            results[num] += gradient.Transpose() * loss.Gradient(targets[i], run);
+            //exception handling
+            exceptions[threadNum] = e;
         }
     }
 
