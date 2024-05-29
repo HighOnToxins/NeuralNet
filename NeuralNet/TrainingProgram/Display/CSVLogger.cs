@@ -23,16 +23,20 @@ public class CSVLogger: ILogger
 
         for(int i = 0; i < fields.Length; i++) 
         {
-            writer.Write(fields[i] + columnSep);
-        }
+            writer.Write(fields[i]);
 
-        writer.Write(rowSep);
+            if(i != fields.Length - 1)
+            {
+                writer.Write(columnSep);
+            }
+        }
     }
 
     public void Log(object[] info)
     {
-        //TODO: Remove separators from information
         using StreamWriter writer = new(path, true);
+
+        writer.Write(rowSep);
 
         for(int i = 0; i < info.Length; i++)
         {
@@ -46,9 +50,12 @@ public class CSVLogger: ILogger
                 s = s.Replace(',', floatComma);
             }
 
-            writer.Write(s + columnSep);
-        }
+            writer.Write(s);
 
-        writer.Write(rowSep);
+            if(i != info.Length - 1)
+            {
+                writer.Write(columnSep);
+            }
+        }
     }
 }
