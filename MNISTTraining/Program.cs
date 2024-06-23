@@ -33,43 +33,8 @@ internal class Program
             runCount++;
         }
 
-        int[] layerBreadths = { 5, 10, 15 };
-        int[] layerCounts = { 8, 5, 3 };
-        activation = new ReLU(.05f);
-
         //running
-        for(int i = 0; i <  layerCounts.Length; i++)
-        {
-            for(int j = 0; j <  layerBreadths.Length; j++)
-            {
-                if(i == 0 && j == 0) continue; 
-
-                layerCount = layerCounts[i];
-                layerBreadth = layerBreadths[j];
-
-                try
-                {
-                    Run(runCount, handler.Trainer, handler.Tester);
-                }
-                catch(Exception e)
-                {
-                    StreamWriter writer = new(runsDirectory + $"run{runCount}/error message.txt", false);
-                    writer.WriteLine(e.ToString());
-                    writer.Close();
-
-                    Console.WriteLine();
-                    Console.Error.WriteLine(e.ToString());
-
-                    Console.WriteLine($"\nRUNS CRASHED!\n");
-                    Console.WriteLine($"Of types: " +
-                        $"lc:{layerCount}, " +
-                        $"lb:{layerBreadth}, " +
-                        $"ac:{activation?.GetType().Name}\n");
-                }
-
-                runCount++;
-            }
-        }
+        Run(runCount, handler.Trainer, handler.Tester);
 
     }
 
@@ -77,41 +42,20 @@ internal class Program
     {
         string runDirectory = runsDirectory + $"run{runCount}/";
 
-        int iterationCount = 50;
+        int iterationCount = 20;
 
-        AddParameterNote(runDirectory, layerCount, layerBreadth, activation.GetType().Name);
+        //AddParameterNote(runDirectory, layerCount, layerBreadth, activation.GetType().Name);
 
         Stopwatch timer = new();
         timer.Start();
 
-        for(int i = 0; i < 4; i++)
-        {
-            LinearRateTraining(runDirectory + "Gradient Descent (linear)/", trainer, tester, SciNot(-i - 5), iterationCount, i + 1);
-        }
-
-        for(int i = 0; i < 4; i++)
-        {
-            NewtonsMethodTraining(runDirectory + "Newtons Method/", trainer, tester, SciNot(-i), iterationCount, i + 1);
-        }
-
-        for(int i = 0; i < 4; i++)
-        {
-            ConstantRateTraining(runDirectory + "Gradient Descent (constant)/", trainer, tester, SciNot(-i+1), iterationCount, i + 1);
-        }
+        LinearRateTraining(runDirectory + "Gradient Descent (linear)/", trainer, tester, 1e-6f, iterationCount, 0);
+        NewtonsMethodTraining(runDirectory + "Newtons Method/", trainer, tester, 1e-2f, iterationCount, 0);
 
         timer.Stop();
         Console.WriteLine($"COMPLETED FULL TRAINING! in {timer.Elapsed}");
         Console.WriteLine("program ended!");
     }
-
-    private static float SciNot(int x)
-    {
-        return (float) Math.Pow(10, x);
-    }
-
-    private static int layerCount;
-    private static int layerBreadth;
-    private static IActivation? activation;
 
     private static void AddParameterNote(string runDirectory, int layerCount, int layerBreadth, string activationName)
     {
@@ -145,12 +89,7 @@ internal class Program
     {
         INet? net = null;
 
-        string fileName =
-            $"({fileNum}) "
-            + learningRate.ToString().Replace('.', '_')
-            + "_" + layerCount
-            + "_" + layerBreadth
-            + "_" + activation?.GetType().Name;
+        string fileName = "A";
         string netSaveDirectory = directory + $"Saved Nets/{fileNum}/";
 
         try
@@ -165,7 +104,7 @@ internal class Program
             TrainingRunner runner = CreateRunner(program, trainer, tester, csvPath, netPath);
 
             //network
-            net = NNMNISTHandler.CreateMNISTNetwork(layerCount, layerBreadth, activation);
+            net = NNMNISTHandler.CreateMNISTNetwork();
             Console.WriteLine("Created New Network!");
 
             //running
@@ -185,11 +124,6 @@ internal class Program
             Console.Error.WriteLine(e.ToString());
 
             Console.WriteLine($"\nRUN CRASHED!\n");
-            Console.WriteLine($"Of type: " +
-                $"lr:{learningRate}, " +
-                $"lc:{layerCount}, " +
-                $"lb:{layerBreadth}, " +
-                $"ac:{activation?.GetType().Name}\n");
         }
     }
 

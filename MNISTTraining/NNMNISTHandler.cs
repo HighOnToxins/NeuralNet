@@ -169,28 +169,19 @@ public class NNMNISTHandler
     }
 
 
-    public static INet CreateMNISTNetwork(int layerCount, int layerBreadth, IActivation activation)
+    public static INet CreateMNISTNetwork()
     {
-        IFeedForwardLayer[] layers = new IFeedForwardLayer[layerCount];
+        IActivation activation = new ReLU(.05f);
 
-        if(layerCount == 1)
-        {
-            layers[0] = new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, MNISTLoader.CategoryCount, activation);
-        }
-        else
-        {
-            layers[0] = new AffineLayer(MNISTLoader.ImageSize * MNISTLoader.ImageSize, layerBreadth, activation);
-        }
-
-        for(int i = 1; i < layerCount - 1; i++)
-        {
-            layers[i] = new AffineLayer(layerBreadth, layerBreadth, activation);
-        }
-
-        layers[^1] = new AffineLayer(layerBreadth, MNISTLoader.CategoryCount, activation);
-
-        FeedforwardNet net = new(layers);
-        net.Randomize(x => 100f * (float)Math.Pow(x - .5f, 7));
+        FeedforwardNet net = new(new IFeedForwardLayer[] {
+            new ConvolutionalLayer(MNISTLoader.ImageSize, MNISTLoader.ImageSize, 3, 3, activation),
+            new ConvolutionalLayer(MNISTLoader.ImageSize, MNISTLoader.ImageSize, 3, 3, activation),
+            new ConvolutionalLayer(MNISTLoader.ImageSize, MNISTLoader.ImageSize, 3, 3, activation),
+            new ConvolutionalLayer(MNISTLoader.ImageSize, MNISTLoader.ImageSize, 3, 3, activation),
+            new ConvolutionalLayer(MNISTLoader.ImageSize, MNISTLoader.ImageSize, 3, 3, activation),
+            new AffineLayer(MNISTLoader.ImageSize*MNISTLoader.ImageSize, 10, activation),
+        });
+        net.Randomize(x => 20f * (float)Math.Pow(x - .5f, 7));
 
         return net;
     }
