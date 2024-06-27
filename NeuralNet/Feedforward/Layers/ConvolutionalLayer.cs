@@ -27,12 +27,12 @@ public sealed class ConvolutionalLayer: IFeedForwardLayer
         this.kernelWidth = kernelWidth;
         this.kernelHeight = kernelHeight;
 
-        weights = new(kernelWidth * kernelHeight);
+        weights = new(GetWeightLength());
     }
 
     private Matrix WeightGradient(Vector input)
     {
-        float[,] output = new float[input.Height, weights.Height];
+        float[,] output = new float[input.Height, GetWeightLength()];
 
         for(int outIndex = 0; outIndex < output.GetLength(0); outIndex++)
         {
@@ -66,13 +66,13 @@ public sealed class ConvolutionalLayer: IFeedForwardLayer
 
     private Vector ComputeConvolution(Vector input)
     {
-        float[] output = new float[input.Height];
+        float[] output = new float[OutputSize];
 
-        for(int outIndex = 0; outIndex < input.Height; outIndex++)
+        for(int outIndex = 0; outIndex < InputSize; outIndex++)
         {
             float total = 0;
 
-            for(int kernelIndex = 0; kernelIndex < weights.Height; kernelIndex++)
+            for(int kernelIndex = 0; kernelIndex < GetWeightLength(); kernelIndex++)
             {
                 int inIndex = InIndex(outIndex, kernelIndex);
                 if(inIndex != -1)
